@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+	<h1>ToDo List</h1>
+
+	<p>
+		Add Task:
+		<rw:TextBox Text="{{NewTaskText}}" />
+		<rw:Button OnClick="{{AddTask}}" Text="Add Task" />
+	</p>
+
+	<table>
+		<rw:Repeater DataSource="{{Tasks}}">
+			<ItemTemplate>
+				<tr>
+					<td>{{Title, HtmlEncode=true}}</td>
+					<td>
+						<rw:Button OnClick="{{$root.FinishTask}}" Text="Done" />
+					</td>
+				</tr>		
+			</ItemTemplate>
+		</rw:Repeater>
+	</table>
+
+	<rw:IntegrationScripts />
+</body>
+</html>
