@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,46 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
     [TestClass]
     public class RwHtmlTokenizerTests
     {
+
+        public TestContext TestContext { get; set; }
+
+        [TestMethod]
+        public void ValidInput_StartsWithServerTagName_Control()
+        {
+            var input = "<rw:Control test";
+            string tagPrefix;
+            string tagName;
+            var result = RwHtmlTokenizer.StartsWithServerTagName(input, 1, out tagPrefix, out tagName);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("rw", tagPrefix);
+            Assert.AreEqual("Control", tagName);
+        }
+
+        [TestMethod]
+        public void ValidInput_StartsWithServerTagName_Property()
+        {
+            var input = "<rw:Control.Property>";
+            string tagPrefix;
+            string tagName;
+            var result = RwHtmlTokenizer.StartsWithServerTagName(input, 1, out tagPrefix, out tagName);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("rw", tagPrefix);
+            Assert.AreEqual("Control.Property", tagName);
+        }
+
+
+        [TestMethod]
+        public void ValidInput_StartsWithServerTagName_InvalidFormat()
+        {
+            var input = "<rw:Control.Property.Prop2>";
+            string tagPrefix;
+            string tagName;
+            var result = RwHtmlTokenizer.StartsWithServerTagName(input, 1, out tagPrefix, out tagName);
+
+            Assert.IsFalse(result);
+        }
 
         [TestMethod]
         public void ValidInput_SingleLiteral()
@@ -71,8 +112,16 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
             Assert.AreEqual("{{Text, HtmlEncode=true}}", ((RwControlToken)tokens[1]).Attributes["Text"]);
         }
 
-        // TODO: invalid input tests
+        // TODO: invalid inputs
 
+
+        [TestMethod]
+        public void ValidInput_Sample()
+        {
+            var fileName = Path.Combine(TestContext.TestDeploymentDir, "..\\..\\..\\Redwood.Samples.Basic\\index.rwhtml");
+            var page = new RwHtmlParser().ParsePage(File.ReadAllText(fileName));
+            Assert.AreEqual(7, page.Controls.Count);
+        }
 
     }
 }

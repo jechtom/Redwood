@@ -32,5 +32,26 @@ namespace Redwood.Framework.ViewModel
             }
         }
 
+
+        /// <summary>
+        /// Initializes the view model default values. This method is executed by the runtime before view model values from the postback are loaded.
+        /// </summary>
+        protected internal virtual void Init(Microsoft.Owin.IOwinContext context)
+        {
+        }
+
+        /// <summary>
+        /// Loads the view model data. This method is executed by the runtime after view model values from the postback are loaded.
+        /// </summary>
+        protected internal virtual async Task Load(Microsoft.Owin.IOwinContext context, bool isPostBack)
+        {
+        }
+
+        /// <summary>
+        /// Initializes the view model default values. This method is executed after all viewmodel data are loaded.
+        /// </summary>
+        protected internal virtual void PreRender(Microsoft.Owin.IOwinContext context)
+        {
+        }
     }
 }

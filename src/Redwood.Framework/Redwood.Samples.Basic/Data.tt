@@ -1,0 +1,14 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)Redwood.Framework\bin\Debug\Redwood.Framework.dll" #>
+<#@ assembly name="$(SolutionDir)Redwood.Samples.Basic\bin\Redwood.Samples.Basic.dll" #>
+<#@ import namespace="Redwood.Framework.Parsing.ViewModel" #>
+<#@ output extension=".ts" #>
+
+<# 
+	var translator = new ViewModelTranslator(
+		new ReflectionViewModelMetadataExtractor(), new TypeScriptViewModelTypeMapper(), new TypeScriptViewModelWriter()
+	);
+	this.Write(translator.TranslateViewModels(typeof (Redwood.Samples.Basic.IndexViewModel)));
+
+#>
+

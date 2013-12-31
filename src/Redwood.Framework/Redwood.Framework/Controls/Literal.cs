@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Redwood.Framework.Controls
@@ -12,7 +13,16 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Gets or sets the text.
         /// </summary>
+        [Bindable(true, BindingDirection.TwoWay)]
         public string Text { get; set; }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Literal"/> class.
+        /// </summary>
+        public Literal() : this("")
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Literal"/> class.
@@ -34,7 +44,7 @@ namespace Redwood.Framework.Controls
             else
             {
                 writer.RenderBeginTag("span");
-                writer.AddBindingAttribute("text", Bindings["Text"].ClientPath);
+                writer.AddBindingAttribute("text", TranslateToKnockoutProperty(Bindings["Text"].Path));
                 writer.RenderEndTag();
             }
         }

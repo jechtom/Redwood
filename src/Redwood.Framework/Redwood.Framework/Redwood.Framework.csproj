@@ -30,6 +30,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0-rc1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,13 +49,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Binding.cs" />
+    <Compile Include="Controls\Button.cs" />
     <Compile Include="Controls\IBindingContext.cs" />
+    <Compile Include="Controls\IntegrationScripts.cs" />
+    <Compile Include="Controls\RedwoodTemplate.cs" />
     <Compile Include="Controls\Literal.cs" />
     <Compile Include="Controls\Page.cs" />
     <Compile Include="Controls\RedwoodControl.cs" />
+    <Compile Include="Controls\RedwoodEventArgs.cs" />
+    <Compile Include="Controls\Table.cs" />
+    <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Generation\AttributeList.cs" />
     <Compile Include="Generation\HtmlWriter.cs" />
     <Compile Include="Generation\IHtmlWriter.cs" />
+    <Compile Include="Hosting\DefaultMarkupFileResolver.cs" />
+    <Compile Include="Hosting\DefaultOutputRenderer.cs" />
+    <Compile Include="Hosting\DefaultPageBuilder.cs" />
+    <Compile Include="Hosting\DefaultViewModelLocator.cs" />
+    <Compile Include="Hosting\DefaultViewModelSerializer.cs" />
+    <Compile Include="Hosting\IMarkupFileResolver.cs" />
+    <Compile Include="Hosting\IOutputRenderer.cs" />
+    <Compile Include="Hosting\IPageBuilder.cs" />
+    <Compile Include="Hosting\IViewModelLocator.cs" />
+    <Compile Include="Hosting\IViewModelSerializer.cs" />
+    <Compile Include="Hosting\RedwoodApp.cs" />
     <Compile Include="Parsing\RwHtml\RwControlClosingToken.cs" />
     <Compile Include="Parsing\RwHtml\RwControlToken.cs" />
     <Compile Include="Parsing\RwHtml\RwHtmlParser.cs" />
@@ -68,7 +94,9 @@
     <Compile Include="ViewModel\ClientImplementationAttribute.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

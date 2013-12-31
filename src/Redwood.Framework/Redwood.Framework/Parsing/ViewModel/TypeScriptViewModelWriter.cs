@@ -62,7 +62,7 @@ namespace Redwood.Framework.Parsing.ViewModel
         /// </summary>
         public void WriteFunction(string name, string[] paramDefinitions, string returnType, string body)
         {
-            builder.AppendLine(string.Format("    public {0}({1}): {2} {{", name, string.Join(", ", paramDefinitions), returnType));
+            builder.AppendLine(string.Format("    public {0}(element: HTMLElement, arguments: any[]): {1} {{", name, returnType));
             builder.AppendLine(body);
             builder.AppendLine("    }");
             builder.AppendLine();

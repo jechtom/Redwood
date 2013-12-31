@@ -8,9 +8,12 @@ namespace Redwood.Framework.Controls
 {
     public class Page : RedwoodControl
     {
+
         public override void Render(Generation.IHtmlWriter writer)
         {
-            
+            RenderChildren(writer);
         }
+
+        
     }
 }

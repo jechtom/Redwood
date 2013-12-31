@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Redwood.Framework.ViewModel;
 
 namespace Redwood.Framework.Controls
 {
-    public interface IBindingContext
+    public class BindingContext
     {
 
-        IBindingContext Parent { get; }
+        public BindingContext Parent { get; set; }
 
-        object ViewModel { get; set; }
+        public object ViewModel { get; set; }
 
     }
 }

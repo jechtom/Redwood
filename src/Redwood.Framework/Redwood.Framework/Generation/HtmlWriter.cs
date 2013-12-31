@@ -37,6 +37,7 @@ namespace Redwood.Framework.Generation
             if (openTags.Any() && !(lastTag = openTags.Peek()).IsBeginTagRendered)
             {
                 lastTag.WriteBeginTag(builder);
+                lastTag.IsBeginTagRendered = true;
             }
         }
 
@@ -53,16 +54,18 @@ namespace Redwood.Framework.Generation
         /// <summary>
         /// Renders the end tag.
         /// </summary>
-        public void RenderEndTag()
+        public void RenderEndTag(bool forceFullEndTag = false)
         {
             var tag = GetCurrentOpenTag();
-            if (!tag.IsBeginTagRendered)
+            if (!tag.IsBeginTagRendered && !forceFullEndTag)
             {
                 // the begin tag was not rendered, so the tag has no content - we can close it immediately using <tag />
                 tag.WriteEmptyTag(builder);
             }
             else
             {
+                EnsureCurrentTagRendered();
+
                 // the tag has already been open, render the closing tag
                 tag.WriteEndTag(builder);
             }

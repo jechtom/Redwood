@@ -13,15 +13,7 @@ namespace Redwood.Framework.Controls
         /// Gets the name of the binding path.
         /// </summary>
         public string Path { get; private set; }
-
-        /// <summary>
-        /// Gets the client binding path.
-        /// </summary>
-        public string ClientPath
-        {
-            get { return Path.Replace(".", "()."); }
-        }
-
+        
         /// <summary>
         /// Gets the attributes.
         /// </summary>

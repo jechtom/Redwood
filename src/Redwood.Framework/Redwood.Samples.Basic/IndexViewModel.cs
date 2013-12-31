@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.Owin;
+using Redwood.Framework.Controls;
 using Redwood.Framework.ViewModel;
 
 namespace Redwood.Samples.Basic
@@ -11,18 +13,29 @@ namespace Redwood.Samples.Basic
 
         public string NewTaskText { get; set; }
 
-        public List<Task> Tasks { get; set; } 
+        public List<Task> Tasks { get; set; }
 
+        protected override async System.Threading.Tasks.Task Load(IOwinContext context, bool isPostBack)
+        {
+            if (!isPostBack)
+            {
+                Tasks = new List<Task>()
+                {
+                    new Task() { Title = "Defaultní úkol 1"},
+                    new Task() { Title = "Defaultní úkol 2"}
+                };
+            }
+        }
 
-        public void AddTask()
+        public void AddTask(RedwoodEventArgs args)
         {
             Tasks.Add(new Task() { Title = NewTaskText });
             NewTaskText = string.Empty;
         }
 
-        public void FinishTask(Task task)
+        public void FinishTask(RedwoodEventArgs args)
         {
-            Tasks.Remove(task);
+            Tasks.RemoveAt(Convert.ToInt32(args.Parameters[0]));
         }
 
     }

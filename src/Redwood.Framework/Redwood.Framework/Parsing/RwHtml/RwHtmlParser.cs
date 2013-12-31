@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Redwood.Framework.Controls;
 
@@ -58,14 +60,37 @@ namespace Redwood.Framework.Parsing.RwHtml
                 // control start
                 if (currentToken is RwControlToken)
                 {
-                    // create control
-                    var type = ResolveControlType(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
-                    var control = CreateControl(type, (RwControlToken)currentToken);
-                    currentControl.Controls.Add(control);
-                    controls.Push(control);
+                    if (!IsPropertyName(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName))
+                    {
+                        // create control
+                        var type = ResolveControlType(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
+                        var control = CreateControl(type, (RwControlToken)currentToken);
+                        currentControl.Controls.Add(control);
+                        controls.Push(control);
 
-                    // build its internal structure
-                    i = BuildControls(controls, tokens, i);
+                        // build its internal structure
+                        i = BuildControls(controls, tokens, i + 1);
+                    }
+                    else
+                    {
+                        // it must be property name of the last control
+                        var property = ResolveProperty(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
+                        if (property.PropertyType == typeof (RedwoodTemplate))
+                        {
+                            // parse the template
+                            var propValue = new RedwoodTemplate();
+                            var propStack = new Stack<RedwoodControl>();
+                            propStack.Push(propValue);
+                            i = BuildControls(propStack, tokens, i + 1);
+
+                            // set the template to the control
+                            property.SetValue(currentControl, propValue);
+                        }
+                        else
+                        {
+                            throw new Exception("Inner property must be of type RedwoodTemplate!");
+                        }
+                    }
                 }
 
                 // control end
@@ -74,6 +99,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     if (controls.Count == beginHierarchyLevel)
                     {
                         // end reading, we cannot go outside the scope we have started
+                        controls.Pop();
                         return i;
                     }
                     else
@@ -97,7 +123,47 @@ namespace Redwood.Framework.Parsing.RwHtml
             return tokens.Count;
         }
 
-        
+        /// <summary>
+        /// Resolves the property.
+        /// </summary>
+        private PropertyInfo ResolveProperty(string tagPrefix, string tagName)
+        {
+            if (!IsPropertyName(tagPrefix, tagName))
+            {
+                throw new Exception("Invalid format of property name!");
+            }
+            var parts = tagName.Split('.');
+            var type = ResolveControlType(tagPrefix, parts[0]);
+            var prop = type.GetProperty(parts[1]);
+            if (prop == null)
+            {
+                throw new Exception("The specified property does not exist!");
+            }
+            return prop;
+        }
+
+        /// <summary>
+        /// Determines whether the specified tag prefix and name has correct format.
+        /// </summary>
+        private bool IsPropertyName(string tagPrefix, string tagName)
+        {
+            if (tagPrefix != "rw")
+            {
+                throw new Exception("Invalid tag prefix!");
+            }
+            var parts = tagName.Split('.');
+            return (parts.Length == 2 && IsValidName(parts[0]) && IsValidName(parts[1]));
+        }
+
+        /// <summary>
+        /// Determines whether the specified string is a valid control or property name.
+        /// </summary>
+        private static bool IsValidName(string tagName)
+        {
+            return Regex.IsMatch(tagName, @"^[a-zA-Z][a-zA-Z0-9]*$");
+        }
+
+
         /// <summary>
         /// Resolves the control.
         /// </summary>
@@ -107,7 +173,11 @@ namespace Redwood.Framework.Parsing.RwHtml
             {
                 throw new Exception("Invalid tag prefix!");
             }
-            return Type.GetType("Redwood.Framework.Controls" + tagName + ", Redwood.Framework", true);
+            if (!IsValidName(tagName))
+            {
+                throw new Exception("Invalid tag name!");
+            }
+            return Type.GetType("Redwood.Framework.Controls." + tagName + ", Redwood.Framework", true);
         }
 
         /// <summary>

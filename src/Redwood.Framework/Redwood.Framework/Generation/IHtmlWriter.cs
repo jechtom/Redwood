@@ -21,7 +21,7 @@ namespace Redwood.Framework.Generation
         /// <summary>
         /// Renders the end tag.
         /// </summary>
-        void RenderEndTag();
+        void RenderEndTag(bool forceFullEndTag = false);
 
         /// <summary>
         /// Adds the attribute.

@@ -43,6 +43,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                                     }
 
                                     yield return new RwControlClosingToken(tagPrefix, tagName);
+                                    lastPosition += tagPrefix.Length + tagName.Length + 4;
                                 }
                             }
                             else
@@ -61,7 +62,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                                     }
                                     controlToken = new RwControlToken(tagPrefix, tagName);
                                     state = 1;
-                                    i += tagPrefix.Length + tagName.Length + 2;
+                                    i += tagPrefix.Length + tagName.Length + 1;
                                 }
                             }
                         }
@@ -81,9 +82,10 @@ namespace Redwood.Framework.Parsing.RwHtml
                                 }
 
                                 var bindingToken = new RwControlToken("rw", "Literal");
-                                bindingToken.Attributes["Text"] = binding;
+                                bindingToken.Attributes["Text"] = "{{" + binding + "}}";
                                 yield return bindingToken;
                                 yield return new RwControlClosingToken("rw", "Literal");
+                                lastPosition += binding.Length + 4;
                             }
                         }
                         break;
@@ -94,7 +96,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                         {
                             // tag is closed immediately
                             state = 0;
-                            lastPosition = i + 1;
+                            lastPosition = i + 2;
                             yield return controlToken;
                             yield return new RwControlClosingToken(controlToken.TagPrefix, controlToken.TagName);
                             controlToken = null;
@@ -235,6 +237,7 @@ namespace Redwood.Framework.Parsing.RwHtml
             tagPrefix = "";
             tagName = "";
             var isInTagPrefix = true;
+            var numberOfDots = 0;
 
             for (var i = position; i < html.Length; i++)
             {
@@ -254,7 +257,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     }
                     return false;
                 }
-                else if (!Char.IsLetterOrDigit(html[i]))
+                else if (!Char.IsLetterOrDigit(html[i]) && (isInTagPrefix || html[i] != '.' || numberOfDots > 0))
                 {
                     return false;
                 }
@@ -264,6 +267,10 @@ namespace Redwood.Framework.Parsing.RwHtml
                 }
                 else
                 {
+                    if (html[i] == '.')
+                    {
+                        numberOfDots++;
+                    }
                     tagName += html[i];
                 }
             }

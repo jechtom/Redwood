@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Redwood.Framework.Parsing.ViewModel
 {
@@ -64,7 +61,7 @@ namespace Redwood.Framework.Parsing.ViewModel
                     string body;
                     if (string.IsNullOrEmpty(command.ClientFunctionName))
                     {
-                        body = string.Format("Redwood.PostBack(this, '{0}');", command.CommandName);
+                        body = string.Format("Redwood.PostBack(element, '{0}', arguments);", command.CommandName);
                     }
                     else
                     {
