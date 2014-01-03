@@ -5,13 +5,8 @@ using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
-    public class RedwoodTemplate : RedwoodControl
+    public class RedwoodTemplate : ContainerControl
     {
-        
 
-        public override void Render(IHtmlWriter writer)
-        {
-            RenderChildren(writer);    
-        }
     }
 }

@@ -83,7 +83,7 @@ namespace Redwood.Framework.Hosting
             var viewModel = ViewModelLocator.LocateViewModel(context, page);
 
             // init the view model lifecycle
-            page.DataContext = new BindingContext() { ViewModel = viewModel };
+            page.DataContext = viewModel;
 
             viewModel.Init(context);
             if (context.Request.Method == "GET")

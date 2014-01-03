@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
-    public class IntegrationScripts : RedwoodControl
+    public class IntegrationScripts : RenderableControl
     {
-
         public string ViewModelTypeName { get; set; }
 
         public string ViewModelClientName
@@ -23,7 +22,6 @@ namespace Redwood.Framework.Controls
         internal List<string> InternalScriptUrls { get; set; }
 
         internal string SerializedViewModel { get; set; }
-
 
         public override void Render(Generation.IHtmlWriter writer)
         {

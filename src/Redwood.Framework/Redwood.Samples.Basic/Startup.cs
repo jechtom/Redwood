@@ -4,6 +4,7 @@ using System.Web.Hosting;
 using Microsoft.Owin;
 using Owin;
 using Redwood.Framework.Hosting;
+using System.Collections.Generic;
 
 [assembly: OwinStartup(typeof(Redwood.Samples.Basic.Startup))]
 

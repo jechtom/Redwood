@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Redwood.Framework.Generation
 {
-    public class AttributeList<T> : IEnumerable<KeyValuePair<string, T>>
+    public class HtmlAttributeList<T> : IEnumerable<KeyValuePair<string, T>>
     {
 
         private Dictionary<string, T> data = new Dictionary<string, T>();

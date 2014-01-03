@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Redwood.Framework.Binding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,13 +9,24 @@ namespace Redwood.Framework.Controls
     /// <summary>
     /// Represents a literal control.
     /// </summary>
-    public class Literal : RedwoodControl
+    public class Literal : RenderableControl
     {
         /// <summary>
         /// Gets or sets the text.
         /// </summary>
-        [Bindable(true, BindingDirection.TwoWay)]
-        public string Text { get; set; }
+        public string Text
+        {
+            get
+            {
+                return (string)GetValue(TextProperty);
+            }
+            set
+            {
+                SetValue(TextProperty, value);
+            }
+        }
+
+        public static readonly RedwoodProperty TextProperty = RedwoodProperty.Register<string, Literal>("Text");
 
 
         /// <summary>
@@ -37,14 +49,15 @@ namespace Redwood.Framework.Controls
         /// </summary>
         public override void Render(Generation.IHtmlWriter writer)
         {
-            if (!HasClientSideBinding("Text"))
+            var expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.WriteText(Text, false);
             }
             else
             {
                 writer.RenderBeginTag("span");
-                writer.AddBindingAttribute("text", TranslateToKnockoutProperty(Bindings["Text"].Path));
+                writer.AddBindingAttribute("text", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
                 writer.RenderEndTag();
             }
         }

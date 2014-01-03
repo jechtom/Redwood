@@ -12,14 +12,14 @@ namespace Redwood.Framework.Parsing.RwHtml
 
         public string TagName { get; private set; }
 
-        public AttributeList<string> Attributes { get; private set; }
+        public HtmlAttributeList<string> Attributes { get; private set; }
 
         
         public RwControlToken(string tagPrefix, string tagName)
         {
             TagPrefix = tagPrefix;
             TagName = tagName;
-            Attributes = new AttributeList<string>();
+            Attributes = new HtmlAttributeList<string>();
         }
     }
 }

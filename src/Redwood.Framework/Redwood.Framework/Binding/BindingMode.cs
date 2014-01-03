@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Redwood.Framework.Controls
+namespace Redwood.Framework.Binding
 {
-    public class Page : ContainerControl
+    public enum BindingMode
     {
+        OneTime,
+        TwoWay
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Redwood.Framework.Binding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,14 +9,35 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
-    public class TextBox : RedwoodControl
+    public class TextBox : RenderableControl
     {
+        public string Text
+        {
+            get
+            {
+                return (string)GetValue(TextProperty);
+            }
+            set
+            {
+                SetValue(TextProperty, value);
+            }
+        }
 
-        [Bindable(true, BindingDirection.TwoWay)]
-        public string Text { get; set; }
+        public static readonly RedwoodProperty TextProperty = RedwoodProperty.Register<string, TextBox>("Text");
 
-        public TextMode Mode { get; set; }
+        public TextMode Mode
+        {
+            get
+            {
+                return (TextMode)GetValue(ModeProperty);
+            }
+            set
+            {
+                SetValue(ModeProperty, value);
+            }
+        }
 
+        public static readonly RedwoodProperty ModeProperty = RedwoodProperty.Register<TextMode, TextBox>("Mode", defaultValue: TextMode.Text);
 
         public override void Render(Generation.IHtmlWriter writer)
         {
@@ -29,15 +51,16 @@ namespace Redwood.Framework.Controls
                 writer.RenderBeginTag("input");
                 writer.AddAttribute("type", Mode.ToString().ToLower());
             }
-            
+
             // content
-            if (!HasClientSideBinding("Text"))
+            BindingExpression expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.WriteText(Text, true);
             }
             else
             {
-                writer.AddBindingAttribute("value", TranslateToKnockoutProperty(Bindings["Text"].Path));
+                writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
             }
 
             // end

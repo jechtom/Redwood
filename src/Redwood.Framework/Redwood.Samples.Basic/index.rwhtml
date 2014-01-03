@@ -12,13 +12,13 @@
 		<rw:Button OnClick="{{AddTask}}" Text="Add Task" />
 	</p>
 
-	<rw:Table DataSource="{{Tasks}}">
-		<rw:Table.RowTemplate>
-			<td>{{Title, HtmlEncode=true}}</td>
+	<rw:Table ItemsSource="{{Tasks}}">
+		<rw:Table.ItemTemplate>
+			<td>{{Title}}</td>
 			<td>
 				<rw:Button OnClick="{{$root.FinishTask($index)}}" Text="Done" />
 			</td>
-		</rw:Table.RowTemplate>
+		</rw:Table.ItemTemplate>
 	</rw:Repeater>
 
 	<rw:IntegrationScripts ViewModelTypeName="Redwood.Samples.Basic.IndexViewModel, Redwood.Samples.Basic" />

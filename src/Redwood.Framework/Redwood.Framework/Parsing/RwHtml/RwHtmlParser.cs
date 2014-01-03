@@ -6,12 +6,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Redwood.Framework.Controls;
+using Redwood.Framework.Binding;
 
 namespace Redwood.Framework.Parsing.RwHtml
 {
     public class RwHtmlParser
     {
-
         /// <summary>
         /// Parses the page.
         /// </summary>
@@ -54,7 +54,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                 // literal
                 if (currentToken is RwLiteralToken)
                 {
-                    currentControl.Controls.Add(new Literal(((RwLiteralToken)currentToken).Text));
+                    AddContentIfSupported(currentControl, new Literal(((RwLiteralToken)currentToken).Text));
                 }
 
                 // control start
@@ -65,7 +65,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                         // create control
                         var type = ResolveControlType(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
                         var control = CreateControl(type, (RwControlToken)currentToken);
-                        currentControl.Controls.Add(control);
+                        AddContentIfSupported(currentControl, control);
                         controls.Push(control);
 
                         // build its internal structure
@@ -121,6 +121,19 @@ namespace Redwood.Framework.Parsing.RwHtml
             }
 
             return tokens.Count;
+        }
+
+        private void AddContentIfSupported(RedwoodControl currentControl, RedwoodControl control)
+        {
+            // TODO create default content property instead of relying on ContainerControl
+            if (currentControl is ContainerControl)
+            {
+                ((ContainerControl)currentControl).AddControl(control);
+            }
+            else
+            {
+                throw new NotSupportedException("Parent control does not supports content.");
+            }
         }
 
         /// <summary>
@@ -193,13 +206,16 @@ namespace Redwood.Framework.Parsing.RwHtml
                 if (attribute.Value.StartsWith("{{") && attribute.Value.EndsWith("}}"))
                 {
                     // parse binding
-                    control.Bindings.Add(attribute.Key, ParseBinding(attribute.Value));
+                    var property = control.GetPropertyByName(attribute.Key);
+                    if (property == null)
+                        throw new InvalidOperationException(string.Format("Property {0} not found.", attribute.Key));
+                    control.SetValue(property, ParseBinding(property, attribute.Value));
                 }
                 else
                 {
                     // set attribute value
                     var prop = type.GetProperty(attribute.Key);
-                    var value = Binding.ConvertValue(attribute.Value, prop.PropertyType);
+                    var value = DefaultModelBinder.ConvertValue(attribute.Value, prop.PropertyType);
                     prop.SetValue(control, value);
                 }
             }
@@ -210,12 +226,12 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// <summary>
         /// Parses the binding.
         /// </summary>
-        public static Binding ParseBinding(string bindingValue)
+        public static BindingExpression ParseBinding(RedwoodProperty property, string bindingValue)
         {
             bindingValue = bindingValue.Substring(2, bindingValue.Length - 4);
 
             var parts = bindingValue.Split(',').Select(p => p.Trim()).ToArray();
-            var binding = new Binding(parts[0]);
+            var binding = new BindingExpression(parts[0], BindingMode.TwoWay);
 
             for (var i = 1; i < parts.Length; i++)
             {
@@ -225,7 +241,8 @@ namespace Redwood.Framework.Parsing.RwHtml
                     throw new Exception("Binding attribute name must not be empty!");
                 }
 
-                binding.Attributes.Add(sides[0], sides[1]);
+                throw new NotImplementedException();
+                //binding.Attributes.Add(sides[0], sides[1]);
             }
 
             return binding;

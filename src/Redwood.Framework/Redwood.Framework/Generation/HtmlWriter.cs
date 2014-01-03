@@ -127,20 +127,20 @@ namespace Redwood.Framework.Generation
         {
             public string TagName { get; private set; }
 
-            public AttributeList<string> Attributes { get; private set; }
+            public HtmlAttributeList<string> Attributes { get; private set; }
 
-            public AttributeList<string> StyleAttributes { get; private set; }
+            public HtmlAttributeList<string> StyleAttributes { get; private set; }
 
-            public AttributeList<string> BindingAttributes { get; private set; }
+            public HtmlAttributeList<string> BindingAttributes { get; private set; }
 
             public bool IsBeginTagRendered { get; set; }
 
             public OpenTag(string tagName)
             {
                 TagName = tagName;
-                Attributes = new AttributeList<string>();
-                StyleAttributes = new AttributeList<string>();
-                BindingAttributes = new AttributeList<string>();
+                Attributes = new HtmlAttributeList<string>();
+                StyleAttributes = new HtmlAttributeList<string>();
+                BindingAttributes = new HtmlAttributeList<string>();
             }
 
             /// <summary>
