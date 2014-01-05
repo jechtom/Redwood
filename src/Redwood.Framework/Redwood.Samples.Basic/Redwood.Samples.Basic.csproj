@@ -84,6 +84,19 @@
   <ItemGroup>
     <Compile Include="IndexPresenter.cs" />
     <Compile Include="IndexViewModel.cs" />
+    <Compile Include="Samples_TH\01_MasterPage\layout.rwhtml.cs" />
+    <Compile Include="Samples_TH\01_MasterPage\page1.rwhtml.cs" />
+    <Compile Include="Samples_TH\01_MasterPage\page2.rwhtml.cs" />
+    <Compile Include="Samples_TH\02_SPA\layout.rwhtml.cs" />
+    <Compile Include="Samples_TH\02_SPA\page1.rwhtml.cs" />
+    <Compile Include="Samples_TH\02_SPA\page2.rwhtml.cs" />
+    <Compile Include="Samples_TH\03_Controls\calendar.rwhtml.cs" />
+    <Compile Include="Samples_TH\03_Controls\layout.rwhtml.cs" />
+    <Compile Include="Samples_TH\RedwoodContentPresenter.cs" />
+    <Compile Include="Samples_TH\RedwoodPresenter.cs" />
+    <Compile Include="Samples_TH\RedwoodUserControlPresenter.cs" />
+    <Compile Include="TaskListPresenter.cs" />
+    <Compile Include="TaskListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="UserProfileControlPresenter.cs" />
@@ -95,6 +108,14 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Data.ts</LastGenOutput>
     </Content>
+    <Content Include="Samples_TH\01_MasterPage\layout.rwhtml" />
+    <Content Include="Samples_TH\01_MasterPage\page1.rwhtml" />
+    <Content Include="Samples_TH\01_MasterPage\page2.rwhtml" />
+    <Content Include="Samples_TH\02_SPA\layout.rwhtml" />
+    <Content Include="Samples_TH\02_SPA\page1.rwhtml" />
+    <Content Include="Samples_TH\02_SPA\page2.rwhtml" />
+    <Content Include="Samples_TH\03_Controls\layout.rwhtml" />
+    <Content Include="Samples_TH\03_Controls\calendar.rwhtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -122,6 +143,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

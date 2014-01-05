@@ -1,0 +1,14 @@
+﻿<html>
+<head>
+	<title><rw:Literal Text="{Title}" /></title>
+</head>
+<body>
+
+	<h1><rw:Literal Text="{Title}" /></h1>
+	
+	<cc:Calendar ID="Calendar1" SelectedDate="{Date1}" />
+	
+	<cc:Calendar ID="Calendar2" SelectedDate="{Date2}" />
+
+</body>
+</html>
