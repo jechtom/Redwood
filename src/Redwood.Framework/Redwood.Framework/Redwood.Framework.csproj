@@ -52,6 +52,9 @@
     <Compile Include="Binding\BindingExpression.cs" />
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
+    <Compile Include="Binding\PropertyPath.cs" />
+    <Compile Include="Binding\RedwoodPropertyFlags.cs" />
+    <Compile Include="Binding\RedwoodPropertyMetadata.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Controls\IntegrationScripts.cs" />
     <Compile Include="Controls\ItemsControl.cs" />

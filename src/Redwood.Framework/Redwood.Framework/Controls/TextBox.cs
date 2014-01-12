@@ -37,7 +37,7 @@ namespace Redwood.Framework.Controls
             }
         }
 
-        public static readonly RedwoodProperty ModeProperty = RedwoodProperty.Register<TextMode, TextBox>("Mode", defaultValue: TextMode.Text);
+        public static readonly RedwoodProperty ModeProperty = RedwoodProperty.Register<TextMode, TextBox>("Mode", TextMode.Text);
 
         public override void Render(Generation.IHtmlWriter writer)
         {

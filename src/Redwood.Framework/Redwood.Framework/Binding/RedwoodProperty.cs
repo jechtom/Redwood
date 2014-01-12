@@ -17,9 +17,7 @@ namespace Redwood.Framework.Binding
 
         private Type ownerType;
 
-        private bool isInherited;
-
-        private object defaultValue;
+        private RedwoodPropertyMetadata metadata;
 
         public int Id
         {
@@ -53,23 +51,21 @@ namespace Redwood.Framework.Binding
             }
         }
 
-        public bool IsInherited
+        public RedwoodPropertyMetadata Metadata
         {
             get
             {
-                return isInherited;
+                return metadata;
             }
         }
 
-        public object DefaultValue
+        public static RedwoodProperty Register<TProp, TOwner>(string name, object defaultValue)
         {
-            get
-            {
-                return defaultValue;
-            }
+            var meta = new RedwoodPropertyMetadata(defaultValue, RedwoodPropertyFlags.None);
+            return Register<TProp, TOwner>(name, meta);
         }
 
-        public static RedwoodProperty Register<TProp, TOwner>(string name, TProp defaultValue = default(TProp), bool isInherited = false)
+        public static RedwoodProperty Register<TProp, TOwner>(string name, RedwoodPropertyMetadata metadata = null)
         {
             var prop = new RedwoodProperty()
             {
@@ -77,8 +73,7 @@ namespace Redwood.Framework.Binding
                 name = name,
                 propertyType = typeof(TProp),
                 ownerType = typeof(TOwner),
-                defaultValue = defaultValue,
-                isInherited = isInherited
+                metadata = metadata ?? new RedwoodPropertyMetadata(default(TProp))
             };
 
             RedwoodPropertyMap.Default.RegisterProperty(prop);

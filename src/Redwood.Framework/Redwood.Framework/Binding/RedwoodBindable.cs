@@ -136,7 +136,7 @@ namespace Redwood.Framework.Binding
                 return localValue;
             }
 
-            if(property.IsInherited && parent != null)
+            if(property.Metadata.IsInherited && parent != null)
             {
                 // inherited value
                 return parent.GetValueDirect(property, resolveExpressions);
@@ -146,7 +146,7 @@ namespace Redwood.Framework.Binding
             return new ValueEntry()
             {
                 PropertyId = property.Id,
-                Value = property.DefaultValue
+                Value = property.Metadata.DefaultValue
             };
         }
 

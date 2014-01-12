@@ -23,7 +23,8 @@ namespace Redwood.Framework.Controls
             }
         }
 
-        public static RedwoodProperty DataContextProperty = RedwoodProperty.Register<object, RedwoodControl>("DataContext", isInherited: true);
+        public static RedwoodProperty DataContextProperty = 
+            RedwoodProperty.Register<object, RedwoodControl>("DataContext", new RedwoodPropertyMetadata(null, RedwoodPropertyFlags.IsInherited));
 
         public void OnAddedToParent(RedwoodControl parent)
         {
