@@ -60,13 +60,13 @@ namespace Redwood.Framework.Parsing.RwHtml
                 }
 
                 // control start
-                if (currentToken is RwControlToken)
+                if (currentToken is RwOpenTagToken)
                 {
-                    if (!IsPropertyName(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName))
+                    if (!IsPropertyName(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName))
                     {
                         // create control
-                        var type = ResolveControlType(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
-                        var control = CreateControl(type, (RwControlToken)currentToken);
+                        var type = ResolveControlType(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName);
+                        var control = CreateControl(type, (RwOpenTagToken)currentToken);
                         AddContentIfSupported(currentControl, control);
                         controls.Push(control);
 
@@ -76,7 +76,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     else
                     {
                         // it must be property name of the last control
-                        var property = ResolveProperty(((RwControlToken)currentToken).TagPrefix, ((RwControlToken)currentToken).TagName);
+                        var property = ResolveProperty(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName);
                         if (property.PropertyType == typeof (RedwoodTemplate))
                         {
                             // parse the template
@@ -96,7 +96,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                 }
 
                 // control end
-                if (currentToken is RwControlClosingToken)
+                if (currentToken is RwCloseTagToken)
                 {
                     if (controls.Count == beginHierarchyLevel)
                     {
@@ -107,7 +107,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     else
                     {
                         // remove current control
-                        var type = ResolveControlType(((RwControlClosingToken)currentToken).TagPrefix, ((RwControlClosingToken)currentToken).TagName);
+                        var type = ResolveControlType(((RwCloseTagToken)currentToken).TagPrefix, ((RwCloseTagToken)currentToken).TagName);
                         if (currentControl.GetType() != type)
                         {
                             throw new Exception("The closing tag does not match with the opening tag!");
@@ -198,7 +198,7 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// <summary>
         /// Creates the control.
         /// </summary>
-        private RedwoodControl CreateControl(Type type, RwControlToken controlToken)
+        private RedwoodControl CreateControl(Type type, RwOpenTagToken controlToken)
         {
             var control = (RedwoodControl)Activator.CreateInstance(type);
             

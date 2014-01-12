@@ -90,12 +90,15 @@
     <Compile Include="Hosting\IViewModelLocator.cs" />
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
-    <Compile Include="Parsing\RwHtml\RwControlClosingToken.cs" />
-    <Compile Include="Parsing\RwHtml\RwControlToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwAttributeToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwBindingToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwCloseTagToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwOpenTagToken.cs" />
     <Compile Include="Parsing\RwHtml\RwHtmlParser.cs" />
-    <Compile Include="Parsing\RwHtml\RwHtmlToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwHtmlToken.cs" />
     <Compile Include="Parsing\RwHtml\RwHtmlTokenizer.cs" />
-    <Compile Include="Parsing\RwHtml\RwLiteralToken.cs" />
+    <Compile Include="Parsing\RwHtml\Tokens\RwLiteralToken.cs" />
+    <Compile Include="Parsing\SpanPosition.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelMetadataExtractor.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelTypeMapper.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelWriter.cs" />
@@ -114,6 +117,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

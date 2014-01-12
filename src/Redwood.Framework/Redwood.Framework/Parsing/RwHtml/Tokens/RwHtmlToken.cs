@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Redwood.Framework.Generation;
 
-namespace Redwood.Framework.Parsing.RwHtml
+namespace Redwood.Framework.Parsing.RwHtml.Tokens
 {
     public abstract class RwHtmlToken
     {
+
+        public SpanPosition SpanPosition { get; set; } 
+
     }
 }

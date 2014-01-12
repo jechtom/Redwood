@@ -16,7 +16,7 @@ namespace Redwood.Framework.Parsing.RwHtml
         {
             var state = 0;
             var lastPosition = 0;
-            RwControlToken controlToken = null;
+            RwOpenTagToken controlToken = null;
 
             // go through the string
             for (var i = 0; i < html.Length; i++)
@@ -42,7 +42,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                                         lastPosition = i;
                                     }
 
-                                    yield return new RwControlClosingToken(tagPrefix, tagName);
+                                    yield return new RwCloseTagToken(tagPrefix, tagName);
                                     lastPosition += tagPrefix.Length + tagName.Length + 4;
                                 }
                             }
@@ -60,7 +60,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                                         };
                                         lastPosition = i;
                                     }
-                                    controlToken = new RwControlToken(tagPrefix, tagName);
+                                    controlToken = new RwOpenTagToken(tagPrefix, tagName);
                                     state = 1;
                                     i += tagPrefix.Length + tagName.Length + 1;
                                 }
@@ -81,10 +81,10 @@ namespace Redwood.Framework.Parsing.RwHtml
                                     lastPosition = i;
                                 }
 
-                                var bindingToken = new RwControlToken("rw", "Literal");
+                                var bindingToken = new RwOpenTagToken("rw", "Literal");
                                 bindingToken.Attributes["Text"] = "{{" + binding + "}}";
                                 yield return bindingToken;
-                                yield return new RwControlClosingToken("rw", "Literal");
+                                yield return new RwCloseTagToken("rw", "Literal");
                                 lastPosition += binding.Length + 4;
                             }
                         }
@@ -98,7 +98,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                             state = 0;
                             lastPosition = i + 2;
                             yield return controlToken;
-                            yield return new RwControlClosingToken(controlToken.TagPrefix, controlToken.TagName);
+                            yield return new RwCloseTagToken(controlToken.TagPrefix, controlToken.TagName);
                             controlToken = null;
                         }
                         else if (html[i] == '>')

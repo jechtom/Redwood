@@ -81,15 +81,15 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.AreEqual(4, tokens.Count);
             Assert.IsInstanceOfType(tokens[0], typeof(RwLiteralToken));
-            Assert.IsInstanceOfType(tokens[1], typeof(RwControlToken));
-            Assert.IsInstanceOfType(tokens[2], typeof(RwControlClosingToken));
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagToken));
+            Assert.IsInstanceOfType(tokens[2], typeof(RwCloseTagToken));
             Assert.IsInstanceOfType(tokens[3], typeof(RwLiteralToken));
 
-            Assert.AreEqual("c", ((RwControlToken)tokens[1]).TagPrefix);
-            Assert.AreEqual("Control", ((RwControlToken)tokens[1]).TagName);
+            Assert.AreEqual("c", ((RwOpenTagToken)tokens[1]).TagPrefix);
+            Assert.AreEqual("Control", ((RwOpenTagToken)tokens[1]).TagName);
 
-            Assert.AreEqual(1, ((RwControlToken)tokens[1]).Attributes.Count);
-            Assert.AreEqual("{{Text, HtmlEncode=true}}", ((RwControlToken)tokens[1]).Attributes["Text"]);
+            Assert.AreEqual(1, ((RwOpenTagToken)tokens[1]).Attributes.Count);
+            Assert.AreEqual("{{Text, HtmlEncode=true}}", ((RwOpenTagToken)tokens[1]).Attributes["Text"]);
         }
 
         [TestMethod]
@@ -100,16 +100,16 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.AreEqual(5, tokens.Count);
             Assert.IsInstanceOfType(tokens[0], typeof(RwLiteralToken));
-            Assert.IsInstanceOfType(tokens[1], typeof(RwControlToken));
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagToken));
             Assert.IsInstanceOfType(tokens[2], typeof(RwLiteralToken));
-            Assert.IsInstanceOfType(tokens[3], typeof(RwControlClosingToken));
+            Assert.IsInstanceOfType(tokens[3], typeof(RwCloseTagToken));
             Assert.IsInstanceOfType(tokens[4], typeof(RwLiteralToken));
 
-            Assert.AreEqual("c", ((RwControlToken)tokens[1]).TagPrefix);
-            Assert.AreEqual("Control", ((RwControlToken)tokens[1]).TagName);
+            Assert.AreEqual("c", ((RwOpenTagToken)tokens[1]).TagPrefix);
+            Assert.AreEqual("Control", ((RwOpenTagToken)tokens[1]).TagName);
 
-            Assert.AreEqual(1, ((RwControlToken)tokens[1]).Attributes.Count);
-            Assert.AreEqual("{{Text, HtmlEncode=true}}", ((RwControlToken)tokens[1]).Attributes["Text"]);
+            Assert.AreEqual(1, ((RwOpenTagToken)tokens[1]).Attributes.Count);
+            Assert.AreEqual("{{Text, HtmlEncode=true}}", ((RwOpenTagToken)tokens[1]).Attributes["Text"]);
         }
 
         // TODO: invalid inputs
