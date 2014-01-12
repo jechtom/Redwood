@@ -54,7 +54,9 @@ namespace Redwood.Framework.Parsing.RwHtml
                 // literal
                 if (currentToken is RwLiteralToken)
                 {
-                    AddContentIfSupported(currentControl, new Literal(((RwLiteralToken)currentToken).Text));
+                    AddContentIfSupported(currentControl, new ContainerControl() {
+                        
+                    });
                 }
 
                 // control start

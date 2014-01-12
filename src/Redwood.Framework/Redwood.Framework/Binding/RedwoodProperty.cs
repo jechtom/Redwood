@@ -81,6 +81,24 @@ namespace Redwood.Framework.Binding
             return prop;
         }
 
+        public static RedwoodProperty RegisterAttached<TProp, TOwner>(string name, object defaultValue)
+        {
+            var meta = new RedwoodPropertyMetadata(defaultValue);
+            return RegisterAttached<TProp, TOwner>(name, meta);
+        }
+
+        public static RedwoodProperty RegisterAttached<TProp, TOwner>(string name, RedwoodPropertyMetadata metadata = null)
+        {
+            metadata = SetMetadataFlags(metadata ?? new RedwoodPropertyMetadata(default(TProp)), RedwoodPropertyFlags.IsAttached);
+            return Register<TProp, TOwner>(name, metadata);
+        }
+
+        private static RedwoodPropertyMetadata SetMetadataFlags(RedwoodPropertyMetadata metadata, RedwoodPropertyFlags flags)
+        {
+            metadata = new RedwoodPropertyMetadata(metadata.DefaultValue, metadata.Flags | flags);
+            return metadata;
+        }
+
         public override string ToString()
         {
             return string.Format("{0} ({1}) on {2}", name, propertyType.Name, ownerType.Name);

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
+    /// <summary>
+    /// Represents container for <see cref="RedwoodControl"/> controls.
+    /// </summary>
     public class ContainerControl : RenderableControl
     {
         List<RedwoodControl> controls;
@@ -13,7 +16,7 @@ namespace Redwood.Framework.Controls
 
         public ContainerControl()
         {
-            controls = new List<RedwoodControl>();
+            controls = new List<RedwoodControl>(capacity: 1);
             controlsReadOnly = controls.AsReadOnly();
         }
 

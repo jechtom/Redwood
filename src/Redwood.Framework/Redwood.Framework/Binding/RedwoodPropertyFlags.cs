@@ -11,6 +11,7 @@ namespace Redwood.Framework.Binding
         None = 0u,
         IsInherited = 1u,
         IsAttached = 2u,
-        IsHtmlAttribute = 4u
+        IsHtmlAttribute = 4u,
+        ReadOnly = 8u
     }
 }

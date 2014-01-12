@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
+    /// <summary>
+    /// Base class for all classes that supports binding.
+    /// </summary>
     public abstract class RedwoodBindable
     {
         private Thread originThread;

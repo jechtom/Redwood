@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
-    public abstract class RenderableControl : RedwoodControl
+    public abstract class RenderableControl : RedwoodControl, IRenderable
     {
         /// <summary>
         /// Renders the specified writer.
