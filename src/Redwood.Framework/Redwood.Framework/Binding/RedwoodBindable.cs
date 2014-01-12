@@ -127,10 +127,10 @@ namespace Redwood.Framework.Binding
             {
                 // local value
                 var localValue = GetLocalEntry(itemRef);
-                if (localValue.Value is BindingExpression && resolveExpressions)
+                if (localValue.Value is BindingBase && resolveExpressions)
                 {
                     // evaluate expression
-                    var localValueExpression = (BindingExpression)localValue.Value;
+                    var localValueExpression = (BindingBase)localValue.Value;
                     localValue.Value = localValueExpression.Evaluate(this);
                 }
                 return localValue;

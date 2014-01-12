@@ -57,7 +57,8 @@ namespace Redwood.Framework.Controls
             else
             {
                 writer.RenderBeginTag("span");
-                writer.AddBindingAttribute("text", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                throw new NotImplementedException();
+                //writer.AddBindingAttribute("text", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
                 writer.RenderEndTag();
             }
         }

@@ -18,11 +18,12 @@ namespace Redwood.Framework.Controls
         {
             writer.RenderBeginTag("table");
 
-            BindingExpression expr = KnockoutBindingHelper.GetExpressionOrNull(ItemsSourceProperty, this);
+            BindingBase expr = KnockoutBindingHelper.GetExpressionOrNull(ItemsSourceProperty, this);
             if (KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.RenderBeginTag("tbody");
-                writer.AddBindingAttribute("foreach", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                throw new NotImplementedException();
+                //writer.AddBindingAttribute("foreach", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
                 ItemTemplate.DataContext = null;
                 ItemTemplate.Render(writer);
                 writer.RenderEndTag();

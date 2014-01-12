@@ -226,12 +226,13 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// <summary>
         /// Parses the binding.
         /// </summary>
-        public static BindingExpression ParseBinding(RedwoodProperty property, string bindingValue)
+        public static BindingBase ParseBinding(RedwoodProperty property, string bindingValue)
         {
             bindingValue = bindingValue.Substring(2, bindingValue.Length - 4);
 
             var parts = bindingValue.Split(',').Select(p => p.Trim()).ToArray();
-            var binding = new BindingExpression(parts[0], BindingMode.TwoWay);
+            throw new NotImplementedException();
+            BindingBase binding = null;//new BindingBase(parts[0], BindingMode.TwoWay);
 
             for (var i = 1; i < parts.Length; i++)
             {

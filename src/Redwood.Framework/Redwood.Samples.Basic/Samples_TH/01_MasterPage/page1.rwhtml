@@ -1,8 +1,0 @@
-﻿<rw:Content ID="Content" ContentPlaceHolderID="MainContent">	
-	
-	<h2>Page 1</h2>
-	<p>test test</p>
-
-	<rw:Literal Text="{TestProperty1}" />
-
-</rw:Content>

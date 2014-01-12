@@ -53,14 +53,15 @@ namespace Redwood.Framework.Controls
             }
 
             // content
-            BindingExpression expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            BindingBase expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
             if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.WriteText(Text, true);
             }
             else
             {
-                writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                throw new NotImplementedException();
+                //writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
             }
 
             // end

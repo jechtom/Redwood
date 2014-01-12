@@ -46,7 +46,8 @@ namespace Redwood.Framework.Controls
             var expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
             if (KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
-                writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                throw new NotImplementedException();
+                //writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
             }
             else
             {
@@ -56,7 +57,8 @@ namespace Redwood.Framework.Controls
             expr = KnockoutBindingHelper.GetExpressionOrNull(OnClickProperty, this);
             if (KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
-                writer.AddBindingAttribute("click", KnockoutBindingHelper.TranslateToKnockoutCommand(expr.Path));
+                throw new NotImplementedException();
+                //writer.AddBindingAttribute("click", KnockoutBindingHelper.TranslateToKnockoutCommand(expr.Path));
             }
             
             writer.AddAttribute("type", "button");

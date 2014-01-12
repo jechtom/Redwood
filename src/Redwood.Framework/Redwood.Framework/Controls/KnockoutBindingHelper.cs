@@ -10,7 +10,7 @@ namespace Redwood.Framework.Controls
 {
     public class KnockoutBindingHelper
     {
-        public static bool IsKnockoutBinding(BindingExpression expr)
+        public static bool IsKnockoutBinding(BindingBase expr)
         {
             if(expr == null)
                 return false;
@@ -18,12 +18,12 @@ namespace Redwood.Framework.Controls
             return true;
         }
 
-        public static BindingExpression GetExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
+        public static BindingBase GetExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
         {
             var value = obj.GetRawValue(property);
-            if (value is BindingExpression)
+            if (value is BindingBase)
             {
-                return (BindingExpression)value;
+                return (BindingBase)value;
             }
 
             return null;
