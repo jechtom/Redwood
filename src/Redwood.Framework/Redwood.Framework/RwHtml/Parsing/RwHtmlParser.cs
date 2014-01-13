@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Redwood.Framework.Controls;
 using Redwood.Framework.Binding;
-using Redwood.Framework.Parsing.RwHtml.Tokens;
+using Redwood.Framework.RwHtml.Parsing.Tokens;
 
-namespace Redwood.Framework.Parsing.RwHtml
+namespace Redwood.Framework.RwHtml.Parsing
 {
     public class RwHtmlParser
     {

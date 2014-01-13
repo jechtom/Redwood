@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
+using Redwood.Framework.Parsing.RwHtml;
 using Redwood.Framework.Parsing.RwHtml.Tokens;
-
-namespace Redwood.Framework.Parsing.RwHtml
+namespace Redwood.Framework.RwHtml.Parsing
 {
     public class RwHtmlTokenizer : BaseTokenizer<RwHtmlAtom, RwHtmlToken>
     {

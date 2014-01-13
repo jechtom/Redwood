@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Redwood.Framework.Generation;
 
-namespace Redwood.Framework.Parsing.RwHtml.Tokens
+namespace Redwood.Framework.RwHtml.Parsing.Tokens
 {
     public class RwLiteralToken : RwHtmlToken
     {

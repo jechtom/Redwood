@@ -99,6 +99,22 @@ namespace Redwood.Framework.Binding
             return metadata;
         }
 
+        public bool IsApplicableOn(Type targetType)
+        {
+            if (targetType == null)
+                throw new ArgumentNullException("targetType");
+
+            // attached property are applicable on any type
+            if (metadata.IsAttached)
+                return true;
+
+            // is owner target type assignable from tested type?
+            if (targetType.IsAssignableFrom(targetType))
+                return true;
+
+            return false;
+        }
+
         public override string ToString()
         {
             return string.Format("{0} ({1}) on {2}", name, propertyType.Name, ownerType.Name);

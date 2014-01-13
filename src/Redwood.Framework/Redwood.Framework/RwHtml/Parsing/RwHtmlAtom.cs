@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.Parsing.RwHtml
+namespace Redwood.Framework.RwHtml.Parsing
 {
     public enum RwHtmlAtom
     {
