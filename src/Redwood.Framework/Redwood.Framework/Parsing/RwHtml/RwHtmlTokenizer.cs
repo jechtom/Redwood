@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Redwood.Framework.Parsing.RwHtml.Tokens;
 
 namespace Redwood.Framework.Parsing.RwHtml
@@ -130,18 +131,19 @@ namespace Redwood.Framework.Parsing.RwHtml
                 else
                 {
                     // text content, only remember the position since there will be multiple text tokens
+                    MoveNext();
                     if (lastTextPosition == null)
                     {
                         lastTextPosition = CurrentAtomPosition;
                     }
-                    MoveNext();
                 }
             }
 
             if (lastTextPosition != null)
             {
                 // return the remaining text content on the end of the buffer
-                ReturnToken(new RwLiteralToken() { Text = GetTextSinceLastToken() }, DistanceFromLastToken);
+                var remainingText = GetTextSinceLastToken();
+                ReturnToken(new RwLiteralToken() { Text = remainingText }, remainingText.Length);
             }
         }
         
@@ -150,8 +152,8 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// </summary>
         private void ReadElement()
         {
-            SkipWhiteSpaceOrNewLine();
             MoveNext();
+            SkipWhiteSpaceOrNewLine();
             if (CurrentAtom == RwHtmlAtom.Text)
             {
                 // element opening tag
@@ -252,7 +254,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     if (CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
                     {
                         // binding
-                        var position = GetSpanPosition();
+                        var position = CurrentAtomPosition;
                         var bindingStart = DistanceFromLastToken;
                         attributeValue = ReadBinding();
                         position.Length = DistanceFromLastToken - bindingStart;
@@ -262,7 +264,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                     {
                         // value
                         var valueStart = DistanceFromLastToken;
-                        var position = GetSpanPosition();
+                        var position = CurrentAtomPosition;
                         SkipWhile(t => t != quote);
 
                         attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };
@@ -274,7 +276,7 @@ namespace Redwood.Framework.Parsing.RwHtml
                 else
                 {
                     // value without quotes
-                    var position = GetSpanPosition();
+                    var position = CurrentAtomPosition;
                     var valueStart = DistanceFromLastToken;
                     ReadText();
                     attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };

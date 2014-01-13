@@ -14,6 +14,7 @@ namespace Redwood.Framework.Parsing
         private List<TToken> tokens = new List<TToken>();
         private StringBuilder textSinceLastToken = new StringBuilder();
         private SpanPosition lastTokenSpanPosition;
+        private bool isAtEnd = false;
 
 
 
@@ -37,7 +38,7 @@ namespace Redwood.Framework.Parsing
         /// </summary>
         protected bool IsAtEnd
         {
-            get { return reader.IsAtEnd; }
+            get { return isAtEnd; }
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Redwood.Framework.Parsing
         /// </summary>
         protected char Peek()
         {
-            if (IsAtEnd) throw new IndexOutOfRangeException();
+            if (IsAtEnd) return '\0';
             return (char)reader.Peek();
         }
 
@@ -54,7 +55,12 @@ namespace Redwood.Framework.Parsing
         /// </summary>
         protected char Read()
         {
-            if (IsAtEnd) throw new IndexOutOfRangeException();
+            if (reader.IsAtEnd)
+            {
+                isAtEnd = true;
+                return '\0';
+            }
+
             var value = (char)reader.Read();
             textSinceLastToken.Append(value);
             return value;
@@ -90,7 +96,10 @@ namespace Redwood.Framework.Parsing
         protected void MoveNext()
         {
             CurrentAtomPosition = GetSpanPosition();
-            if (IsAtEnd) return;
+            if (IsAtEnd)
+            {
+                return;
+            }
 
             CurrentAtom = ReadAtomCore();
             if (IsNewLine(CurrentAtom))
@@ -125,6 +134,7 @@ namespace Redwood.Framework.Parsing
             this.reader.Position = 0;
             lastTokenSpanPosition = new SpanPosition();
             textSinceLastToken.Clear();
+            isAtEnd = false;
 
             CurrentLineNumber = 0;
             PositionOnLine = 0;

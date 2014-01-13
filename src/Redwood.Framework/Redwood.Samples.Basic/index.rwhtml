@@ -8,15 +8,15 @@
 
 	<p>
 		Add Task:
-		<rw:TextBox Text="{{NewTaskText}}" />
-		<rw:Button OnClick="{{AddTask}}" Text="Add Task" />
+		<rw:TextBox Text="{NewTaskText}" />
+		<rw:Button OnClick="{AddTask}" Text="Add Task" />
 	</p>
 
-	<rw:Table ItemsSource="{{Tasks}}">
+	<rw:Table ItemsSource="{Tasks}">
 		<rw:Table.ItemTemplate>
-			<td>{{Title}}</td>
+			<td>{Title}</td>
 			<td>
-				<rw:Button OnClick="{{$root.FinishTask($index)}}" Text="Done" />
+				<rw:Button OnClick="{$root.FinishTask($index)}" Text="Done" />
 			</td>
 		</rw:Table.ItemTemplate>
 	</rw:Repeater>
