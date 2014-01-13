@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Redwood.Framework.Controls;
+using Redwood.Framework.RwHtml;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -34,3 +36,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// Map CLR namespace to rwhtml default control namespace
+[assembly: RwHtmlNamespaceDefinition(RedwoodControl.DefaultSchemaNamespaceName, "Redwood.Framework.Controls, Redwood.Framework")]

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Redwood.Framework.Parsing.RwHtml;
-using Redwood.Framework.Parsing.RwHtml.Tokens;
+using Redwood.Framework.RwHtml.Parsing;
+using Redwood.Framework.RwHtml.Parsing.Tokens;
 
 namespace Redwood.Framework.Tests.Parsing.RwHtml
 {

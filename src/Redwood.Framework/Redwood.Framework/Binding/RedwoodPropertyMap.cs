@@ -20,8 +20,15 @@ namespace Redwood.Framework.Binding
             }
         }
 
-        private Hashtable nameKeyTable = new Hashtable();
+        private ReaderWriterLockSlim propertiesLock;
+        private Dictionary<NameKey, RedwoodProperty> propertiesDict;
         private int maximumId = 0;
+
+        public RedwoodPropertyMap()
+        {
+            propertiesLock = new ReaderWriterLockSlim();
+            propertiesDict = new Dictionary<NameKey, RedwoodProperty>();
+        }
         
         private class NameKey
         {
@@ -63,12 +70,17 @@ namespace Redwood.Framework.Binding
         {
             var key = new NameKey(property.Name, property.OwnerType);
 
-            lock (nameKeyTable)
+            propertiesLock.EnterWriteLock();
+            try
             {
-                if (nameKeyTable.ContainsKey(key))
+                if (propertiesDict.ContainsKey(key))
                     throw new InvalidOperationException(string.Format("Redwood property {0} already exists on {1}.", property.Name, property.OwnerType.FullName));
 
-                nameKeyTable.Add(key, property);
+                propertiesDict.Add(key, property);
+            }
+            finally
+            {
+                propertiesLock.ExitWriteLock();
             }
         }
 
@@ -77,12 +89,19 @@ namespace Redwood.Framework.Binding
             return Interlocked.Increment(ref maximumId);
         }
 
-        public RedwoodProperty GetPropertyByNameForType(string propertyName, Type ownerType)
+        public RedwoodProperty GetPropertyByNameForType(string propertyName, Type targetType)
         {
-            // TODO make faster
-            return this.nameKeyTable.Values.Cast<RedwoodProperty>()
-                .Where(p => p.Name == propertyName && p.OwnerType.IsAssignableFrom(ownerType))
-                .FirstOrDefault();
+            propertiesLock.EnterReadLock();
+            try
+            {
+                return this.propertiesDict.Values
+                    .Where(p => p.IsApplicableOn(targetType))
+                    .SingleOrDefault();
+            }
+            finally
+            {
+                propertiesLock.ExitReadLock();
+            }
         }
     }
 }

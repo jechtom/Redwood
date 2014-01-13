@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.Parsing.RwHtml.Tokens
+namespace Redwood.Framework.RwHtml.Parsing.Tokens
 {
     public class RwAttributeToken : RwHtmlToken
     {

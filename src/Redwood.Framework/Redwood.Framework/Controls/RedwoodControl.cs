@@ -11,6 +11,8 @@ namespace Redwood.Framework.Controls
 {
     public abstract class RedwoodControl : RedwoodBindable
     {
+        public const string DefaultSchemaNamespaceName = "http://schemas.redwood/v1/rwhtml/controls";
+
         public object DataContext
         {
             get
