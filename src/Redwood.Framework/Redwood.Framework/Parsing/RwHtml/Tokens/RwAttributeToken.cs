@@ -11,5 +11,11 @@ namespace Redwood.Framework.Parsing.RwHtml.Tokens
 
         public RwHtmlToken Value { get; set; }
 
+
+        public RwAttributeToken(string attributeName, RwHtmlToken attributeValue)
+        {
+            Name = attributeName;
+            Value = attributeValue;
+        }
     }
 }

@@ -9,5 +9,9 @@ namespace Redwood.Framework.Parsing.RwHtml.Tokens
 
         public string Expression { get; set; }
 
+        public RwBindingToken(string expression)
+        {
+            Expression = expression;
+        }
     }
 }

@@ -7,10 +7,14 @@ namespace Redwood.Framework.Parsing.RwHtml.Tokens
 {
     public class RwCloseTagToken : RwHtmlToken
     {
+
+        public string TagName { get; set; }
+
         public bool IsSelfClosing { get; private set; }
 
-        public RwCloseTagToken(bool isSelfClosing)
+        public RwCloseTagToken(string tagName, bool isSelfClosing)
         {
+            TagName = tagName;
             IsSelfClosing = isSelfClosing;
         }
     }

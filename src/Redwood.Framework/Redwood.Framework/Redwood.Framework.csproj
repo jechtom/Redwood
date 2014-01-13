@@ -90,6 +90,10 @@
     <Compile Include="Hosting\IViewModelLocator.cs" />
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
+    <Compile Include="Parsing\BaseTokenizer.cs" />
+    <Compile Include="Parsing\ITextReader.cs" />
+    <Compile Include="Parsing\IToken.cs" />
+    <Compile Include="Parsing\RwHtml\RwHtmlAtom.cs" />
     <Compile Include="Parsing\RwHtml\Tokens\RwAttributeToken.cs" />
     <Compile Include="Parsing\RwHtml\Tokens\RwBindingToken.cs" />
     <Compile Include="Parsing\RwHtml\Tokens\RwCloseTagToken.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="Parsing\RwHtml\RwHtmlTokenizer.cs" />
     <Compile Include="Parsing\RwHtml\Tokens\RwLiteralToken.cs" />
     <Compile Include="Parsing\SpanPosition.cs" />
+    <Compile Include="Parsing\StringTextReader.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelMetadataExtractor.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelTypeMapper.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelWriter.cs" />

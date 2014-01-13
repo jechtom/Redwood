@@ -23,6 +23,7 @@ namespace Redwood.Framework.Parsing.RwHtml.Tokens
     {
         StandardTag,
         XmlProcessingInstruction,
-        DoctypeDeclaration
+        DoctypeDeclaration,
+        BeginTagCloseAngle
     }
 }

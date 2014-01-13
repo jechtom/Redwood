@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Redwood.Framework.Parsing
 {
-    public class SpanPosition
+    public struct SpanPosition
     {
 
         public int LineNumber { get; set; }

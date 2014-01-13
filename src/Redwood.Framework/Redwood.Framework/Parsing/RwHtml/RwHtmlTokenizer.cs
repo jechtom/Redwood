@@ -1,281 +1,335 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Redwood.Framework.Parsing.RwHtml.Tokens;
 
 namespace Redwood.Framework.Parsing.RwHtml
 {
-    public class RwHtmlTokenizer
+    public class RwHtmlTokenizer : BaseTokenizer<RwHtmlAtom, RwHtmlToken>
     {
 
         /// <summary>
-        /// Gets the tokens.
+        /// Determines whether the specified atom represents a new line.
         /// </summary>
-        public IEnumerable<RwHtmlToken> GetTokens(string html)
+        protected override bool IsNewLine(RwHtmlAtom atom)
         {
-            var state = 0;
-            var lastPosition = 0;
-            RwOpenTagToken controlToken = null;
+            return atom == RwHtmlAtom.NewLine;
+        }
 
-            // go through the string
-            for (var i = 0; i < html.Length; i++)
+        /// <summary>
+        /// Reads the token.
+        /// </summary>
+        protected override RwHtmlAtom ReadAtomCore()
+        {
+            var token = RwHtmlAtom.Text;
+            var currentChar = Peek();
+
+            // new line
+            if (currentChar == '\r')
             {
-                switch (state)
+                // if next token is \n, consider it as one line
+                Read();
+                if (!IsAtEnd && Peek() == '\n')
                 {
-                    case 0:
-                        // in text
-                        if (html[i] == '<')
-                        {
-                            if (i + 1 < html.Length && html[i + 1] == '/')
-                            {
-                                // closing tag
-                                string tagPrefix, tagName;
-                                if (StartsWithServerTagName(html, i + 2, out tagPrefix, out tagName))
-                                {
-                                    if (i > lastPosition)
-                                    {
-                                        yield return new RwLiteralToken()
-                                        {
-                                            Text = html.Substring(lastPosition, i - lastPosition)
-                                        };
-                                        lastPosition = i;
-                                    }
+                    Read();
+                }
+                return RwHtmlAtom.NewLine;
+            }
+            
+            if (currentChar == '\n')
+            {
+                // new line
+                token = RwHtmlAtom.NewLine;
+            }
+            else if (Char.IsWhiteSpace(currentChar))
+            {
+                // white space
+                token = RwHtmlAtom.WhiteSpace;
+            }
 
-                                    yield return new RwCloseTagToken(tagPrefix, tagName);
-                                    lastPosition += tagPrefix.Length + tagName.Length + 4;
-                                }
-                            }
-                            else
-                            {
-                                // opening tag
-                                string tagPrefix, tagName;
-                                if (StartsWithServerTagName(html, i + 1, out tagPrefix, out tagName))
-                                {
-                                    if (i > lastPosition)
-                                    {
-                                        yield return new RwLiteralToken()
-                                        {
-                                            Text = html.Substring(lastPosition, i - lastPosition)
-                                        };
-                                        lastPosition = i;
-                                    }
-                                    controlToken = new RwOpenTagToken(tagPrefix, tagName);
-                                    state = 1;
-                                    i += tagPrefix.Length + tagName.Length + 1;
-                                }
-                            }
-                        }
-                        else if (html[i] == '{' && i + 1 < html.Length && html[i + 1] == '{')
-                        {
-                            // binding literal {{something}}
-                            var binding = ReadBinding(html, i + 2);
-                            if (binding != null)
-                            {
-                                if (i > lastPosition)
-                                {
-                                    yield return new RwLiteralToken()
-                                    {
-                                        Text = html.Substring(lastPosition, i - lastPosition)
-                                    };
-                                    lastPosition = i;
-                                }
+            // other chars
+            switch (currentChar)
+            {
+                case '<': 
+                    token = RwHtmlAtom.OpenAngle;
+                    break;
 
-                                var bindingToken = new RwOpenTagToken("rw", "Literal");
-                                bindingToken.Attributes["Text"] = "{{" + binding + "}}";
-                                yield return bindingToken;
-                                yield return new RwCloseTagToken("rw", "Literal");
-                                lastPosition += binding.Length + 4;
-                            }
-                        }
-                        break;
+                case '>': 
+                    token = RwHtmlAtom.CloseAngle;
+                    break;
 
-                    case 1:
-                        // begin or self closing tag
-                        if (html[i] == '/' && i + 1 < html.Length && html[i + 1] == '>')
-                        {
-                            // tag is closed immediately
-                            state = 0;
-                            lastPosition = i + 2;
-                            yield return controlToken;
-                            yield return new RwCloseTagToken(controlToken.TagPrefix, controlToken.TagName);
-                            controlToken = null;
-                        }
-                        else if (html[i] == '>')
-                        {
-                            // begin tag is closed
-                            state = 0;
-                            lastPosition = i + 1;
-                            yield return controlToken;
-                            controlToken = null;
-                        }
-                        else if (Char.IsWhiteSpace(html[i]))
-                        {
-                            // skip whitespace
-                        }
-                        else if (char.IsLetterOrDigit(html[i]))
-                        {
-                            // parse attribute name
-                            var name = ReadAttributeName(html, i);
-                            i += name.Length;
+                case '!': 
+                    token = RwHtmlAtom.Bang;
+                    break;
 
-                            // skip whitespace
-                            i = SkipWhiteSpace(html, i);
-                            if (html[i] != '=')
-                            {
-                                throw new Exception("The equal char was expected!");
-                            }
-                            i++;
+                case '-': 
+                    token = RwHtmlAtom.Dash;
+                    break;
 
-                            // parse attribute value
-                            string value;
-                            i = SkipWhiteSpace(html, i);
-                            if (html[i] == '"')
-                            {
-                                i++;
-                                value = ReadUntilChar(html, i, '"');
-                                i += value.Length;
-                            }
-                            else if (html[i] == '\'')
-                            {
-                                i++;
-                                value = ReadUntilChar(html, i, '\'');
-                                i += value.Length;
-                            }
-                            else
-                            {
-                                throw new Exception("The apostrophe or double quote char was expected!");
-                            }
+                case '\'': 
+                    token = RwHtmlAtom.SingleQuote;
+                    break;
 
-                            controlToken.Attributes[name] = value;
-                        }
-                        else
-                        {
-                            throw new Exception("Invalid char in the element!");
-                        }
-                        break;
+                case '"':
+                    token = RwHtmlAtom.DoubleQuote;
+                    break;
+
+                case '{':
+                    token = RwHtmlAtom.OpenCurlyBrace;
+                    break;
+
+                case '}':
+                    token = RwHtmlAtom.CloseCurlyBrace;
+                    break;
+
+                case '/':
+                    token = RwHtmlAtom.Solidus;
+                    break;
+
+                case '=':
+                    token = RwHtmlAtom.Equal;
+                    break;
+            }
+
+            Read();
+            return token;
+        }
+        
+        /// <summary>
+        /// Parses the whole document.
+        /// </summary>
+        protected override void ParseDocument()
+        {
+            if (IsAtEnd) return;
+
+            SpanPosition? lastTextPosition = null;
+            MoveNext();
+            while (!IsAtEnd)
+            {
+                // if we have found < or {, return the current text token if we have any
+                if (CurrentAtom == RwHtmlAtom.OpenAngle || CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
+                {
+                    if (lastTextPosition != null)
+                    {
+                        // return the current text content 
+                        ReturnToken(new RwLiteralToken() { Text = GetTextSinceLastToken() }, DistanceFromLastToken);
+                        lastTextPosition = null;
+                    }
+
+                    if (CurrentAtom == RwHtmlAtom.OpenAngle)
+                    {
+                        // element
+                        ReadElement();
+                    }
+                    else if (CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
+                    {
+                        // binding
+                        ReturnToken(ReadBinding(), DistanceFromLastToken);
+                    }
+                }
+                else
+                {
+                    // text content, only remember the position since there will be multiple text tokens
+                    if (lastTextPosition == null)
+                    {
+                        lastTextPosition = CurrentAtomPosition;
+                    }
+                    MoveNext();
                 }
             }
 
-            if (lastPosition < html.Length)
+            if (lastTextPosition != null)
             {
-                yield return new RwLiteralToken()
-                {
-                    Text = html.Substring(lastPosition)
-                };
+                // return the remaining text content on the end of the buffer
+                ReturnToken(new RwLiteralToken() { Text = GetTextSinceLastToken() }, DistanceFromLastToken);
             }
+        }
+        
+        /// <summary>
+        /// Reads the element.
+        /// </summary>
+        private void ReadElement()
+        {
+            SkipWhiteSpaceOrNewLine();
+            MoveNext();
+            if (CurrentAtom == RwHtmlAtom.Text)
+            {
+                // element opening tag
+                var nameStart = DistanceFromLastToken;
+                ReadText();
+                var tagName = GetTextSinceLastToken().Trim().Substring(nameStart);
+                ReturnToken(new RwOpenTagToken(tagName, TagType.StandardTag), DistanceFromLastToken);
+
+                // read attributes
+                while (ReadAttribute())
+                {
+                }
+
+                // self closing tag
+                SkipWhiteSpaceOrNewLine();
+                if (CurrentAtom == RwHtmlAtom.Solidus)
+                {
+                    MoveNext();
+                    SkipWhiteSpaceOrNewLine();
+                    if (CurrentAtom == RwHtmlAtom.CloseAngle)
+                    {
+                        MoveNext();
+
+                        // tag ending
+                        ReturnToken(new RwCloseTagToken(tagName, true), DistanceFromLastToken);
+                    }
+                    else
+                    {
+                        // TODO: solidus without close angle
+                    }
+                }
+                else if (CurrentAtom == RwHtmlAtom.CloseAngle)
+                {
+                    MoveNext();
+                    ReturnToken(new RwOpenTagToken(tagName, TagType.BeginTagCloseAngle), DistanceFromLastToken);
+                }
+                else
+                {
+                    // TODO: close angle expected
+                }
+            }
+            else if (CurrentAtom == RwHtmlAtom.Solidus)
+            {
+                // element closing tag
+                MoveNext();
+                SkipWhiteSpaceOrNewLine();
+                
+                var tagNameStart = DistanceFromLastToken;
+                ReadText();
+                var tagName = GetTextSinceLastToken().Trim().Substring(tagNameStart);
+                
+                SkipWhiteSpaceOrNewLine();
+                if (CurrentAtom == RwHtmlAtom.CloseAngle)
+                {
+                    MoveNext();
+                    ReturnToken(new RwCloseTagToken(tagName, false), DistanceFromLastToken);
+                }
+                else
+                {
+                    // TODO: invalid char after tag name in the closing tag
+                }
+            }
+            else
+            {
+                // TODO: invalid char after open angle
+            }
+        }
+
+        /// <summary>
+        /// Reads the attribute.
+        /// </summary>
+        private bool ReadAttribute()
+        {
+            SkipWhiteSpaceOrNewLine();
+
+            if (CurrentAtom != RwHtmlAtom.Text)
+            {
+                return false;
+            }
+
+            // read attribute name
+            var nameStart = DistanceFromLastToken;
+            ReadText();
+            var attributeName = GetTextSinceLastToken().Substring(nameStart);
+            SkipWhiteSpaceOrNewLine();
+            RwHtmlToken attributeValue = null;
+
+            if (CurrentAtom == RwHtmlAtom.Equal)
+            {
+                MoveNext();
+                SkipWhiteSpaceOrNewLine();
+
+                if (CurrentAtom == RwHtmlAtom.SingleQuote || CurrentAtom == RwHtmlAtom.DoubleQuote)
+                {
+                    // value in quotes
+                    var quote = CurrentAtom;
+                    MoveNext();
+                    if (CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
+                    {
+                        // binding
+                        var position = GetSpanPosition();
+                        var bindingStart = DistanceFromLastToken;
+                        attributeValue = ReadBinding();
+                        position.Length = DistanceFromLastToken - bindingStart;
+                        attributeValue.SpanPosition = position;
+                    }
+                    else
+                    {
+                        // value
+                        var valueStart = DistanceFromLastToken;
+                        var position = GetSpanPosition();
+                        SkipWhile(t => t != quote);
+
+                        attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };
+                        position.Length = ((RwLiteralToken)attributeValue).Text.Length;
+                        attributeValue.SpanPosition = position;
+                    }
+                    MoveNext();
+                }
+                else
+                {
+                    // value without quotes
+                    var position = GetSpanPosition();
+                    var valueStart = DistanceFromLastToken;
+                    ReadText();
+                    attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };
+                    position.Length = ((RwLiteralToken)attributeValue).Text.Length;
+                    attributeValue.SpanPosition = position;
+                }
+
+                // return the attribute
+                ReturnToken(new RwAttributeToken(attributeName, attributeValue), DistanceFromLastToken);
+            }
+
+            return true;
         }
 
         /// <summary>
         /// Reads the binding.
         /// </summary>
-        private string ReadBinding(string html, int position)
+        private RwBindingToken ReadBinding()
         {
-            var bindingEnd = html.IndexOf("}}", position);
-            if (bindingEnd >= 0)
+            MoveNext();
+            var exprStart = DistanceFromLastToken;
+            var level = 1;
+            SkipWhile(a =>
             {
-                return html.Substring(position, bindingEnd - position);
-            }
-            return null;
+                if (a == RwHtmlAtom.OpenCurlyBrace)
+                {
+                    level++;
+                }
+                if (a == RwHtmlAtom.CloseCurlyBrace)
+                {
+                    level--;
+                }
+                return level > 0 || a != RwHtmlAtom.CloseCurlyBrace;
+            });
+
+            var expression = GetTextSinceLastToken().Substring(exprStart);
+            MoveNext();
+            return new RwBindingToken(expression);
+        }
+
+
+        /// <summary>
+        /// Reads the text (e.g. element name).
+        /// </summary>
+        private void ReadText()
+        {
+            SkipWhile(a => a == RwHtmlAtom.Text);
         }
 
         /// <summary>
-        /// Reads until a specified character is found.
+        /// Skips the white space or new line.
         /// </summary>
-        private string ReadUntilChar(string html, int position, char stopChar)
+        private void SkipWhiteSpaceOrNewLine()
         {
-            for (var i = position; i < html.Length; i++)
-            {
-                if (html[i] == stopChar)
-                {
-                    return html.Substring(position, i - position);
-                }
-            }
-            throw new Exception("The attribute value was not closed!");
+            SkipWhile(a => a == RwHtmlAtom.WhiteSpace || a == RwHtmlAtom.NewLine);
         }
-
-        /// <summary>
-        /// Skips the white space.
-        /// </summary>
-        private int SkipWhiteSpace(string html, int position)
-        {
-            for (var i = position; i < html.Length; i++)
-            {
-                if (!Char.IsWhiteSpace(html[i]))
-                {
-                    return i;
-                }
-            }
-            throw new Exception("The tag was not closed!");
-        }
-
-        /// <summary>
-        /// Reads the attribute name.
-        /// </summary>
-        private string ReadAttributeName(string html, int position)
-        {
-            int i;
-            for (i = position; i < html.Length; i++)
-            {
-                if (!Char.IsLetterOrDigit(html[i]))
-                {
-                    break;
-                }
-            }
-            if (i == position)
-            {
-                throw new Exception("Identifier expected!");
-            }
-            return html.Substring(position, i - position);
-        }
-
-        /// <summary>
-        /// Determines whether the server tag (format tagPrefix:tagName) is on the specified position in the string.
-        /// </summary>
-        public static bool StartsWithServerTagName(string html, int position, out string tagPrefix, out string tagName)
-        {
-            tagPrefix = "";
-            tagName = "";
-            var isInTagPrefix = true;
-            var numberOfDots = 0;
-
-            for (var i = position; i < html.Length; i++)
-            {
-                if (html[i] == ':')
-                {
-                    if (tagPrefix.Length == 0)
-                    {
-                        return false;
-                    }
-                    isInTagPrefix = false;
-                }
-                else if (Char.IsWhiteSpace(html[i]) || html[i] == '>' || (html[i] == '/' && i + 1 < html.Length && html[i + 1] == '>'))
-                {
-                    if (tagName.Length > 0)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                else if (!Char.IsLetterOrDigit(html[i]) && (isInTagPrefix || html[i] != '.' || numberOfDots > 0))
-                {
-                    return false;
-                }
-                else if (isInTagPrefix)
-                {
-                    tagPrefix += html[i];
-                }
-                else
-                {
-                    if (html[i] == '.')
-                    {
-                        numberOfDots++;
-                    }
-                    tagName += html[i];
-                }
-            }
-            return false;
-        }
-
     }
 }

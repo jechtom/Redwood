@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Redwood.Framework.Controls;
 using Redwood.Framework.Binding;
+using Redwood.Framework.Parsing.RwHtml.Tokens;
 
 namespace Redwood.Framework.Parsing.RwHtml
 {
@@ -17,20 +18,7 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// </summary>
         public Page ParsePage(string html)
         {
-            // read the page
-            var tokenizer = new RwHtmlTokenizer();
-            var tokens = tokenizer.GetTokens(html).ToList();
-
-            // build control structure
-            var controls = new Stack<RedwoodControl>();
-            var page = new Page();
-            controls.Push(page);
-            var index = BuildControls(controls, tokens, 0);
-            if (index != tokens.Count)
-            {
-                throw new Exception("The closing tag does not have matching opening tag!");
-            }
-            return page;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -38,91 +26,7 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// </summary>
         private int BuildControls(Stack<RedwoodControl> controls, List<RwHtmlToken> tokens, int startPosition)
         {
-            var currentControl = controls.Peek();
-            var beginHierarchyLevel = controls.Count;
-
-            for (var i = startPosition; i < tokens.Count; i++)
-            {
-                var currentToken = tokens[i];
-
-                // skip empty tokens
-                if (currentToken is RwLiteralToken && string.IsNullOrWhiteSpace(((RwLiteralToken)currentToken).Text))
-                {
-                    continue;
-                }
-
-                // literal
-                if (currentToken is RwLiteralToken)
-                {
-                    AddContentIfSupported(currentControl, new ContainerControl() {
-                        
-                    });
-                }
-
-                // control start
-                if (currentToken is RwOpenTagToken)
-                {
-                    if (!IsPropertyName(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName))
-                    {
-                        // create control
-                        var type = ResolveControlType(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName);
-                        var control = CreateControl(type, (RwOpenTagToken)currentToken);
-                        AddContentIfSupported(currentControl, control);
-                        controls.Push(control);
-
-                        // build its internal structure
-                        i = BuildControls(controls, tokens, i + 1);
-                    }
-                    else
-                    {
-                        // it must be property name of the last control
-                        var property = ResolveProperty(((RwOpenTagToken)currentToken).TagPrefix, ((RwOpenTagToken)currentToken).TagName);
-                        if (property.PropertyType == typeof (RedwoodTemplate))
-                        {
-                            // parse the template
-                            var propValue = new RedwoodTemplate();
-                            var propStack = new Stack<RedwoodControl>();
-                            propStack.Push(propValue);
-                            i = BuildControls(propStack, tokens, i + 1);
-
-                            // set the template to the control
-                            property.SetValue(currentControl, propValue);
-                        }
-                        else
-                        {
-                            throw new Exception("Inner property must be of type RedwoodTemplate!");
-                        }
-                    }
-                }
-
-                // control end
-                if (currentToken is RwCloseTagToken)
-                {
-                    if (controls.Count == beginHierarchyLevel)
-                    {
-                        // end reading, we cannot go outside the scope we have started
-                        controls.Pop();
-                        return i;
-                    }
-                    else
-                    {
-                        // remove current control
-                        var type = ResolveControlType(((RwCloseTagToken)currentToken).TagPrefix, ((RwCloseTagToken)currentToken).TagName);
-                        if (currentControl.GetType() != type)
-                        {
-                            throw new Exception("The closing tag does not match with the opening tag!");
-                        }
-                        controls.Pop();
-                    }
-                }
-            }
-
-            if (controls.Count != beginHierarchyLevel)
-            {
-                throw new Exception("Some tags are not closed!");
-            }
-
-            return tokens.Count;
+            throw new NotImplementedException();
         }
 
         private void AddContentIfSupported(RedwoodControl currentControl, RedwoodControl control)
@@ -200,29 +104,7 @@ namespace Redwood.Framework.Parsing.RwHtml
         /// </summary>
         private RedwoodControl CreateControl(Type type, RwOpenTagToken controlToken)
         {
-            var control = (RedwoodControl)Activator.CreateInstance(type);
-            
-            // set attributes
-            foreach (var attribute in controlToken.Attributes)
-            {
-                if (attribute.Value.StartsWith("{{") && attribute.Value.EndsWith("}}"))
-                {
-                    // parse binding
-                    var property = control.GetPropertyByName(attribute.Key);
-                    if (property == null)
-                        throw new InvalidOperationException(string.Format("Property {0} not found.", attribute.Key));
-                    control.SetValue(property, ParseBinding(property, attribute.Value));
-                }
-                else
-                {
-                    // set attribute value
-                    var prop = type.GetProperty(attribute.Key);
-                    var value = DefaultModelBinder.ConvertValue(attribute.Value, prop.PropertyType);
-                    prop.SetValue(control, value);
-                }
-            }
-
-            return control;
+            throw new NotImplementedException();
         }
 
         /// <summary>
