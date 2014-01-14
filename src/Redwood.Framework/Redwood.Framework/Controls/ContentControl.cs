@@ -10,6 +10,7 @@ namespace Redwood.Framework.Controls
     /// <summary>
     /// Represents container for single <see cref="RedwoodControl"/> or <see cref="IHtmlContent"/> or any encoded text content.
     /// </summary>
+    [ContentProperty("Content")]
     public class ContentControl : RenderableControl
     {
         public object Content

@@ -42,7 +42,7 @@ namespace Redwood.Framework.RwHtml
         }
 
         // format: "clr-namespace:Namespace;assembly=Assembly
-        static readonly Regex textFormatRegex = new Regex("^clr-namespace:(?<namespace>[^;=]+);assembly=(?<assembly>.[^=]+)$", RegexOptions.IgnoreCase);
+        static readonly Regex textFormatRegex = new Regex("^clr-namespace:(?<namespace>[^;=]+); *assembly=(?<assembly>.[^=]+)$", RegexOptions.IgnoreCase);
 
         public static bool TryParse(string text, out ClrNamespaceWithAssembly output)
         {

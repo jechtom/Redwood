@@ -63,7 +63,7 @@ namespace Redwood.Framework.RwHtml
 
         public string GetNamespaceByPrefix(string prefix)
         {
-            var item = scopesStack.FirstOrDefault(s => s.Prefix == prefix);
+            var item = scopesStack.FirstOrDefault(s => string.Equals(s.Prefix, prefix, StringComparison.OrdinalIgnoreCase));
             
             if(item == null) // not found?
             {
@@ -71,6 +71,14 @@ namespace Redwood.Framework.RwHtml
             }
 
             return item.RwhtmlNamespace;
+        }
+
+        public string NamespaceDefinitionNamespace
+        {
+            get
+            {
+                return "xmlns";
+            }
         }
     }
 }

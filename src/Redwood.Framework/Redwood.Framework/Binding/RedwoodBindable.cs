@@ -60,13 +60,6 @@ namespace Redwood.Framework.Binding
             ClearLocalValue(itemRef);
         }
 
-        public RedwoodProperty GetPropertyByName(string propertyName)
-        {
-            VerifyAccess();
-
-            return RedwoodPropertyMap.Default.GetPropertyByNameForType(propertyName, this.GetType());
-        }
-
         protected void SetParent(RedwoodBindable parent)
         {
             VerifyAccess();

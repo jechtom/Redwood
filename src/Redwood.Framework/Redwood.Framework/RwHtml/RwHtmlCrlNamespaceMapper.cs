@@ -13,12 +13,18 @@ namespace Redwood.Framework.RwHtml
         
         public RwHtmlCrlNamespaceMapper()
         {
-            mapping = new Dictionary<string, List<ClrNamespaceWithAssembly>>();
+            Init();
         }
 
         public RwHtmlCrlNamespaceMapper(string[] assembliesToLoad)
         {
+            Init();
             LoadAssemblies(assembliesToLoad);
+        }
+
+        private void Init()
+        {
+            mapping = new Dictionary<string, List<ClrNamespaceWithAssembly>>(StringComparer.OrdinalIgnoreCase);
         }
 
         public void LoadAssemblies(string[] assembliesToLoad)
@@ -62,7 +68,7 @@ namespace Redwood.Framework.RwHtml
                 return result;
             }
 
-            return null;
+            return Enumerable.Empty<ClrNamespaceWithAssembly>();
         }
     }
 }

@@ -51,6 +51,7 @@
     <Compile Include="Binding\BindingBase.cs" />
     <Compile Include="Binding\BindingExpression.cs" />
     <Compile Include="Binding\BindingMode.cs" />
+    <Compile Include="Binding\ContentPropertyAttribute.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
     <Compile Include="Binding\PropertyPath.cs" />
     <Compile Include="Binding\RedwoodPropertyFlags.cs" />
@@ -90,12 +91,15 @@
     <Compile Include="Hosting\IViewModelLocator.cs" />
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
+    <Compile Include="RwHtml\IPropertyAccessor.cs" />
+    <Compile Include="RwHtml\Markup\MarkupBuildingContext.cs" />
+    <Compile Include="RwHtml\NameWithPrefix.cs" />
     <Compile Include="RwHtml\ControlTreeBuilder.cs" />
     <Compile Include="RwHtml\Markup\MarkupValue.cs" />
     <Compile Include="RwHtml\Markup\MarkupAttributes.cs" />
     <Compile Include="RwHtml\Markup\MarkupElement.cs" />
+    <Compile Include="RwHtml\Markup\RwHtmlMarkupBuilder.cs" />
     <Compile Include="RwHtml\Parsing\BaseTokenizer.cs" />
-    <Compile Include="RwHtml\Markup\IBindingStringValue.cs" />
     <Compile Include="RwHtml\Parsing\ITextReader.cs" />
     <Compile Include="RwHtml\Parsing\IToken.cs" />
     <Compile Include="RwHtml\Parsing\RwHtmlAtom.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="RwHtml\Parsing\RwHtmlParsingException.cs" />
     <Compile Include="RwHtml\Parsing\RwHtmlTokenParser.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwOpenTagEndToken.cs" />
+    <Compile Include="RwHtml\PropertyMapper.cs" />
     <Compile Include="RwHtml\RwHtmlNamespaceDefinitionAttribute.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwAttributeToken.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwBindingToken.cs" />
@@ -112,7 +117,7 @@
     <Compile Include="RwHtml\Parsing\Tokens\RwHtmlToken.cs" />
     <Compile Include="RwHtml\Parsing\RwHtmlTokenizer.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwLiteralToken.cs" />
-    <Compile Include="RwHtml\Parsing\SpanPosition.cs" />
+    <Compile Include="RwHtml\SpanPosition.cs" />
     <Compile Include="RwHtml\Parsing\StringTextReader.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelMetadataExtractor.cs" />
     <Compile Include="Parsing\ViewModel\IViewModelTypeMapper.cs" />

@@ -18,5 +18,12 @@ namespace Redwood.Framework.RwHtml.Markup
 
         public bool IsExpression { get; private set; }
         public string Value { get; private set; }
+
+        public override string ToString()
+        {
+            if (IsExpression)
+                return "{" + Value + "}";
+            return Value;
+        }
     }
 }

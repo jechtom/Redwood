@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.RwHtml.Parsing
+namespace Redwood.Framework.RwHtml
 {
     public struct SpanPosition
     {
-
         public int LineNumber { get; set; }
 
         public int AbsolutePosition { get; set; }
@@ -14,6 +13,5 @@ namespace Redwood.Framework.RwHtml.Parsing
         public int PositionOnLine { get; set; }
 
         public int Length { get; set; }
-
     }
 }

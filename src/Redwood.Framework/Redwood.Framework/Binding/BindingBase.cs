@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
-    public abstract class BindingBase
+    public class BindingBase
     {
         [Flags]
         private enum BindingFlags : uint

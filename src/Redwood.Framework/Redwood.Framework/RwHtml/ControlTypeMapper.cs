@@ -61,10 +61,10 @@ namespace Redwood.Framework.RwHtml
             if(!loadedAssemblies.TryGetValue(clrNamespace.AssemblyName, out assembly))
             {
                 assembly = Assembly.Load(clrNamespace.AssemblyName);
-                loadedAssemblies.Add(name, assembly);
+                loadedAssemblies.Add(clrNamespace.AssemblyName, assembly);
             }
 
-            var result = assembly.GetType(name);
+            var result = assembly.GetType(clrNamespace.ClrNamespace + "." + name);
             return result;
         }
     }

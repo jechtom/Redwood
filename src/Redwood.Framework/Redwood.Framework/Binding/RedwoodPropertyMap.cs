@@ -95,7 +95,7 @@ namespace Redwood.Framework.Binding
             try
             {
                 return this.propertiesDict.Values
-                    .Where(p => p.IsApplicableOn(targetType))
+                    .Where(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase) && p.IsApplicableOn(targetType))
                     .SingleOrDefault();
             }
             finally

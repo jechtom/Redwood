@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 // Map CLR namespace to rwhtml default control namespace
-[assembly: RwHtmlNamespaceDefinition(RedwoodControl.DefaultSchemaNamespaceName, "Redwood.Framework.Controls, Redwood.Framework")]
+[assembly: RwHtmlNamespaceDefinition(RedwoodControl.DefaultSchemaNamespaceName, "Redwood.Framework.Controls")]

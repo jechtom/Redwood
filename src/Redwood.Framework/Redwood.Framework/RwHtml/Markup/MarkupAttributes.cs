@@ -8,14 +8,14 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <summary>
     /// Case insensitive attributes dictionary.
     /// </summary>
-    public class MarkupAttributes : IEnumerable<KeyValuePair<string, MarkupValue>>
+    public class MarkupAttributes : IEnumerable<KeyValuePair<NameWithPrefix, MarkupValue>>
     {
-        private Dictionary<string, MarkupValue> values;
+        private Dictionary<NameWithPrefix, MarkupValue> values;
 
         private void EnsureDictionaryExists()
         {
             if (values == null)
-                values = new Dictionary<string, MarkupValue>(StringComparer.OrdinalIgnoreCase);
+                values = new Dictionary<NameWithPrefix, MarkupValue>();
         }
 
         public bool IsEmpty
@@ -26,13 +26,13 @@ namespace Redwood.Framework.RwHtml.Markup
             }
         }
 
-        public void Add(string key, MarkupValue value)
+        public void Add(NameWithPrefix key, MarkupValue value)
         {
             EnsureDictionaryExists();
-            Add(key, value);
+            values.Add(key, value);
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(NameWithPrefix key)
         {
             if (values == null)
                 return false;
@@ -40,7 +40,7 @@ namespace Redwood.Framework.RwHtml.Markup
             return values.ContainsKey(key);
         }
 
-        public bool Remove(string key)
+        public bool Remove(NameWithPrefix key)
         {
             if (values == null)
                 return false;
@@ -48,7 +48,7 @@ namespace Redwood.Framework.RwHtml.Markup
             return values.Remove(key);
         }
 
-        public bool TryGetValue(string key, out MarkupValue value)
+        public bool TryGetValue(NameWithPrefix key, out MarkupValue value)
         {
             if (values == null)
             {
@@ -59,7 +59,7 @@ namespace Redwood.Framework.RwHtml.Markup
             return TryGetValue(key, out value);
         }
 
-        public MarkupValue this[string key]
+        public MarkupValue this[NameWithPrefix key]
         {
             get
             {
@@ -91,7 +91,7 @@ namespace Redwood.Framework.RwHtml.Markup
             }
         }
 
-        public IEnumerator<KeyValuePair<string, MarkupValue>> GetEnumerator()
+        public IEnumerator<KeyValuePair<NameWithPrefix, MarkupValue>> GetEnumerator()
         {
             if (values == null)
                 yield break;
