@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Redwood.Framework.Parsing.RwHtml;
-using Redwood.Framework.Parsing.RwHtml.Tokens;
+using Redwood.Framework.RwHtml.Parsing;
+using Redwood.Framework.RwHtml.Parsing.Tokens;
 namespace Redwood.Framework.RwHtml.Parsing
 {
     public class RwHtmlTokenizer : BaseTokenizer<RwHtmlAtom, RwHtmlToken>

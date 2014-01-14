@@ -66,7 +66,6 @@ namespace Redwood.Framework.Tests.RwHtml
             scope.PushScope(); // level == 2
             scope.AddNamespace("a", "bb");
 
-            scope.PopScope(); // level == 2
             Assert.AreEqual("bb", scope.GetNamespaceByPrefix("a"));
 
             scope.PopScope(); // level == 1
