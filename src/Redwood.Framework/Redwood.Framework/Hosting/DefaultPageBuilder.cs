@@ -11,8 +11,7 @@ namespace Redwood.Framework.Hosting
     {
         public Page BuildPage(IOwinContext context, string markup)
         {
-            var parser = new RwHtmlParser();
-            return parser.ParsePage(markup);
+            throw new NotImplementedException();
         }
     }
 }

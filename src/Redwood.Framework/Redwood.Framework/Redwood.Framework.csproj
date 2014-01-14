@@ -97,12 +97,14 @@
     <Compile Include="RwHtml\Parsing\RwHtmlAtom.cs" />
     <Compile Include="RwHtml\ClrNamespaceWithAssembly.cs" />
     <Compile Include="RwHtml\ControlTypeMapper.cs" />
+    <Compile Include="RwHtml\Parsing\RwHtmlParsingException.cs" />
+    <Compile Include="RwHtml\Parsing\RwHtmlReaderBase.cs" />
+    <Compile Include="RwHtml\Parsing\Tokens\RwOpenTagEndToken.cs" />
     <Compile Include="RwHtml\RwHtmlNamespaceDefinitionAttribute.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwAttributeToken.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwBindingToken.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwCloseTagToken.cs" />
-    <Compile Include="RwHtml\Parsing\Tokens\RwOpenTagToken.cs" />
-    <Compile Include="RwHtml\Parsing\RwHtmlParser.cs" />
+    <Compile Include="RwHtml\Parsing\Tokens\RwOpenTagBeginToken.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwHtmlToken.cs" />
     <Compile Include="RwHtml\Parsing\RwHtmlTokenizer.cs" />
     <Compile Include="RwHtml\Parsing\Tokens\RwLiteralToken.cs" />

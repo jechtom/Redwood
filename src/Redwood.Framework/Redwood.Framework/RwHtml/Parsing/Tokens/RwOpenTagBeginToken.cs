@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Redwood.Framework.RwHtml.Parsing.Tokens
 {
-    public class RwOpenTagToken : RwHtmlToken
+    public class RwOpenTagBeginToken : RwHtmlToken
     {
 
         public string TagName { get; private set; }
@@ -12,7 +12,7 @@ namespace Redwood.Framework.RwHtml.Parsing.Tokens
         public TagType TagType { get; private set; }
 
 
-        public RwOpenTagToken(string tagName, TagType tagType)
+        public RwOpenTagBeginToken(string tagName, TagType tagType)
         {
             TagName = tagName;
             TagType = tagType;
@@ -23,7 +23,6 @@ namespace Redwood.Framework.RwHtml.Parsing.Tokens
     {
         StandardTag,
         XmlProcessingInstruction,
-        DoctypeDeclaration,
-        BeginTagCloseAngle
+        DoctypeDeclaration
     }
 }

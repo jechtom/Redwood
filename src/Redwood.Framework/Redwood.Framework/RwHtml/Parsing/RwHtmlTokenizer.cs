@@ -7,6 +7,31 @@ namespace Redwood.Framework.RwHtml.Parsing
 {
     public class RwHtmlTokenizer : BaseTokenizer<RwHtmlAtom, RwHtmlToken>
     {
+        // Samples:
+
+        //<a>
+        //Is:
+        // - OpenTagBegin "<a"
+        // - OpenTagEnd ">"
+
+        //<a atr1="x" atr2="y" />
+        //Is:
+        // - OpenTagBegin "<a"
+        // - Attribute " atr1="x""
+        // - Attribute " atr2="x""
+        // - OpenTagEnd " />" {IsSelfClosing=true}
+
+        //<a />
+        //Is:
+        // - OpenTagBegin "<a"
+        // - OpenTagEnd " />" {IsSelfClosing=true}
+
+        //<a></a>
+        //Is:
+        // - OpenTagBegin "<a"
+        // - OpenTagEnd ">"
+        // - CloseTag "</a>"
+
 
         /// <summary>
         /// Determines whether the specified atom represents a new line.
@@ -159,7 +184,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 var nameStart = DistanceFromLastToken;
                 ReadText();
                 var tagName = GetTextSinceLastToken().Trim().Substring(nameStart);
-                ReturnToken(new RwOpenTagToken(tagName, TagType.StandardTag), DistanceFromLastToken);
+                ReturnToken(new RwOpenTagBeginToken(tagName, TagType.StandardTag), DistanceFromLastToken);
 
                 // read attributes
                 while (ReadAttribute())
@@ -177,7 +202,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                         MoveNext();
 
                         // tag ending
-                        ReturnToken(new RwCloseTagToken(tagName, true), DistanceFromLastToken);
+                        ReturnToken(new RwOpenTagEndToken(tagName, true), DistanceFromLastToken);
                     }
                     else
                     {
@@ -187,7 +212,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 else if (CurrentAtom == RwHtmlAtom.CloseAngle)
                 {
                     MoveNext();
-                    ReturnToken(new RwOpenTagToken(tagName, TagType.BeginTagCloseAngle), DistanceFromLastToken);
+                    ReturnToken(new RwOpenTagEndToken(tagName, false), DistanceFromLastToken);
                 }
                 else
                 {
@@ -208,7 +233,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 if (CurrentAtom == RwHtmlAtom.CloseAngle)
                 {
                     MoveNext();
-                    ReturnToken(new RwCloseTagToken(tagName, false), DistanceFromLastToken);
+                    ReturnToken(new RwCloseTagToken(tagName), DistanceFromLastToken);
                 }
                 else
                 {
