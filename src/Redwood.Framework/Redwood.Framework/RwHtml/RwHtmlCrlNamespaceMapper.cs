@@ -46,7 +46,7 @@ namespace Redwood.Framework.RwHtml
             items.Add(clrNamespace);
         }
 
-        public List<ClrNamespaceWithAssembly> GetClrNamespacesForRwHtmlNamespace(string rwHtmlNamespace)
+        public IEnumerable<ClrNamespaceWithAssembly> GetClrNamespacesForRwHtmlNamespace(string rwHtmlNamespace)
         {
             List<ClrNamespaceWithAssembly> result;
             if (mapping.TryGetValue(rwHtmlNamespace, out result))
