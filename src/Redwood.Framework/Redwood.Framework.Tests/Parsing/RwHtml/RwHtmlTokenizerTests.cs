@@ -43,8 +43,8 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
             
             Assert.AreEqual(6, tokens.Count);
 
-            Assert.IsInstanceOfType(tokens[0], typeof(RwLiteralToken));
-            Assert.AreEqual("test ", ((RwLiteralToken)tokens[0]).Text);
+            Assert.IsInstanceOfType(tokens[0], typeof(RwValueToken));
+            Assert.AreEqual("test ", ((RwValueToken)tokens[0]).Text);
 
             Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagBeginToken));
             Assert.AreEqual("element", ((RwOpenTagBeginToken)tokens[1]).TagName);
@@ -54,14 +54,14 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
             Assert.IsFalse(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
             ValidateSpanContent(input, ">", tokens[2].SpanPosition);
             
-            Assert.IsInstanceOfType(tokens[3], typeof(RwLiteralToken));
-            Assert.AreEqual(" text ", ((RwLiteralToken)tokens[3]).Text);
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual(" text ", ((RwValueToken)tokens[3]).Text);
 
             Assert.IsInstanceOfType(tokens[4], typeof(RwCloseTagToken));
             Assert.AreEqual("element", ((RwCloseTagToken)tokens[4]).TagName);
 
-            Assert.IsInstanceOfType(tokens[5], typeof(RwLiteralToken));
-            Assert.AreEqual(" test", ((RwLiteralToken)tokens[5]).Text);
+            Assert.IsInstanceOfType(tokens[5], typeof(RwValueToken));
+            Assert.AreEqual(" test", ((RwValueToken)tokens[5]).Text);
 
             ValidateTokenSequence(tokens, input.Length);
         }
@@ -80,15 +80,15 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.IsInstanceOfType(tokens[1], typeof(RwAttributeToken));
             Assert.AreEqual("attr", ((RwAttributeToken)tokens[1]).Name);
-            Assert.AreEqual("value", ((RwLiteralToken)((RwAttributeToken)tokens[1]).Value).Text);
+            Assert.AreEqual("value", ((RwValueToken)((RwAttributeToken)tokens[1]).Value).Text);
             ValidateSpanContent(input, " attr='value'", tokens[1].SpanPosition);
 
             Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
             Assert.IsTrue(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
             ValidateSpanContent(input, " />", tokens[2].SpanPosition);
 
-            Assert.IsInstanceOfType(tokens[3], typeof(RwLiteralToken));
-            Assert.AreEqual(" ", ((RwLiteralToken)tokens[3]).Text);
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual(" ", ((RwValueToken)tokens[3]).Text);
 
             ValidateTokenSequence(tokens, input.Length);
         }
@@ -107,15 +107,15 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.IsInstanceOfType(tokens[1], typeof(RwAttributeToken));
             Assert.AreEqual("attr", ((RwAttributeToken)tokens[1]).Name);
-            Assert.AreEqual("value", ((RwBindingToken)((RwAttributeToken)tokens[1]).Value).Expression);
+            Assert.AreEqual("value", ((RwValueToken)((RwAttributeToken)tokens[1]).Value).Expression);
             ValidateSpanContent(input, "   attr = \"{value}\"", tokens[1].SpanPosition);
 
             Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
             Assert.IsTrue(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
             ValidateSpanContent(input, "   />", tokens[2].SpanPosition);
 
-            Assert.IsInstanceOfType(tokens[3], typeof(RwLiteralToken));
-            Assert.AreEqual(" ", ((RwLiteralToken)tokens[3]).Text);
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual(" ", ((RwValueToken)tokens[3]).Text);
 
             ValidateTokenSequence(tokens, input.Length);
         }
@@ -134,15 +134,15 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.IsInstanceOfType(tokens[1], typeof(RwAttributeToken));
             Assert.AreEqual("attr", ((RwAttributeToken)tokens[1]).Name);
-            Assert.AreEqual("value_2", ((RwLiteralToken)((RwAttributeToken)tokens[1]).Value).Text);
+            Assert.AreEqual("value_2", ((RwValueToken)((RwAttributeToken)tokens[1]).Value).Text);
             ValidateSpanContent(input, " attr=value_2", tokens[1].SpanPosition);
 
             Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
             Assert.IsTrue(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
             ValidateSpanContent(input, " />", tokens[2].SpanPosition);
 
-            Assert.IsInstanceOfType(tokens[3], typeof(RwLiteralToken));
-            Assert.AreEqual(" ", ((RwLiteralToken)tokens[3]).Text);
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual(" ", ((RwValueToken)tokens[3]).Text);
 
             ValidateTokenSequence(tokens, input.Length);
         }
@@ -179,8 +179,8 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.IsInstanceOfType(tokens[3], typeof(RwAttributeToken));
             Assert.AreEqual("Text", ((RwAttributeToken)tokens[3]).Name);
-            Assert.IsInstanceOfType(((RwAttributeToken)tokens[3]).Value, typeof(RwBindingToken));
-            Assert.AreEqual("Text, HtmlEncode=true", ((RwBindingToken)(((RwAttributeToken)tokens[3]).Value)).Expression);
+            Assert.IsInstanceOfType(((RwAttributeToken)tokens[3]).Value, typeof(RwValueToken));
+            Assert.AreEqual("Text, HtmlEncode=true", ((RwValueToken)(((RwAttributeToken)tokens[3]).Value)).Expression);
             ValidateSpanContent(input, "{Text, HtmlEncode=true}", ((RwAttributeToken)tokens[3]).Value.SpanPosition);
             ValidateSpanContent(input, " Text=\"{Text, HtmlEncode=true}\"", tokens[3].SpanPosition);
             
@@ -216,8 +216,8 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
 
             Assert.IsInstanceOfType(tokens[3], typeof(RwAttributeToken));
             Assert.AreEqual("Text", ((RwAttributeToken)tokens[3]).Name);
-            Assert.IsInstanceOfType(((RwAttributeToken)tokens[3]).Value, typeof(RwBindingToken));
-            Assert.AreEqual("Text, HtmlEncode=true", ((RwBindingToken)(((RwAttributeToken)tokens[3]).Value)).Expression);
+            Assert.IsInstanceOfType(((RwAttributeToken)tokens[3]).Value, typeof(RwValueToken));
+            Assert.AreEqual("Text, HtmlEncode=true", ((RwValueToken)(((RwAttributeToken)tokens[3]).Value)).Expression);
             ValidateSpanContent(input, "{Text, HtmlEncode=true}", ((RwAttributeToken)tokens[3]).Value.SpanPosition);
             ValidateSpanContent(input, " Text=\"{Text, HtmlEncode=true}\"", tokens[3].SpanPosition);
 
@@ -225,8 +225,8 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
             Assert.IsFalse(((RwOpenTagEndToken)tokens[4]).IsSelfClosing);
             ValidateSpanContent(input, ">", tokens[4].SpanPosition);
 
-            Assert.IsInstanceOfType(tokens[5], typeof(RwLiteralToken));
-            Assert.AreEqual("test", ((RwLiteralToken)tokens[5]).Text);
+            Assert.IsInstanceOfType(tokens[5], typeof(RwValueToken));
+            Assert.AreEqual("test", ((RwValueToken)tokens[5]).Text);
             ValidateSpanContent(input, "test", tokens[5].SpanPosition);
 
             Assert.IsInstanceOfType(tokens[6], typeof(RwCloseTagToken));
@@ -237,8 +237,8 @@ namespace Redwood.Framework.Tests.Parsing.RwHtml
             Assert.AreEqual("html", ((RwCloseTagToken)tokens[7]).TagName);
             ValidateSpanContent(input, "</html>", tokens[7].SpanPosition);
 
-            Assert.IsInstanceOfType(tokens[8], typeof(RwLiteralToken));
-            Assert.AreEqual(" te", ((RwLiteralToken)tokens[8]).Text);
+            Assert.IsInstanceOfType(tokens[8], typeof(RwValueToken));
+            Assert.AreEqual(" te", ((RwValueToken)tokens[8]).Text);
             ValidateSpanContent(input, " te", tokens[8].SpanPosition);
 
             ValidateTokenSequence(tokens, input.Length);

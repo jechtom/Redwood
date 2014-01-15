@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.RwHtml.Markup
 {
-    public interface IRwHtmlMarkupBuilder
+    public class MarkupFrame
     {
-        void PushElement(MarkupElement element);
-        void WriteValue(MarkupValue value);
-        void PopElement();
+        private int depth;
+
+        public int Depth
+        {
+            get
+            {
+                return depth;
+            }
+        }
     }
 }

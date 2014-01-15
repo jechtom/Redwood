@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.RwHtml.Markup
 {
-    public class RwHtmlMarkupBuilder : IRwHtmlMarkupBuilder
+    public class RwHtmlMarkupBuilder
     {
         public RwHtmlMarkupBuilder()
         {
@@ -69,7 +69,7 @@ namespace Redwood.Framework.RwHtml.Markup
                     continue; // maybe attached property?
 
                 throw new NotImplementedException();
-                var property = null; // control.GetPropertyByName(atr.Key.Name);
+                RedwoodProperty property = null; // control.GetPropertyByName(atr.Key.Name);
                 object value;
                 if (atr.Value.IsExpression)
                 {
@@ -100,10 +100,10 @@ namespace Redwood.Framework.RwHtml.Markup
             if (rwhtmlNamespace == null)
                 throw new InvalidOperationException("Invalid namespace prefix: " + name.Prefix);
 
-            var type = typeMapper.GetType(rwhtmlNamespace, name.Name);
+            var type = typeMapper.GetType(rwhtmlNamespace, name.SingleName());
 
             if (type == null)
-                throw new InvalidOperationException(string.Format("Control \"{0}\" not found in namespace \"{1}\".", name.Name, rwhtmlNamespace));
+                throw new InvalidOperationException(string.Format("Control \"{0}\" not found in namespace \"{1}\".", name.SingleName(), rwhtmlNamespace));
 
             var instance = Activator.CreateInstance(type);
             var controlInstance = instance as RedwoodControl;
@@ -133,7 +133,7 @@ namespace Redwood.Framework.RwHtml.Markup
                     if (attribute.Value.IsExpression)
                         throw new InvalidOperationException("Expression is not supported for namespace reference.");
 
-                    namespaceScope.AddNamespace(attribute.Key.Name, attribute.Value.Value);
+                    namespaceScope.AddNamespace(attribute.Key.Names.Single(), attribute.Value.Value);
                 }
             }
         }

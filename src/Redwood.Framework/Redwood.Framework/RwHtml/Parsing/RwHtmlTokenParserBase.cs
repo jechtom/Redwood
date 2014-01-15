@@ -8,62 +8,85 @@ using System.Threading.Tasks;
 namespace Redwood.Framework.RwHtml.Parsing
 {
     /// <summary>
-    /// Provides parsing of rwhtml tokens into markup.
+    /// Provides basic parsing of rwhtml tokens.
     /// </summary>
-    public class RwHtmlTokenParser
+    public abstract class RwHtmlMarkupParserBase<T>
     {
         Stack<RwOpenTagBeginToken> tagsStack;
-        Markup.IRwHtmlMarkupBuilder markupBuilder;
-        Markup.MarkupElement currentElement;
+        Queue<T> valuesQueue;
 
         bool isInsideOpenedTag;
 
-        private void Init(Markup.IRwHtmlMarkupBuilder markupBuilder)
+        protected virtual void Init()
         {
             tagsStack = new Stack<RwOpenTagBeginToken>();
+            valuesQueue = new Queue<T>();
             isInsideOpenedTag = false;
-            this.markupBuilder = markupBuilder;
         }
 
-        public virtual void Read(IEnumerable<RwHtmlToken> tokenSource, Markup.IRwHtmlMarkupBuilder markupBuilder)
+        public virtual IEnumerable<T> Read(IEnumerable<RwHtmlToken> tokenSource)
         {
             if (tokenSource == null)
                 throw new ArgumentNullException("tokenSource");
 
-            if (markupBuilder == null)
-                throw new ArgumentNullException("markupBuilder");
-
-            Init(markupBuilder);
+            Init();
 
             // read
             foreach (var token in tokenSource)
             {
-                if (token is RwOpenTagBeginToken)
+                ReadToken(token);
+
+                // return values
+                while(valuesQueue.Count > 0)
                 {
-                    ReadRwOpenTagBeginToken((RwOpenTagBeginToken)token);
-                } else if (token is RwOpenTagEndToken)
-                {
-                    ReadRwOpenTagEndToken((RwOpenTagEndToken)token);
-                }
-                else if (token is RwAttributeToken)
-                {
-                    ReadRwAttributeToken((RwAttributeToken)token);
-                }
-                else if (token is RwCloseTagToken)
-                {
-                    ReadRwCloseTagToken((RwCloseTagToken)token);
-                }
-                else if (token is RwLiteralToken)
-                {
-                    ReadRwLiteralToken((RwLiteralToken)token);
-                }
-                else
-                {
-                    throw new RwHtmlParsingException("Unknown token type: " + token.GetType().FullName, token.SpanPosition);
+                    yield return valuesQueue.Dequeue();
                 }
             }
 
+            // make sure all pushed tokens has been poped out
             EnsureStackIsEmpty();
+
+            // end of document
+            OnEndOfDocument();
+
+            // return remaining values
+            while (valuesQueue.Count > 0)
+            {
+                yield return valuesQueue.Dequeue();
+            }
+        }
+
+        protected virtual void PushValue(T value)
+        {
+            valuesQueue.Enqueue(value);
+        }
+
+        protected virtual void ReadToken(RwHtmlToken token)
+        {
+            if (token is RwOpenTagBeginToken)
+            {
+                ReadRwOpenTagBeginToken((RwOpenTagBeginToken)token);
+            }
+            else if (token is RwOpenTagEndToken)
+            {
+                ReadRwOpenTagEndToken((RwOpenTagEndToken)token);
+            }
+            else if (token is RwAttributeToken)
+            {
+                ReadRwAttributeToken((RwAttributeToken)token);
+            }
+            else if (token is RwCloseTagToken)
+            {
+                ReadRwCloseTagToken((RwCloseTagToken)token);
+            }
+            else if (token is RwValueToken)
+            {
+                ReadRwLiteralToken((RwValueToken)token);
+            }
+            else
+            {
+                throw new RwHtmlParsingException("Unknown token type: " + token.GetType().FullName, token.SpanPosition);
+            }
         }
 
         protected virtual void EnsureStackIsEmpty()
@@ -97,13 +120,9 @@ namespace Redwood.Framework.RwHtml.Parsing
             {
                 throw new NullReferenceException("Attribute value is null.");
             }
-            if (token.Value is RwLiteralToken)
+            if (token.Value is RwValueToken)
             {
-                OnNewAttributeValue(token, (RwLiteralToken)token.Value);
-            }
-            else if(token.Value is RwBindingToken)
-            {
-                OnNewAttributeBinding(token, (RwBindingToken)token.Value);
+                OnNewAttributeValue(token, (RwValueToken)token.Value);
             }
             else
             {
@@ -147,7 +166,7 @@ namespace Redwood.Framework.RwHtml.Parsing
             OnTagEnd();
         }
 
-        protected virtual void ReadRwLiteralToken(RwLiteralToken token)
+        protected virtual void ReadRwLiteralToken(RwValueToken token)
         {
             if(isInsideOpenedTag)
                 throw new RwHtmlParsingException("Literal token is not allowed inside opening element. ", token.SpanPosition);
@@ -155,38 +174,16 @@ namespace Redwood.Framework.RwHtml.Parsing
             OnLiteralToken(token);
         }
 
-        protected virtual void OnOpenTagBegin(RwOpenTagBeginToken token)
-        {
-            var name = NameWithPrefix.Parse(token.TagName);
-            currentElement = new Markup.MarkupElement(name);
-        }
+        protected abstract void OnOpenTagBegin(RwOpenTagBeginToken token);
+        
+        protected abstract void OnOpenTagEnd();
 
-        protected virtual void OnOpenTagEnd()
-        {
-            markupBuilder.PushElement(currentElement);
-            currentElement = null;
-        }
+        protected abstract void OnTagEnd();
 
-        protected virtual void OnTagEnd()
-        {
-            markupBuilder.PopElement();
-        }
+        protected abstract void OnNewAttributeValue(RwAttributeToken token, RwValueToken value);
 
-        protected virtual void OnNewAttributeValue(RwAttributeToken token, RwLiteralToken value)
-        {
-            var name = NameWithPrefix.Parse(token.Name);
-            currentElement.Attributes.Add(name, new Markup.MarkupValue(value.Text, false));
-        }
+        protected abstract void OnLiteralToken(RwValueToken literal);
 
-        protected virtual void OnNewAttributeBinding(RwAttributeToken token, RwBindingToken value)
-        {
-            var name = NameWithPrefix.Parse(token.Name);
-            currentElement.Attributes.Add(name, new Markup.MarkupValue(value.Expression, true));
-        }
-
-        protected virtual void OnLiteralToken(RwLiteralToken literal)
-        {
-            markupBuilder.WriteValue(new Markup.MarkupValue(literal.Text, false));
-        }
+        protected abstract void OnEndOfDocument();
     }
 }

@@ -9,32 +9,35 @@ namespace Redwood.Framework.RwHtml
 {
     public struct NameWithPrefix
     {
-        private string name;
+        private string[] names;
         
         private string prefix;
 
-        public NameWithPrefix(string prefix, string name)
+        public NameWithPrefix(string prefix, string[] names)
         {
-            if(string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Parameter is null or whitespace.", "name");
+            if(names == null || names.Length == 0)
+                throw new ArgumentException("Parameter is null contains no elements.", "names");
 
-            this.name = name;
+            if (names.Any(string.IsNullOrWhiteSpace))
+                throw new ArgumentException("Parameter contains null or white space value.", "names");
+
+            this.names = names;
             this.prefix = prefix;
         }
 
         /// <summary>
-        /// Gets local name.
+        /// Gets local name(s).
         /// </summary>
-        public string Name
+        public string[] Names
         {
             get
             {
-                return name;
+                return names;
             }
         }
 
         /// <summary>
-        /// Gets prefix (namespace).
+        /// Gets prefix (namespace) or null if not provided.
         /// </summary>
         public string Prefix
         {
@@ -55,6 +58,17 @@ namespace Redwood.Framework.RwHtml
             }
         }
 
+        /// <summary>
+        /// Gets if this value has more names.
+        /// </summary>
+        public bool HasMoreNames
+        {
+            get
+            {
+                return names.Length > 1;
+            }
+        }
+
         public static NameWithPrefix Parse(string text)
         {
             if(text == null)
@@ -72,18 +86,24 @@ namespace Redwood.Framework.RwHtml
 
             if(index == -1)
             {
-                return new NameWithPrefix(null, text);
+                return new NameWithPrefix(null, ParseNames(text));
             }
 
             return new NameWithPrefix(
                     text.Substring(0, index),
-                    text.Substring(index + 1)
+                    ParseNames(text.Substring(index + 1))
                 );
+        }
+
+        private static string[] ParseNames(string text)
+        {
+            var result = text.Split(new char[] { '.' },  StringSplitOptions.None);
+            return result;
         }
 
         public override string ToString()
         {
-            return Prefix + ":" + Name;
+            return Prefix + ":" + string.Join(".", Names ?? new [] { "N/A" });
         }
 
         public override bool Equals(object obj)
@@ -93,16 +113,59 @@ namespace Redwood.Framework.RwHtml
 
             var obj2 = (NameWithPrefix)obj;
 
-            return obj2.prefix == prefix && obj2.name == name;
+            if (obj2.prefix != prefix)
+                return false;
+
+            if (obj2.names.Length != names.Length)
+                return false;
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                if (obj2.names[i] != names[i])
+                    return false;
+            }
+
+            return true;
         }
 
         public override int GetHashCode()
         {
-            var result = name.GetHashCode();
+            int result = names[0].GetHashCode();
+            for (int i = 1; i < names.Length; i++)
+            {
+                result ^= names[i].GetHashCode();
+            }
             if (HasPrefix)
                 result ^= prefix.GetHashCode();
 
             return result;
+        }
+
+        public bool BeginsWith(NameWithPrefix beginning)
+        {
+            // diff. prefixes?
+            if (HasPrefix != beginning.HasPrefix || !string.Equals(prefix, beginning.prefix, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // beginning longer than current value?
+            if (beginning.names.Length > names.Length)
+                return false;
+
+            for (int i = 0; i < beginning.names.Length; i++)
+            {
+                if (!string.Equals(names[i], beginning.names[i], StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public string SingleName()
+        {
+            if (this.names.Length > 1)
+                throw new InvalidOperationException("Single name value was expected on name: " + this.ToString());
+
+            return names[0];
         }
     }
 }

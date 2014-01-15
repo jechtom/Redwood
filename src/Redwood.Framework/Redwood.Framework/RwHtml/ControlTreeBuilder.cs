@@ -16,12 +16,12 @@ namespace Redwood.Framework.RwHtml
         public void Build(string rwhtml)
         {
             var tokenizer = new Parsing.RwHtmlTokenizer();
-            var tokenParser = new Parsing.RwHtmlTokenParser();
-            var markupBuilder = new Markup.RwHtmlMarkupBuilder();
+            //var tokenParser = new Parsing.RwHtmlMarkupParser();
+            //var markupBuilder = new Markup.RwHtmlMarkupBuilder();
 
             var input = new Parsing.StringTextReader(rwhtml);
             var tokenSource = tokenizer.Parse(input);
-            tokenParser.Read(tokenSource, markupBuilder);
+            //tokenParser.Read(tokenSource, markupBuilder);
         }
     }
 }

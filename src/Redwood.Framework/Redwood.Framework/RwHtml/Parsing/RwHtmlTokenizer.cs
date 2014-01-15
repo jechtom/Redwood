@@ -137,7 +137,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                     if (lastTextPosition != null)
                     {
                         // return the current text content 
-                        ReturnToken(new RwLiteralToken() { Text = GetTextSinceLastToken() }, DistanceFromLastToken);
+                        ReturnToken(new RwValueToken(GetTextSinceLastToken(), false), DistanceFromLastToken);
                         lastTextPosition = null;
                     }
 
@@ -167,7 +167,7 @@ namespace Redwood.Framework.RwHtml.Parsing
             {
                 // return the remaining text content on the end of the buffer
                 var remainingText = GetTextSinceLastToken();
-                ReturnToken(new RwLiteralToken() { Text = remainingText }, remainingText.Length);
+                ReturnToken(new RwValueToken(remainingText, false), remainingText.Length);
             }
         }
         
@@ -291,8 +291,8 @@ namespace Redwood.Framework.RwHtml.Parsing
                         var position = CurrentAtomPosition;
                         SkipWhile(t => t != quote);
 
-                        attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };
-                        position.Length = ((RwLiteralToken)attributeValue).Text.Length;
+                        attributeValue = new RwValueToken(GetTextSinceLastToken().Substring(valueStart), false);
+                        position.Length = ((RwValueToken)attributeValue).Text.Length;
                         attributeValue.SpanPosition = position;
                     }
                     MoveNext();
@@ -303,8 +303,8 @@ namespace Redwood.Framework.RwHtml.Parsing
                     var position = CurrentAtomPosition;
                     var valueStart = DistanceFromLastToken;
                     ReadText();
-                    attributeValue = new RwLiteralToken() { Text = GetTextSinceLastToken().Substring(valueStart) };
-                    position.Length = ((RwLiteralToken)attributeValue).Text.Length;
+                    attributeValue = new RwValueToken(GetTextSinceLastToken().Substring(valueStart), false);
+                    position.Length = ((RwValueToken)attributeValue).Text.Length;
                     attributeValue.SpanPosition = position;
                 }
 
@@ -318,7 +318,7 @@ namespace Redwood.Framework.RwHtml.Parsing
         /// <summary>
         /// Reads the binding.
         /// </summary>
-        private RwBindingToken ReadBinding()
+        private RwValueToken ReadBinding()
         {
             MoveNext();
             var exprStart = DistanceFromLastToken;
@@ -338,7 +338,7 @@ namespace Redwood.Framework.RwHtml.Parsing
 
             var expression = GetTextSinceLastToken().Substring(exprStart);
             MoveNext();
-            return new RwBindingToken(expression);
+            return new RwValueToken(expression, true);
         }
 
 
