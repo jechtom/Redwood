@@ -11,7 +11,7 @@ namespace Redwood.Framework.RwHtml.Parsing
     /// <summary>
     /// Provides parsing of rwhtml tokens into rwhtml markup nodes.
     /// </summary>
-    public class RwHtmlTokenToMarkupParser : RwHtmlMarkupParserBase<Markup.MarkupNode>
+    public class RwHtmlTokenToMarkupParser : RwHtmlTokenParserBase<Markup.MarkupNode>
     {
         public const string NamespaceDefinitionNamespace = "xmlns";
 

@@ -10,7 +10,7 @@ namespace Redwood.Framework.RwHtml.Parsing
     /// <summary>
     /// Provides basic parsing of rwhtml tokens.
     /// </summary>
-    public abstract class RwHtmlMarkupParserBase<T>
+    public abstract class RwHtmlTokenParserBase<T>
     {
         Stack<RwOpenTagBeginToken> tagsStack;
         Queue<T> valuesQueue;
