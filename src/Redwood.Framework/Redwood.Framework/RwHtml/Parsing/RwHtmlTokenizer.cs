@@ -347,7 +347,7 @@ namespace Redwood.Framework.RwHtml.Parsing
         /// </summary>
         private void ReadText()
         {
-            SkipWhile(a => a == RwHtmlAtom.Text);
+            SkipWhile(a => a == RwHtmlAtom.Text || a == RwHtmlAtom.Dash);
         }
 
         /// <summary>
