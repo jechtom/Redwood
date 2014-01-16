@@ -83,7 +83,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                     {
                         IsAttachedProperty = false,
                         IsInlineDefinition = false,
-                        Name = name
+                        Name = name.RemoveBeginning(parentBeginObject.Type.Name) // remove beginning (example: "rw:TextBox.Text" to "Text")
                     }
                 });
                 return;
@@ -130,7 +130,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                     Level = Level,
                     CurrentPosition = token.SpanPosition,
                     NodeType = MarkupNodeType.NamespaceDeclaration,
-                    Namespace = new RwHtmlNamespaceDeclaration()
+                    Namespace = new NamespaceDeclaration()
                     {
                         Prefix = name.Names.Single(),
                         RwHtmlNamespace = value.Text
@@ -140,6 +140,14 @@ namespace Redwood.Framework.RwHtml.Parsing
             }
 
             // begin member - property (<rw:TextBox Prop1=") or attached property (<rw:TextBox Layout.Prop1=")
+            bool isAttachedProperty = name.HasMoreNames || name.HasPrefix;
+            if (!name.HasPrefix && isAttachedProperty)
+            {
+                // add prefix of parent object to attached properties ("<rw:TextBox Layout.Prop1=" to "<rw:TextBox rw:Layout.Prop1=")
+                var parentBeginObject = nodeStack.FirstOrDefault(n => n.NodeType == MarkupNodeType.BeginObject);
+                name = name.ChangePrefix(parentBeginObject.Type.Name.Prefix);
+            }
+
             PushValue(new MarkupNode()
             {
                 Level = Level,
@@ -147,7 +155,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 NodeType = MarkupNodeType.BeginMember,
                 Member = new MarkupMember()
                 {
-                    IsAttachedProperty = name.HasMoreNames,
+                    IsAttachedProperty = isAttachedProperty,
                     IsInlineDefinition = true,
                     Name = name
                 }
@@ -159,7 +167,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 Level = Level,
                 NodeType = MarkupNodeType.Value,
                 CurrentPosition = value.SpanPosition,
-                Value = new MarkupValue(value.Text, false)
+                Value = new MarkupValue(value.Text, value.IsExpression)
             });
 
             // end member
@@ -196,8 +204,12 @@ namespace Redwood.Framework.RwHtml.Parsing
             }
         }
         
-        protected override void OnLiteralToken(RwValueToken literal)
+        protected override void OnValueToken(RwValueToken literal)
         {
+            // ignore if empty non-expression literal
+            if (!literal.IsExpression && string.IsNullOrWhiteSpace(literal.Text))
+                return;
+
             InsertContentPropertyBeginMemberIfNeeded(literal.SpanPosition);
 
             // value
@@ -206,7 +218,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 Level = Level,
                 NodeType = MarkupNodeType.Value,
                 CurrentPosition = literal.SpanPosition,
-                Value = new MarkupValue(literal.Text, false)
+                Value = new MarkupValue(literal.Text, literal.IsExpression)
             });
         }
 

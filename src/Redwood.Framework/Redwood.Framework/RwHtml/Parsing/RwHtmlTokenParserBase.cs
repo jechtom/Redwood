@@ -171,7 +171,7 @@ namespace Redwood.Framework.RwHtml.Parsing
             if(isInsideOpenedTag)
                 throw new RwHtmlParsingException("Literal token is not allowed inside opening element. ", token.SpanPosition);
 
-            OnLiteralToken(token);
+            OnValueToken(token);
         }
 
         protected abstract void OnOpenTagBegin(RwOpenTagBeginToken token);
@@ -182,7 +182,7 @@ namespace Redwood.Framework.RwHtml.Parsing
 
         protected abstract void OnNewAttributeValue(RwAttributeToken token, RwValueToken value);
 
-        protected abstract void OnLiteralToken(RwValueToken literal);
+        protected abstract void OnValueToken(RwValueToken literal);
 
         protected abstract void OnEndOfDocument();
     }

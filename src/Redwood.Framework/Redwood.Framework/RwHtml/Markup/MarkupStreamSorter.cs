@@ -13,12 +13,12 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <remarks>
     /// Namespace declarations are moved before StartObject s StartMember nodes.
     /// </remarks>
-    public class MarkupSorter
+    public class MarkupStreamSorter
     {
         Stack<MarkupNode> nodeStack;
         Queue<MarkupNode> buffer;
 
-        public MarkupSorter()
+        public MarkupStreamSorter()
         {
         }
 

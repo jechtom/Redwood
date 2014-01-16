@@ -8,7 +8,7 @@ namespace Redwood.Framework.RwHtml
 {
     public class PropertyMapper
     {
-        public IPropertyAccessor GetProperty(Type type, string propertyName)
+        public Binding.IPropertyAccessor GetProperty(Type type, string propertyName)
         {
             throw new NotImplementedException();
         }

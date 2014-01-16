@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Redwood.Framework.RwHtml
+namespace Redwood.Framework.Binding
 {
     public interface IPropertyAccessor
     {
-        Type PropertyType { get; }
-        string Name { get; }
+        void SetValue(object instance, object value);
     }
 }

@@ -12,7 +12,7 @@ namespace Redwood.Framework.RwHtml.Markup
             if (value == null)
                 throw new ArgumentNullException("value");
 
-            this.IsExpression = IsExpression;
+            this.IsExpression = isExpression;
             this.Value = value;
         }
 

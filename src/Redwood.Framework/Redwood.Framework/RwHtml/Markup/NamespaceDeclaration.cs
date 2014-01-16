@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.RwHtml.Markup
 {
-    public class RwHtmlNamespaceDeclaration
+    public class NamespaceDeclaration
     {
         public string RwHtmlNamespace { get; set; }
         public string Prefix { get; set; }

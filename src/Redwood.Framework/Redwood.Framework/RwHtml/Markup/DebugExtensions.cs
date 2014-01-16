@@ -13,24 +13,30 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             foreach (var item in nodes)
             {
-                StringBuilder msg = new StringBuilder(new string('|', item.Level));
-
-                msg.Append("+ " + item.NodeType + " ");
-
-                if (item.Value != null)
-                    msg.Append("- value: " + item.Value);
-
-                if (item.Member != null)
-                    msg.Append("- member: " + item.Member.ToString());
-
-                if (item.Type != null)
-                    msg.Append("- type: " + item.Type.ToString());
-
-                if (item.Namespace != null)
-                    msg.Append("- namespace: " + item.Namespace.Prefix + ":" + item.Namespace.RwHtmlNamespace);
-
-                Debug.WriteLine(msg.ToString());
+                var msg = item.ToDebugString();
+                Debug.WriteLine(msg);
             }
+        }
+
+        public static string ToDebugString(this MarkupNode node)
+        {
+            StringBuilder msg = new StringBuilder(new string('|', node.Level));
+
+            msg.Append("+ " + node.NodeType + " ");
+
+            if (node.Value != null)
+                msg.Append("- value: " + node.Value);
+
+            if (node.Member != null)
+                msg.Append("- member: " + node.Member.ToString());
+
+            if (node.Type != null)
+                msg.Append("- type: " + node.Type.ToString());
+
+            if (node.Namespace != null)
+                msg.Append("- namespace: " + node.Namespace.Prefix + ":" + node.Namespace.RwHtmlNamespace);
+
+            return msg.ToString();
         }
     }
 }

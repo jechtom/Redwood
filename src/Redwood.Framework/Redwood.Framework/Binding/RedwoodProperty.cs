@@ -119,5 +119,11 @@ namespace Redwood.Framework.Binding
         {
             return string.Format("{0} ({1}) on {2}", name, propertyType.Name, ownerType.Name);
         }
+
+        public static RedwoodProperty GetByName(string name, Type clrType)
+        {
+            var result = RedwoodPropertyMap.Default.GetPropertyByNameForType(name, clrType);
+            return result;
+        }
     }
 }

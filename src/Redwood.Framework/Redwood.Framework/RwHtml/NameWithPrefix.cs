@@ -167,5 +167,23 @@ namespace Redwood.Framework.RwHtml
 
             return names[0];
         }
+
+        public NameWithPrefix RemoveBeginning(NameWithPrefix beginning)
+        {
+            if (!BeginsWith(beginning))
+                throw new InvalidOperationException(string.Format("Can't remove beginning \"{0}\" from name \"{1}\" because it isn't starts with same prefix and names.", beginning, this));
+
+            if (beginning.names.Length == names.Length)
+                throw new InvalidOperationException(string.Format("Can't remove all names from \"{0}\".", this));
+
+            string[] newNames = new string[this.names.Length - beginning.names.Length];
+            Array.Copy(this.names, beginning.names.Length, newNames, 0, newNames.Length);
+            return new NameWithPrefix(null, newNames);
+        }
+
+        public NameWithPrefix ChangePrefix(string newPrefix)
+        {
+            return new NameWithPrefix(newPrefix, names);
+        }
     }
 }
