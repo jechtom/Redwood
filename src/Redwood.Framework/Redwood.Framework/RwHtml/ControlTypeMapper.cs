@@ -52,7 +52,7 @@ namespace Redwood.Framework.RwHtml
                 return result;
             }
 
-            throw new InvalidOperationException(string.Format("Type \"{0}\" not found in rwhtml namespace \"{1}\".", name, rwhtmlNamespace)); // not found
+            return null;
         }
 
         private Type GetTypeFromCrlNamespace(ClrNamespaceWithAssembly clrNamespace, string name)

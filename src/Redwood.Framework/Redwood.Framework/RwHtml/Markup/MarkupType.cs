@@ -19,7 +19,6 @@ namespace Redwood.Framework.RwHtml.Markup
         }
 
         public Type ClrType { get; set; }
-        public ConstructorInfo ClrConstructor { get; set; }
 
         public bool IsRedwoodBindable
         {

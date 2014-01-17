@@ -14,6 +14,7 @@ namespace Redwood.Framework.RwHtml.Markup
         public NameWithPrefix Name { get; set; }
         public bool IsAttachedProperty { get; set; }
         public Binding.IPropertyAccessor PropertyAccessor { get; set; }
+        public Type AttachedPropertyOwnerType { get; set; }
 
         public override string ToString()
         {

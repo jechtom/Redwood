@@ -93,6 +93,7 @@
     <Compile Include="Hosting\IViewModelLocator.cs" />
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
+    <Compile Include="RwHtml\ControlTypeActivator.cs" />
     <Compile Include="RwHtml\Markup\DebugExtensions.cs" />
     <Compile Include="Binding\IPropertyAccessor.cs" />
     <Compile Include="RwHtml\Markup\MarkupBuildingContext.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="RwHtml\Markup\MarkupMember.cs" />
     <Compile Include="RwHtml\Markup\MarkupNode.cs" />
     <Compile Include="RwHtml\Markup\MarkupNodeType.cs" />
+    <Compile Include="RwHtml\Markup\MarkupStreamActivatorVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamNamespaceVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamMapperVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamSorter.cs" />

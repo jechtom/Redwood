@@ -12,10 +12,12 @@ namespace Redwood.Framework.RwHtml.Markup
     public class MarkupStreamMapperVisitor : MarkupStreamVisitor
     {
         ControlTypeMapper typeMapper;
+        PropertyMapper propertyMapper;
 
         public MarkupStreamMapperVisitor()
         {
             typeMapper = ControlTypeMapper.Default;
+            propertyMapper = PropertyMapper.Default;
         }
 
         protected override void OnFramePushing(MarkupFrame markupFrame)
@@ -36,8 +38,37 @@ namespace Redwood.Framework.RwHtml.Markup
         private void OnBeginObjectFrame(MarkupFrame markupFrame)
         {
             var node = markupFrame.Node;
-            node.Type.ClrType = typeMapper.GetType(node.Type.RwHtmlNamespace, node.Type.Name.SingleName());
-            node.Type.ClrConstructor = node.Type.ClrType.GetConstructor(System.Type.EmptyTypes); // parameter-less constructor
+            node.Type.ClrType = ResolveTypeForObjectNode(node);
+        }
+
+        private Type ResolveTypeForObjectNode(MarkupNode node)
+        {
+            string name = node.Type.Name.SingleName();
+            string rwhtmlNamespace = node.Type.RwHtmlNamespace;
+            
+            Type result = typeMapper.GetType(rwhtmlNamespace, name);
+            
+            if (result == null)
+                throw new InvalidOperationException(string.Format("Type \"{0}\" not found in rwhtml namespace \"{1}\".", name, rwhtmlNamespace)); // not found
+
+            return result;
+        }
+
+        private Type ResolveTypeForAttachedProperty(MarkupNode memberNode, out string attachedPropertyName)
+        {
+            if(memberNode.Member.Name.Names.Length != 2) // <rw:TextBox OwnerName.PropertyName - only 2 names - name of type and name of property.
+                throw new Parsing.RwHtmlParsingException("Attached properties is allowed only with 2 names.", memberNode.CurrentPosition);
+            
+            string name = memberNode.Member.Name.Names[0]; // first name is name of type (rw:ObjectName.PropertyName)
+            attachedPropertyName = memberNode.Member.Name.Names[1];
+            string rwhtmlNamespace = memberNode.Member.RwHtmlNamespace;
+
+            Type result = typeMapper.GetType(rwhtmlNamespace, name);
+
+            if (result == null)
+                throw new InvalidOperationException(string.Format("Type \"{0}\" not found in rwhtml namespace \"{1}\".", name, rwhtmlNamespace)); // not found
+
+            return result;
         }
 
         private void OnBeginMemberFrame(MarkupFrame markupFrame)
@@ -46,31 +77,21 @@ namespace Redwood.Framework.RwHtml.Markup
             var parentNode = markupFrame.ParentFrame.Node;
             parentNode.AssertType(MarkupNodeType.BeginObject);
 
-            // find property accessor
-            node.Member.PropertyAccessor = FindProperty(node, parentNode);
-        }
-
-        private Binding.IPropertyAccessor FindProperty(MarkupNode memberNode, MarkupNode objectNode)
-        {
-            var clrType = objectNode.Type.ClrType;
-
-            // try find redwood property
-            var redwoodPropInfo = Binding.RedwoodProperty.GetByName(memberNode.Member.Name.SingleName(), clrType);
-            if (redwoodPropInfo != null)
+            
+            if (node.Member.IsAttachedProperty)
             {
-                return new Binding.RedwoodPropertyAccessor(redwoodPropInfo);
+                // resolve CLR type based on attached property and resolve attached property reference
+                string attachedPropertyName;
+                node.Member.AttachedPropertyOwnerType = ResolveTypeForAttachedProperty(node, out attachedPropertyName);
+                node.Member.PropertyAccessor = propertyMapper.GetPropertyOrThrowError(node.Member.AttachedPropertyOwnerType, attachedPropertyName, false);
             }
-
-            // try find CLR property
-            if (!memberNode.Member.IsAttachedProperty)
+            else
             {
-                var propName = memberNode.Member.Name.SingleName();
-                var propInfo = clrType.GetProperty(propName);
-                if (propInfo != null)
-                    return new Binding.PropertyBasicAccessor(propInfo);
+                // find property accessor
+                var clrType = parentNode.Type.ClrType;
+                string name = node.Member.Name.SingleName();
+                node.Member.PropertyAccessor = propertyMapper.GetPropertyOrThrowError(clrType, name, false);
             }
-
-            throw new InvalidOperationException(string.Format("Property \"{0}\" not found on \"{1}\".", propName, clrType.FullName));
         }
     }
 }

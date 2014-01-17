@@ -8,9 +8,35 @@ namespace Redwood.Framework.RwHtml
 {
     public class PropertyMapper
     {
-        public Binding.IPropertyAccessor GetProperty(Type type, string propertyName)
+        static readonly PropertyMapper defaultMapper = new PropertyMapper();
+
+        public static PropertyMapper Default
         {
-            throw new NotImplementedException();
+            get
+            {
+                return defaultMapper;
+            }
+        }
+
+        public Binding.IPropertyAccessor GetPropertyOrThrowError(Type clrType, string propertyName, bool isAttachedProperty)
+        {
+            // try find redwood property
+            var redwoodPropInfo = Binding.RedwoodProperty.GetByName(propertyName, clrType);
+            if (redwoodPropInfo != null)
+            {
+                return new Binding.RedwoodPropertyAccessor(redwoodPropInfo);
+            }
+
+            // try find CLR property
+            if (!isAttachedProperty)
+            {
+                var propName = propertyName;
+                var propInfo = clrType.GetProperty(propName);
+                if (propInfo != null)
+                    return new Binding.PropertyBasicAccessor(propInfo);
+            }
+
+            throw new InvalidOperationException(string.Format("Property \"{0}\" not found on \"{1}\".", propertyName, clrType.FullName));
         }
     }
 }
