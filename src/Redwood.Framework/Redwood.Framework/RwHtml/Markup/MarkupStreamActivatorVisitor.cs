@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,23 +12,23 @@ namespace Redwood.Framework.RwHtml.Markup
     /// </summary>
     public class MarkupStreamActivatorVisitor : MarkupStreamVisitor
     {
+        
         ControlTypeActivator typeActivator;
-        Stack<object> objectStack;
-        object lastBuiltValue;
-        bool lastBuiltValueIsList;
-
+        Stack<ValueContext> valuesStack;
+        Converters.TypeConverterMapper converterMapper;
+        
         public object Result { get; private set; }
 
         public MarkupStreamActivatorVisitor()
         {
             typeActivator = ControlTypeActivator.Default;
+            converterMapper = Converters.TypeConverterMapper.Default;
         }
 
         protected override void Init()
         {
-            objectStack = new Stack<object>();
-            lastBuiltValue = null;
-            lastBuiltValueIsList = false;
+            valuesStack = new Stack<ValueContext>();
+            valuesStack.Push(new ValueContext()); // result object
             base.Init();
         }
 
@@ -35,10 +36,12 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             base.AfterProcessing();
 
-            if (objectStack.Count > 0)
-                throw new InvalidOperationException("Object stack is not empty after processing.");
+            var result = valuesStack.Pop(); // pop root object
 
-            Result = GetLastBuiltValue();
+            if (valuesStack.Count > 0)
+                throw new InvalidOperationException("Context stack is not empty after processing.");
+
+            Result = result.Value;
         }
 
         protected override void OnFramePushing(MarkupFrame markupFrame)
@@ -71,20 +74,25 @@ namespace Redwood.Framework.RwHtml.Markup
             base.OnFramePopped(markupFrame);
         }
 
+        private void OnEndObjectFrame(MarkupFrame markupFrame)
+        {
+            
+        }
+
         private void OnEndMemberFrame(MarkupFrame markupFrame)
         {
             var propAccessor = markupFrame.Node.Member.PropertyAccessor;
             if (propAccessor == null)
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
-            var targetObj = objectStack.Peek();
-            var value = GetLastBuiltValue();
-            propAccessor.SetValue(targetObj, value);
+            var value = valuesStack.Pop();
+            var parent = valuesStack.Peek();
+            propAccessor.SetValue(parent.LastValue, value.Value);
         }
 
         private void OnBeginMemberFrame(MarkupFrame markupFrame)
         {
-            //   
+            valuesStack.Push(new ValueContext());
         }
 
         private void OnBeginObjectFrame(MarkupFrame markupFrame)
@@ -96,12 +104,7 @@ namespace Redwood.Framework.RwHtml.Markup
                 throw new InvalidOperationException("CLR type has not been resolved.");
             
             var instance = typeActivator.Activate(clrType);
-            objectStack.Push(instance);
-        }
-
-        private void OnEndObjectFrame(MarkupFrame markupFrame)
-        {
-            BuildValue(objectStack.Pop());
+            BuildValue(instance);
         }
 
         protected override MarkupNode VisitValueNode(MarkupNode node)
@@ -111,43 +114,56 @@ namespace Redwood.Framework.RwHtml.Markup
             if (propAccessor == null)
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
-            var value = Binding.DefaultModelBinder.ConvertValue(stringValue, propAccessor.Type);
-            BuildValue(value);
+            var converter = converterMapper.GetConverterForType(propAccessor.Type);
+            object resultValue;
+            if(!converter.TryConvertFromString(stringValue, out resultValue))
+                throw new InvalidOperationException("Can't convert value to " + propAccessor.Type.FullName);
+
+            BuildValue(resultValue);
             
             return base.VisitValueNode(node);
         }
 
         private void BuildValue(object value)
         {
-            if (lastBuiltValueIsList)
-            {
-                // another value
-                ((IList<object>)lastBuiltValue).Add(value);
-            }
-            else if (lastBuiltValue != null)
-            {
-                // second value - create list
-                var firstValue = lastBuiltValue;
-                var list = new List<object>();
-                lastBuiltValue = list;
-                list.Add(firstValue);
-                list.Add(value);
-            }
-            else
-            {
-                // first value
-                lastBuiltValue = value;
-            }
+            var context = valuesStack.Peek();
 
-
+            context.AddValue(value);
         }
 
-        private object GetLastBuiltValue()
+        
+        private class ValueContext
         {
-            var result = lastBuiltValue;
-            lastBuiltValue = null;
-            lastBuiltValueIsList = false;
-            return result;
+            public bool IsCollection { get; set; }
+            public object Value { get; set; }
+
+            public object LastValue { get; set; }
+
+            public void AddValue(object value)
+            {
+                if (IsCollection)
+                {
+                    // another value
+                    ((IList)Value).Add(value);
+                }
+                else if (Value != null)
+                {
+                    // second value - create list
+                    var firstValue = Value;
+                    var list = new List<object>();
+                    list.Add(firstValue);
+                    list.Add(value);
+                    Value = list;
+                }
+                else
+                {
+                    // first value
+                    Value = value;
+                }
+
+                // set last value
+                LastValue = value;
+            }
         }
     }
 }
