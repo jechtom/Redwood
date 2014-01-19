@@ -88,8 +88,25 @@ namespace Redwood.Framework.Binding.Parsing
             ReturnToken(new BindingTypeToken() { BindingTypeName = bindingType }, DistanceFromLastToken);
 
             // read comma-separated expressions
+            var isFirst = true;
             while (!IsAtEnd)
             {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    if (CurrentAtom != BindingAtom.Comma)
+                    {
+                        // TODO: comma or close brace expected
+                    }
+
+                    MoveNext();
+                    SkipWhiteSpaceOrNewLine();
+                    ReturnToken(new BindingCommaToken(), DistanceFromLastToken);
+                }
+
                 ReadExpression();
             }
         }
@@ -118,18 +135,12 @@ namespace Redwood.Framework.Binding.Parsing
             }
             else if (CurrentAtom == BindingAtom.Equal)
             {
-                // identifier = text/string
+                // identifier = string or expression
                 MoveNext();
                 SkipWhiteSpaceOrNewLine();
                 ReturnToken(new BindingEqualsToken(), DistanceFromLastToken);
 
-                if (CurrentAtom == BindingAtom.Text)
-                {
-                    var text = ReadText();
-                    SkipWhiteSpaceOrNewLine();
-                    ReturnToken(new BindingTextToken() { Text = text }, DistanceFromLastToken);
-                }
-                else if (CurrentAtom == BindingAtom.DoubleQuotes)
+                if (CurrentAtom == BindingAtom.DoubleQuotes)
                 {
                     MoveNext();
                     var start = DistanceFromLastToken;
@@ -145,7 +156,7 @@ namespace Redwood.Framework.Binding.Parsing
                 }
                 else
                 {
-                    // TODO: text or double quotes expected
+                    ReadExpression();
                 }
             }
             else if (CurrentAtom == BindingAtom.OpenBrace)

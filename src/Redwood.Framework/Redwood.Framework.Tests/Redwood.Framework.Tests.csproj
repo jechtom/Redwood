@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Binding\BindingTokenizerTests.cs" />
     <Compile Include="Hosting\CommandResolveTests.cs" />
     <Compile Include="Parsing\RwHtml\RwHtmlTokenizerTests.cs" />
     <Compile Include="Parsing\ViewModel\ReflectionViewModelMetadataExtractorTests.cs" />
