@@ -8,7 +8,7 @@ using Redwood.Framework.Parsing;
 using Redwood.Framework.RwHtml.Parsing;
 using Redwood.Framework.RwHtml.Parsing.Tokens;
 
-namespace Redwood.Framework.Tests.Parsing.RwHtml
+namespace Redwood.Framework.Tests.RwHtml
 {
     [TestClass]
     public class RwHtmlTokenizerTests

@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
+    [DefaultProperty("Path")]
     public class BindingBase : RwHtml.Markup.MarkupExpression
     {
-        [Flags]
-        private enum BindingFlags : uint
-        {
-            OneTime = 0u,
-            OneWay = 1u,
-            OneWayToSource = 2u,
-            TwoWay = OneWay | OneWayToSource
-        }
 
-        private BindingFlags flags;
+        /// <summary>
+        /// Gets or sets binding property path. Can be null.
+        /// </summary>
+        public Parsing.Expressions.BindingExpression Path { get; set; }
 
-        private PropertyPath path;
+        /// <summary>
+        /// Gets or sets the binding mode.
+        /// </summary>
+        public BindingFlags Mode { get; set; }
 
-        public bool IsOneTime
-        {
-            get
-            {
-                return flags == BindingFlags.OneTime;
-            }
-        }
+
 
         public object Evaluate(RedwoodBindable redwoodBindable)
         {
@@ -38,27 +30,14 @@ namespace Redwood.Framework.Binding
         {
             throw new NotImplementedException(); // todo: set binding
         }
+    }
 
-        /// <summary>
-        /// Gets or sets binding property path. Can be null.
-        /// </summary>
-        public PropertyPath Path
-        {
-            get
-            {
-                return path;
-            }
-            set
-            {
-                path = value;
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{{Binding{0}}}", 
-                Path == null ? "" : Path.ToString()
-            );
-        }
+    [Flags]
+    public enum BindingFlags : uint
+    {
+        OneTime = 0u,
+        OneWay = 1u,
+        OneWayToSource = 2u,
+        TwoWay = OneWay | OneWayToSource
     }
 }
