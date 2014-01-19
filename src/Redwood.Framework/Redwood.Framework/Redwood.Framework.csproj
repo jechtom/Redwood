@@ -53,6 +53,8 @@
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
+    <Compile Include="Binding\HtmlAttributePropertyAccessor.cs" />
+    <Compile Include="Binding\ICustomHtmlAttributes.cs" />
     <Compile Include="Binding\RedwoodPropertyAccessor.cs" />
     <Compile Include="Binding\PropertyBasicAccessor.cs" />
     <Compile Include="Binding\PropertyPath.cs" />
@@ -103,9 +105,9 @@
     <Compile Include="RwHtml\Markup\MarkupNode.cs" />
     <Compile Include="RwHtml\Markup\MarkupNodeType.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamActivatorVisitor.cs" />
+    <Compile Include="RwHtml\Markup\MarkupStreamHtmlElementVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamNamespaceVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamMapperVisitor.cs" />
-    <Compile Include="RwHtml\Markup\MarkupStreamSorter.cs" />
     <Compile Include="RwHtml\Markup\MarkupStreamVisitor.cs" />
     <Compile Include="RwHtml\Markup\MarkupType.cs" />
     <Compile Include="RwHtml\Markup\NamespaceDeclaration.cs" />

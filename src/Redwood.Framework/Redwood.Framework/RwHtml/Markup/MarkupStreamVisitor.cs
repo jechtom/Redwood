@@ -13,6 +13,7 @@ namespace Redwood.Framework.RwHtml.Markup
     {
         Stack<MarkupFrame> frameStack;
         Queue<MarkupNode> buffer;
+        Queue<MarkupNode> yeildReturnBuffer;
         bool useBuffer, releaseBuffer;
         MarkupFrame current;
 
@@ -24,7 +25,7 @@ namespace Redwood.Framework.RwHtml.Markup
             {
                 var visitedNode = VisitNode(node);
 
-                // release buffered nodes if required
+                // release buffered nodes from previous iterations if required
                 if(releaseBuffer)
                 {
                     releaseBuffer = false;
@@ -35,11 +36,25 @@ namespace Redwood.Framework.RwHtml.Markup
                 // use buffer or return node directly
                 if (useBuffer)
                 {
-                    buffer.Enqueue(visitedNode);
+                    // add current item to the buffer
+                    if(visitedNode != null)
+                        buffer.Enqueue(visitedNode);
+
+                    // buffer all other items added to return
+                    if (yeildReturnBuffer != null)
+                        while (yeildReturnBuffer.Count > 0)
+                            buffer.Enqueue(yeildReturnBuffer.Dequeue());
                 }
                 else
                 {
-                    yield return visitedNode;
+                    // return current item 
+                    if(visitedNode != null)
+                        yield return visitedNode;
+
+                    // return all other items added to return
+                    if (yeildReturnBuffer != null)
+                        while (yeildReturnBuffer.Count > 0)
+                            yield return yeildReturnBuffer.Dequeue();
                 }
             }
 
@@ -48,6 +63,19 @@ namespace Redwood.Framework.RwHtml.Markup
                 yield return buffer.Dequeue();
 
             AfterProcessing();
+        }
+
+        
+        /// <summary>
+        /// Adds another node to be returned to consumer after current item.
+        /// </summary>
+        /// <param name="node"></param>
+        protected void YieldReturnAfterCurrentNode(MarkupNode node)
+        {
+            if (yeildReturnBuffer == null)
+                yeildReturnBuffer = new Queue<MarkupNode>();
+            
+            yeildReturnBuffer.Enqueue(node);
         }
 
         /// <summary>
@@ -70,6 +98,7 @@ namespace Redwood.Framework.RwHtml.Markup
         protected virtual void Init()
         {
             buffer = new Queue<MarkupNode>();
+            yeildReturnBuffer = null;
             useBuffer = false;
             releaseBuffer = false;
             frameStack = new Stack<MarkupFrame>();

@@ -31,5 +31,10 @@ namespace Redwood.Framework.Binding
 
             instanceBindable.SetValue(PropertyInfo, value);
         }
+
+        public Type Type
+        {
+            get { return PropertyInfo.PropertyType; }
+        }
     }
 }

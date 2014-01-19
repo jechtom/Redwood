@@ -27,19 +27,21 @@ namespace Redwood.Framework.RwHtml
             // 
         }
 
-        public RedwoodControl LoadFromString(string rwhtml)
+        public object LoadFromString(string rwhtml)
         {
             var input = new Parsing.StringTextReader(rwhtml);
             return LoadFrom(input);
         }
 
-        public RedwoodControl LoadFrom(Parsing.StringTextReader input)
+        public object LoadFrom(Parsing.StringTextReader input)
         {
             var tokenizer = new Redwood.Framework.RwHtml.Parsing.RwHtmlTokenizer();
             var tokenParser = new Redwood.Framework.RwHtml.Parsing.RwHtmlTokenToMarkupParser();
             var namespaceVisitor = new Redwood.Framework.RwHtml.Markup.MarkupStreamNamespaceVisitor(defaultNamespaces);
+            var htmlElementVisitor = new Redwood.Framework.RwHtml.Markup.MarkupStreamHtmlElementVisitor();
             var mapperVisitor = new Redwood.Framework.RwHtml.Markup.MarkupStreamMapperVisitor();
-
+            var activatorVisitor = new Redwood.Framework.RwHtml.Markup.MarkupStreamActivatorVisitor();
+            
             // tokenize input
             var tokenizerOutput = tokenizer.Parse(input);
 
@@ -49,15 +51,21 @@ namespace Redwood.Framework.RwHtml
             // resolve namespaces
             var namespaceVisitorOutput = namespaceVisitor.Process(tokenParserOutput);
 
-            // map to CLR types and properties
-            var mapperVisitorOutput = mapperVisitor.Process(namespaceVisitorOutput);
+            // resolve "raw" HTML elements
+            var htmlElementVisitorOutput = htmlElementVisitor.Process(namespaceVisitorOutput);
 
-            foreach (var item in mapperVisitorOutput)
+            // map to CLR types and properties
+            var mapperVisitorOutput = mapperVisitor.Process(htmlElementVisitorOutput);
+
+            // activate object
+            var activatorVisitorOutput = activatorVisitor.Process(mapperVisitorOutput);
+
+            foreach (var item in activatorVisitorOutput)
             {
                 Debug.WriteLine(item.ToDebugString());
             }
 
-            return null;
+            return activatorVisitor.Result;
         }
 
         //private RedwoodControl BuildControl(MarkupElement element)

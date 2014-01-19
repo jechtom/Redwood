@@ -7,28 +7,33 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
-    public class HtmlElement : ContainerControl
+    public class HtmlElement : ContentControl, ICustomHtmlAttributes
     {
-        public string ElementName
+        public string Element
         {
             get
             {
-                return (string)GetValue(ElementNameProperty);
+                return (string)GetValue(ElementProperty);
             }
             set
             {
-                SetValue(ElementNameProperty, value);
+                SetValue(ElementProperty, value);
             }
         }
 
-        public static readonly RedwoodProperty ElementNameProperty = RedwoodProperty.Register<string, HtmlElement>("ElementName");
+        public static readonly RedwoodProperty ElementProperty = RedwoodProperty.Register<string, HtmlElement>("Element");
 
         public override void Render(Generation.IHtmlWriter writer)
         {
-            writer.RenderBeginTag(ElementName);
+            writer.RenderBeginTag(Element);
             // TODO write HTML element properties
             base.Render(writer);
             writer.RenderEndTag();
+        }
+
+        public void SetAttributeValue(string name, string value)
+        {
+            // TODO do something
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Redwood.Framework.RwHtml
         private string[] names;
         
         private string prefix;
-
+        
         public NameWithPrefix(string prefix, string[] names)
         {
             if(names == null || names.Length == 0)
@@ -23,6 +23,15 @@ namespace Redwood.Framework.RwHtml
 
             this.names = names;
             this.prefix = prefix;
+        }
+
+        public NameWithPrefix(string singleName)
+        {
+            if (string.IsNullOrWhiteSpace(singleName))
+                throw new ArgumentException("Parameter is null or white space.", "singleName");
+
+            this.prefix = null;
+            this.names = new[] { singleName };
         }
 
         /// <summary>
@@ -66,6 +75,14 @@ namespace Redwood.Framework.RwHtml
             get
             {
                 return names.Length > 1;
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return names == null;
             }
         }
 
@@ -184,6 +201,28 @@ namespace Redwood.Framework.RwHtml
         public NameWithPrefix ChangePrefix(string newPrefix)
         {
             return new NameWithPrefix(newPrefix, names);
+        }
+
+        public static NameWithPrefix Combine(NameWithPrefix p1, NameWithPrefix p2)
+        {
+            if (p2.HasPrefix)
+                throw new ArgumentException("Second name can't have prefix.", "p2");
+
+            string[] names = new string[p1.names.Length + p2.names.Length];
+            Array.Copy(p1.names, names, p1.names.Length);
+            Array.Copy(p2.names, 0, names, p1.names.Length, p2.names.Length);
+            return new NameWithPrefix(p1.prefix, names);
+        }
+
+        public NameWithPrefix AddName(string nameToAdd)
+        {
+            if (string.IsNullOrWhiteSpace(nameToAdd))
+                throw new ArgumentException("Value is null or white space.", "nameToAdd");
+
+            string[] namesNew = new string[this.names.Length + 1];
+            Array.Copy(names, namesNew, names.Length);
+            namesNew[names.Length - 1] = nameToAdd;
+            return new NameWithPrefix(prefix, namesNew);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Redwood.Framework.Binding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,10 @@ namespace Redwood.Framework.RwHtml.Markup
         private void OnBeginObjectFrame(MarkupFrame markupFrame)
         {
             var node = markupFrame.Node;
-            node.Type.ClrType = ResolveTypeForObjectNode(node);
+            if (node.Type.ClrType == null) // not resolved yet
+            {
+                node.Type.ClrType = ResolveTypeForObjectNode(node);
+            }
         }
 
         private Type ResolveTypeForObjectNode(MarkupNode node)
@@ -77,7 +81,6 @@ namespace Redwood.Framework.RwHtml.Markup
             var parentNode = markupFrame.ParentFrame.Node;
             parentNode.AssertType(MarkupNodeType.BeginObject);
 
-            
             if (node.Member.IsAttachedProperty)
             {
                 // resolve CLR type based on attached property and resolve attached property reference
@@ -85,13 +88,37 @@ namespace Redwood.Framework.RwHtml.Markup
                 node.Member.AttachedPropertyOwnerType = ResolveTypeForAttachedProperty(node, out attachedPropertyName);
                 node.Member.PropertyAccessor = propertyMapper.GetPropertyOrThrowError(node.Member.AttachedPropertyOwnerType, attachedPropertyName, false);
             }
+            else if (node.Member.IsCustomHtmlAttribute)
+            {
+                // custom HTML attributes
+                string attrName = node.Member.Name.ToString();
+                node.Member.PropertyAccessor = new Binding.HtmlAttributePropertyAccessor(attrName);
+            }
             else
             {
                 // find property accessor
                 var clrType = parentNode.Type.ClrType;
+                
+                // resolve content property name
+                if(node.Member.IsContentProperty)
+                {
+                    string contentPropName = FindContentPropertyName(clrType);
+                    node.Member.Name = new NameWithPrefix(null, new[] { contentPropName });
+                }
+
+                // resolve property
                 string name = node.Member.Name.SingleName();
                 node.Member.PropertyAccessor = propertyMapper.GetPropertyOrThrowError(clrType, name, false);
             }
+        }
+
+        private string FindContentPropertyName(Type clrType)
+        {
+            var attr = clrType.GetCustomAttributes(typeof(ContentPropertyAttribute), true).FirstOrDefault() as ContentPropertyAttribute;
+            if (attr == null)
+                throw new InvalidOperationException(string.Format("Type \"{0}\" is not decorated with ContentProperty attribute.", clrType.FullName));
+
+            return attr.PropertyName;
         }
     }
 }

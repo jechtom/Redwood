@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
-    public interface IPropertyAccessor
+    public interface ICustomHtmlAttributes
     {
-        void SetValue(object instance, object value);
-
-        Type Type { get; }
+        void SetAttributeValue(string name, string value);
     }
 }

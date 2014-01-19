@@ -13,14 +13,16 @@ namespace Redwood.Framework.RwHtml.Markup
         public string RwHtmlNamespace { get; set; }
         public NameWithPrefix Name { get; set; }
         public bool IsAttachedProperty { get; set; }
+        public bool IsCustomHtmlAttribute { get; set; }
         public Binding.IPropertyAccessor PropertyAccessor { get; set; }
         public Type AttachedPropertyOwnerType { get; set; }
 
         public override string ToString()
         {
             return string.Format(
-                    "{0} (inline: {1}, is attached: {2}) {3}",
-                    IsContentProperty ? "[ContentProperty]" : Name.ToString(), 
+                    "{0} {1} (inline: {2}, is attached: {3}) {4}",
+                    Name.ToString(),
+                    IsContentProperty ? "[ContentProperty]" : string.Empty, 
                     IsInlineDefinition, 
                     IsAttachedProperty,
                     RwHtmlNamespace

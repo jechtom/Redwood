@@ -15,6 +15,7 @@ namespace Redwood.Framework.Binding
                 throw new ArgumentNullException("propInfo");
 
             PropertyInfo = propInfo;
+            Type = propInfo.PropertyType;
         }
 
         public PropertyInfo PropertyInfo
@@ -26,6 +27,12 @@ namespace Redwood.Framework.Binding
         public void SetValue(object instance, object value)
         {
             PropertyInfo.SetValue(instance, value);
+        }
+
+        public Type Type
+        {
+            get;
+            private set;
         }
     }
 }
