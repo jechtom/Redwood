@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Redwood.Framework.RwHtml
+namespace Redwood.Framework.RwHtml.Converters
 {
     public static class EnumHelpers
     {

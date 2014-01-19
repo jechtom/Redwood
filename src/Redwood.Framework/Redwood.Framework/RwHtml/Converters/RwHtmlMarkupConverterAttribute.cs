@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.RwHtml
+namespace Redwood.Framework.RwHtml.Converters
 {
     /// <summary>
     /// An attribute that specifies which converter will be used to parse this value literal in the RwHtml markup.

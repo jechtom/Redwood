@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.RwHtml
+namespace Redwood.Framework.RwHtml.Converters
 {
     /// <summary>
     /// Converts the value from the string in RwHtml markup to the desired type.

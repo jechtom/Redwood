@@ -96,7 +96,12 @@
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
     <Compile Include="RwHtml\ControlTypeActivator.cs" />
-    <Compile Include="RwHtml\EnumHelpers.cs" />
+    <Compile Include="RwHtml\Converters\EnumRwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\NullableRwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\StringRwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\TypeConverterMapper.cs" />
+    <Compile Include="RwHtml\Converters\TypeConverterRwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\EnumHelpers.cs" />
     <Compile Include="RwHtml\Markup\DebugExtensions.cs" />
     <Compile Include="Binding\IPropertyAccessor.cs" />
     <Compile Include="RwHtml\Markup\MarkupBuildingContext.cs" />
@@ -118,8 +123,8 @@
     <Compile Include="RwHtml\Markup\MarkupValue.cs" />
     <Compile Include="RwHtml\Markup\MarkupAttributes.cs" />
     <Compile Include="RwHtml\Markup\MarkupElement.cs" />
-    <Compile Include="RwHtml\RwHtmlMarkupConverter.cs" />
-    <Compile Include="RwHtml\RwHtmlMarkupConverterAttribute.cs" />
+    <Compile Include="RwHtml\Converters\RwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\RwHtmlMarkupConverterAttribute.cs" />
     <Compile Include="RwHtml\RwHtmlSerializer.cs" />
     <Compile Include="RwHtml\Parsing\BaseTokenizer.cs" />
     <Compile Include="RwHtml\Parsing\ITextReader.cs" />
@@ -155,7 +160,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RwHtml\RwHtmlCrlNamespaceMapper.cs" />
     <Compile Include="RwHtml\RwHtmlNamespaceScope.cs" />
-    <Compile Include="RwHtml\TypeConverterMapper.cs" />
     <Compile Include="ViewModel\ClientImplementationAttribute.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
