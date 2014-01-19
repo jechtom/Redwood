@@ -27,7 +27,7 @@ namespace Redwood.Framework.RwHtml.Markup
             if(!IsHtmlBeginObjectNode(node))
                 return base.VisitBeginObjectNode(node);
 
-            string htmlElementName = node.Type.Name.ToString();
+            string htmlElementName = node.Type.Name.RwHtmlFormat;
 
             // replace html element with control
             node.Type = new MarkupType()
@@ -70,6 +70,15 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             // namespace not resolved
             return node.Type.RwHtmlNamespace == null;
+        }
+
+        protected override MarkupNode VisitBeginMemberNode(MarkupNode node)
+        {
+            // inline attribute inside HTML element?
+            if (CurrentFrame.Node.Type.ClrType == HtmlElementType && node.Member.IsInlineDefinition)
+                node.Member.IsCustomHtmlAttribute = true; // members are custom HTML attributes
+
+            return base.VisitBeginMemberNode(node);
         }
     }
 }

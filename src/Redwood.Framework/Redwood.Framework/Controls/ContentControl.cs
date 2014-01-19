@@ -1,5 +1,6 @@
 ﻿using Redwood.Framework.Binding;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,12 +25,33 @@ namespace Redwood.Framework.Controls
         public override void Render(Generation.IHtmlWriter writer)
         {
             var content = Content;
+
+            if (content is IEnumerable)
+            {
+                // list
+                foreach (var item in (IEnumerable)content)
+                {
+                    RenderObject(writer, item);
+                }
+            }
+            else
+            {
+                // single object
+                RenderObject(writer, content);
+            }
+        }
+
+        private static void RenderObject(Generation.IHtmlWriter writer, object content)
+        {
             if (content == null)
                 return;
 
             // render nested control
             if (content is IRenderable)
+            {
                 ((IRenderable)content).Render(writer);
+                return;
+            }
 
             // render text value
             string contentText;

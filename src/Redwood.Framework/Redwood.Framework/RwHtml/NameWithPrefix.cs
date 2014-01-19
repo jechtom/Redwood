@@ -120,7 +120,10 @@ namespace Redwood.Framework.RwHtml
 
         public override string ToString()
         {
-            return Prefix + ":" + string.Join(".", Names ?? new [] { "N/A" });
+            if (IsEmpty)
+                return "N/A";
+            else
+                return RwHtmlFormat;
         }
 
         public override bool Equals(object obj)
@@ -223,6 +226,36 @@ namespace Redwood.Framework.RwHtml
             Array.Copy(names, namesNew, names.Length);
             namesNew[names.Length - 1] = nameToAdd;
             return new NameWithPrefix(prefix, namesNew);
+        }
+
+        public string RwHtmlFormat
+        {
+            get
+            {
+                if (IsEmpty)
+                    return null;
+
+                int len = HasPrefix ? (prefix.Length + 1) : 0; // prefix
+                len += names.Length - 1; // dots
+                for (int i = 0; i < names.Length; i++)
+                    len += names[i].Length; // names
+
+                var sb = new StringBuilder(len);
+                if (HasPrefix)
+                {
+                    sb.Append(prefix);
+                    sb.Append(":");
+                }
+
+                for (int i = 0; i < names.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(".");
+                    sb.Append(names[i]);
+                }
+
+                return sb.ToString();
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Redwood.Framework.RwHtml.Markup
         ControlTypeActivator typeActivator;
         Stack<object> objectStack;
         object lastBuiltValue;
+        bool lastBuiltValueIsList;
 
         public object Result { get; private set; }
 
@@ -26,6 +27,7 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             objectStack = new Stack<object>();
             lastBuiltValue = null;
+            lastBuiltValueIsList = false;
             base.Init();
         }
 
@@ -36,7 +38,7 @@ namespace Redwood.Framework.RwHtml.Markup
             if (objectStack.Count > 0)
                 throw new InvalidOperationException("Object stack is not empty after processing.");
 
-            Result = lastBuiltValue;
+            Result = GetLastBuiltValue();
         }
 
         protected override void OnFramePushing(MarkupFrame markupFrame)
@@ -76,7 +78,8 @@ namespace Redwood.Framework.RwHtml.Markup
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
             var targetObj = objectStack.Peek();
-            propAccessor.SetValue(targetObj, lastBuiltValue);
+            var value = GetLastBuiltValue();
+            propAccessor.SetValue(targetObj, value);
         }
 
         private void OnBeginMemberFrame(MarkupFrame markupFrame)
@@ -98,7 +101,7 @@ namespace Redwood.Framework.RwHtml.Markup
 
         private void OnEndObjectFrame(MarkupFrame markupFrame)
         {
-            lastBuiltValue = objectStack.Pop();
+            BuildValue(objectStack.Pop());
         }
 
         protected override MarkupNode VisitValueNode(MarkupNode node)
@@ -108,9 +111,43 @@ namespace Redwood.Framework.RwHtml.Markup
             if (propAccessor == null)
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
-            lastBuiltValue = Binding.DefaultModelBinder.ConvertValue(stringValue, propAccessor.Type);
-
+            var value = Binding.DefaultModelBinder.ConvertValue(stringValue, propAccessor.Type);
+            BuildValue(value);
+            
             return base.VisitValueNode(node);
+        }
+
+        private void BuildValue(object value)
+        {
+            if (lastBuiltValueIsList)
+            {
+                // another value
+                ((IList<object>)lastBuiltValue).Add(value);
+            }
+            else if (lastBuiltValue != null)
+            {
+                // second value - create list
+                var firstValue = lastBuiltValue;
+                var list = new List<object>();
+                lastBuiltValue = list;
+                list.Add(firstValue);
+                list.Add(value);
+            }
+            else
+            {
+                // first value
+                lastBuiltValue = value;
+            }
+
+
+        }
+
+        private object GetLastBuiltValue()
+        {
+            var result = lastBuiltValue;
+            lastBuiltValue = null;
+            lastBuiltValueIsList = false;
+            return result;
         }
     }
 }

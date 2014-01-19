@@ -43,6 +43,8 @@ namespace Redwood.Framework.Binding
         {
             VerifyAccess();
 
+            property.ValidatePropertyValue(value);
+
             var itemRef = TryFindLocalValue(property.Id);
             UpdateLocalValue(itemRef, new ValueEntry()
             {

@@ -77,12 +77,22 @@ namespace Redwood.Framework.Tests.RwHtml
             string rwhtml =
 @"<rw:ContentControl>
     <div class=""form"">
-        <rw:TextBox Text=""Hello Redwood!"" />
+        <ul>
+            <li>
+                <rw:TextBox Text=""Hello Redwood!"" />
+            </li>
+        </ul>
     </div>
 </rw:ContentControl>";
+            rwhtml = new System.Net.WebClient().DownloadString("http://www.dotnetportal.cz/");
+
+            rwhtml = "<rw:ContentControl>" + rwhtml + "</rw:ContentControl>";
 
             var serializer = new RwHtmlSerializer();
             var result = (ContentControl)serializer.LoadFromString(rwhtml);
+            var writer = new Generation.HtmlWriter();
+            result.Render(writer);
+            var str = writer.ToString();
         }
 
         [TestMethod]

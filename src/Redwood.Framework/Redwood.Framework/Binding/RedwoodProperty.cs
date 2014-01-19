@@ -125,5 +125,24 @@ namespace Redwood.Framework.Binding
             var result = RedwoodPropertyMap.Default.GetPropertyByNameForType(name, clrType);
             return result;
         }
+
+        public void ValidatePropertyValue(object value)
+        {
+            if (PropertyType.IsValueType && value == null)
+                throw new InvalidOperationException(
+                    string.Format("Value null is invalid for value type property {0}.", Name)
+                    );
+
+            if (value == null)
+                return; // ok
+
+            if (!propertyType.IsAssignableFrom(value.GetType()))
+                throw new InvalidOperationException(
+                    string.Format("Value of type {0} (property {1}) is not assignable from {2}.", 
+                        propertyType.Name,    
+                        Name,
+                        value.GetType()
+                    ));
+        }
     }
 }
