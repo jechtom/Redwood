@@ -28,10 +28,15 @@ namespace Redwood.Framework.Binding
                 return flags == BindingFlags.OneTime;
             }
         }
-            
+
         public object Evaluate(RedwoodBindable redwoodBindable)
         {
             throw new NotImplementedException();
+        }
+
+        public override object EvaluateMarkupExpression(RwHtml.Markup.MarkupExpressionEvaluationContext context)
+        {
+            throw new NotImplementedException(); // todo: set binding
         }
 
         /// <summary>
@@ -54,11 +59,6 @@ namespace Redwood.Framework.Binding
             return string.Format("{{Binding{0}}}", 
                 Path == null ? "" : Path.ToString()
             );
-        }
-
-        public override object Evaluate(RwHtml.Markup.MarkupExpressionEvaluationContext context)
-        {
-            throw new NotImplementedException(); // todo: set binding
         }
     }
 }

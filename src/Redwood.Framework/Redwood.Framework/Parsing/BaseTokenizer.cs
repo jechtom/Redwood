@@ -5,7 +5,7 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Redwood.Framework.RwHtml.Parsing
+namespace Redwood.Framework.Parsing
 {
     public abstract class BaseTokenizer<TAtom, TToken> where TToken : IToken
     {

@@ -4,10 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Redwood.Framework.Parsing;
 using Redwood.Framework.RwHtml.Parsing;
 using Redwood.Framework.RwHtml.Parsing.Tokens;
-using Redwood.Framework.RwHtml;
 
 namespace Redwood.Framework.Tests.Parsing.RwHtml
 {

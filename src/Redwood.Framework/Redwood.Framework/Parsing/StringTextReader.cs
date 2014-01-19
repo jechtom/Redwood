@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redwood.Framework.RwHtml.Parsing
+namespace Redwood.Framework.Parsing
 {
     public class StringTextReader : ITextReader
     {

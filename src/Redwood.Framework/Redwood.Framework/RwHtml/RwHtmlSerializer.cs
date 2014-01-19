@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Parsing;
 using Redwood.Framework.RwHtml.Markup;
 
 namespace Redwood.Framework.RwHtml
@@ -29,11 +30,11 @@ namespace Redwood.Framework.RwHtml
 
         public object LoadFromString(string rwhtml)
         {
-            var input = new Parsing.StringTextReader(rwhtml);
+            var input = new StringTextReader(rwhtml);
             return LoadFrom(input);
         }
 
-        public object LoadFrom(Parsing.StringTextReader input)
+        public object LoadFrom(StringTextReader input)
         {
             var tokenizer = new Redwood.Framework.RwHtml.Parsing.RwHtmlTokenizer();
             var tokenParser = new Redwood.Framework.RwHtml.Parsing.RwHtmlTokenToMarkupParser();
