@@ -18,10 +18,10 @@ namespace Redwood.Framework.RwHtml.Converters
 
         public RwHtmlMarkupConverter GetConverterForType(Type outputType)
         {
-            // string
-            if (outputType == typeof(string))
+            // string or object
+            if (outputType == typeof(string) || outputType == typeof(object))
             {
-                return new StringRwHtmlMarkupConverter();
+                return new PassThroughRwHtmlMarkupConverter();
             }
 
             // nullable types

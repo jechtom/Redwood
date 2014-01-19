@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Redwood.Framework.RwHtml.Converters
 {
-    public class StringRwHtmlMarkupConverter : RwHtmlMarkupConverter
+    public class PassThroughRwHtmlMarkupConverter : RwHtmlMarkupConverter
     {
         protected override bool TryConvertFromStringCore(string value, out object result)
         {

@@ -108,7 +108,7 @@
     <Compile Include="RwHtml\ControlTypeActivator.cs" />
     <Compile Include="RwHtml\Converters\EnumRwHtmlMarkupConverter.cs" />
     <Compile Include="RwHtml\Converters\NullableRwHtmlMarkupConverter.cs" />
-    <Compile Include="RwHtml\Converters\StringRwHtmlMarkupConverter.cs" />
+    <Compile Include="RwHtml\Converters\PassThroughRwHtmlMarkupConverter.cs" />
     <Compile Include="RwHtml\Converters\TypeConverterMapper.cs" />
     <Compile Include="RwHtml\Converters\TypeConverterRwHtmlMarkupConverter.cs" />
     <Compile Include="RwHtml\Converters\EnumHelpers.cs" />
