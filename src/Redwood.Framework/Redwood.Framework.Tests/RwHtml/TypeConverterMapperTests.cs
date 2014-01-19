@@ -15,9 +15,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertString()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof (string));
             object result;
-            var success = mapper.TryConvertFromString("hello", typeof (string), out result);
+            var success = converter.TryConvertFromString("hello", out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual("hello", (string)result);
@@ -26,9 +26,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertInt32()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(int));
             object result;
-            var success = mapper.TryConvertFromString("-1567", typeof(int), out result);
+            var success = converter.TryConvertFromString("-1567", out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual(-1567, (int)result);
@@ -37,9 +37,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertDateTime()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(DateTime));
             object result;
-            var success = mapper.TryConvertFromString("2000-01-05", typeof(DateTime), out result);
+            var success = converter.TryConvertFromString("2000-01-05", out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual(new DateTime(2000, 1, 5), (DateTime)result);
@@ -48,9 +48,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertDateTime_Invalid()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(DateTime));
             object result;
-            var success = mapper.TryConvertFromString("heureka", typeof(DateTime), out result);
+            var success = converter.TryConvertFromString("heureka", out result);
 
             Assert.IsFalse(success);
         }
@@ -58,9 +58,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertEnumMember()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(TestEnum));
             object result;
-            var success = mapper.TryConvertFromString("deux", typeof(TestEnum), out result);
+            var success = converter.TryConvertFromString("deux", out result);
             
             Assert.IsTrue(success);
             Assert.AreEqual(TestEnum.Deux, (TestEnum)result);
@@ -69,9 +69,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertNullableInt32_Empty()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(int?));
             object result;
-            var success = mapper.TryConvertFromString("", typeof(int?), out result);
+            var success = converter.TryConvertFromString("", out result);
             
             Assert.IsTrue(success);
             Assert.IsNull(result);
@@ -80,9 +80,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_ConvertNullableInt32_ValueSpecified()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(int?));
             object result;
-            var success = mapper.TryConvertFromString("15", typeof(int?), out result);
+            var success = converter.TryConvertFromString("15", out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual(15, (int?)result);
@@ -92,9 +92,9 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void TypeConverterMapper_CustomConverter()
         {
-            var mapper = new TypeConverterMapper();
+            var converter = new TypeConverterMapper().GetConverterForType(typeof(TestStruct));
             object result;
-            var success = mapper.TryConvertFromString("15,16", typeof(TestStruct), out result);
+            var success = converter.TryConvertFromString("15,16", out result);
 
             Assert.IsTrue(success);
             Assert.AreEqual(new TestStruct(15, 16), (TestStruct)result);
