@@ -106,6 +106,7 @@
     <Compile Include="Binding\IPropertyAccessor.cs" />
     <Compile Include="RwHtml\Markup\MarkupBuildingContext.cs" />
     <Compile Include="RwHtml\Markup\MarkupExpression.cs" />
+    <Compile Include="RwHtml\Markup\MarkupExpressionEvaluationContext.cs" />
     <Compile Include="RwHtml\Markup\MarkupFrame.cs" />
     <Compile Include="RwHtml\Markup\MarkupFrameType.cs" />
     <Compile Include="RwHtml\Markup\MarkupMember.cs" />

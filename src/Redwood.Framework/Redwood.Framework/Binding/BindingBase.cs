@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
-    public class BindingBase
+    public class BindingBase : RwHtml.Markup.MarkupExpression
     {
         [Flags]
         private enum BindingFlags : uint
@@ -54,6 +54,11 @@ namespace Redwood.Framework.Binding
             return string.Format("{{Binding{0}}}", 
                 Path == null ? "" : Path.ToString()
             );
+        }
+
+        public override object Evaluate(RwHtml.Markup.MarkupExpressionEvaluationContext context)
+        {
+            throw new NotImplementedException(); // todo: set binding
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Redwood.Framework.RwHtml.Markup
     /// </summary>
     public abstract class MarkupExpression
     {
-        public abstract object Evaluate();
+        public abstract object Evaluate(MarkupExpressionEvaluationContext context);
     }
 }
