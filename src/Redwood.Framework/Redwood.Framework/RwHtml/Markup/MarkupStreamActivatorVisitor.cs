@@ -15,6 +15,7 @@ namespace Redwood.Framework.RwHtml.Markup
         
         ControlTypeActivator typeActivator;
         Stack<ValueContext> valuesStack;
+        Stack<object> objectsStack;
         Converters.TypeConverterMapper converterMapper;
         
         public object Result { get; private set; }
@@ -29,6 +30,7 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             valuesStack = new Stack<ValueContext>();
             valuesStack.Push(new ValueContext()); // result object
+            objectsStack = new Stack<object>();
             base.Init();
         }
 
@@ -76,7 +78,8 @@ namespace Redwood.Framework.RwHtml.Markup
 
         private void OnEndObjectFrame(MarkupFrame markupFrame)
         {
-            
+            // pop activated object
+            objectsStack.Pop();
         }
 
         private void OnEndMemberFrame(MarkupFrame markupFrame)
@@ -86,8 +89,8 @@ namespace Redwood.Framework.RwHtml.Markup
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
             var value = valuesStack.Pop();
-            var parent = valuesStack.Peek();
-            propAccessor.SetValue(parent.LastValue, value.Value);
+            var parent = objectsStack.Peek();
+            propAccessor.SetValue(parent, value.Value);
         }
 
         private void OnBeginMemberFrame(MarkupFrame markupFrame)
@@ -104,6 +107,7 @@ namespace Redwood.Framework.RwHtml.Markup
                 throw new InvalidOperationException("CLR type has not been resolved.");
             
             var instance = typeActivator.Activate(clrType);
+            objectsStack.Push(instance);
             BuildValue(instance);
         }
 
