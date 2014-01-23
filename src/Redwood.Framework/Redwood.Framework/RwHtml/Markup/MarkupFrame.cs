@@ -8,7 +8,9 @@ namespace Redwood.Framework.RwHtml.Markup
 {
     public class MarkupFrame
     {
-        private MarkupFrame(MarkupFrame parent, MarkupFrameType type, MarkupNode node)
+        bool isInited = false;
+
+        public void Init(MarkupFrame parent, MarkupFrameType type, MarkupNode node)
         {
             if (parent == null)
             {
@@ -22,32 +24,14 @@ namespace Redwood.Framework.RwHtml.Markup
 
             FrameType = type;
             Node = node;
+
+            isInited = true;
         }
 
-        public static MarkupFrame CreateRoot(MarkupNode beginObjectNode)
+        protected void EnsureInited()
         {
-            beginObjectNode.AssertType(MarkupNodeType.BeginObject);
-            return new MarkupFrame(null, MarkupFrameType.Object, beginObjectNode);
-        }
-
-        public MarkupFrame CreateNestedBeginObject(MarkupNode beginObjectNode)
-        {
-            beginObjectNode.AssertType(MarkupNodeType.BeginObject);
-
-            if (!IsMemberFrame)
-                throw new InvalidOperationException("Object frame is valid only in member frame.");
-
-            return new MarkupFrame(this, MarkupFrameType.Object, beginObjectNode);
-        }
-
-        public MarkupFrame CreateNestedBeginMember(MarkupNode beginMemberNode)
-        {
-            beginMemberNode.AssertType(MarkupNodeType.BeginMember);
-
-            if (!IsObjectFrame)
-                throw new InvalidOperationException("Member frame is valid only in object frame.");
-
-            return new MarkupFrame(this, MarkupFrameType.Member, beginMemberNode);
+            if (!isInited)
+                throw new InvalidOperationException("Invalid operation. MarkupFrame is not yet inited.");
         }
 
         public int Depth { get; private set; }

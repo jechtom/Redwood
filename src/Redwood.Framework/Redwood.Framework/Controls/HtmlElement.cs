@@ -35,5 +35,10 @@ namespace Redwood.Framework.Controls
         {
             // TODO do something
         }
+
+        public override string ToString()
+        {
+            return "<" + Element + ">";
+        }
     }
 }

@@ -8,8 +8,6 @@ namespace Redwood.Framework.RwHtml.Markup
 {
     public class MarkupExpressionEvaluationContext
     {
-        public object TargetInstane { get; set; }
-
         public IPropertyAccessor TargetProperty { get; set; }
     }
 }

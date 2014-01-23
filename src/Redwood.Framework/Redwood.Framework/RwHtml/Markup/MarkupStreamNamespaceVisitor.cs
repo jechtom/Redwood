@@ -9,7 +9,7 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <summary>
     /// Reads namespace declarations and maps it to the markup nodes.
     /// </summary>
-    public class MarkupStreamNamespaceVisitor : MarkupStreamVisitor
+    public class MarkupStreamNamespaceVisitor : MarkupStreamVisitor<MarkupFrame>
     {
         RwHtmlNamespaceScope namespaceScope;
         Markup.NamespaceDeclaration[] defaultNamespaces;

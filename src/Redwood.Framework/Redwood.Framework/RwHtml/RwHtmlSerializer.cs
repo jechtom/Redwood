@@ -63,7 +63,7 @@ namespace Redwood.Framework.RwHtml
 
             foreach (var item in activatorVisitorOutput)
             {
-                Debug.WriteLine(item.ToDebugString());
+                //Debug.WriteLine(item.ToDebugString());
             }
 
             return activatorVisitor.Result;

@@ -11,7 +11,7 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <summary>
     /// Reads HTML elements and maps it to CLR controls.
     /// </summary>
-    public class MarkupStreamHtmlElementVisitor : MarkupStreamVisitor
+    public class MarkupStreamHtmlElementVisitor : MarkupStreamVisitor<MarkupFrame>
     {
         const string HtmlElementNamespace = Redwood.Framework.Controls.RedwoodControl.DefaultSchemaNamespaceName;
         readonly static Type HtmlElementType = typeof(HtmlElement);

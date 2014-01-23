@@ -10,13 +10,12 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <summary>
     /// Reads objects and members and activates CLR objects.
     /// </summary>
-    public class MarkupStreamActivatorVisitor : MarkupStreamVisitor
-    {
-        
+    public class MarkupStreamActivatorVisitor : MarkupStreamVisitor<MarkupStreamActivatorFrame>
+    {   
         ControlTypeActivator typeActivator;
-        Stack<ValueContext> valuesStack;
-        Stack<object> objectsStack;
         Converters.TypeConverterMapper converterMapper;
+        MarkupStreamActivatorFrame lastFrame;
+        Binding.Parsing.BindingParser bindingParser;
         
         public object Result { get; private set; }
 
@@ -24,29 +23,23 @@ namespace Redwood.Framework.RwHtml.Markup
         {
             typeActivator = ControlTypeActivator.Default;
             converterMapper = Converters.TypeConverterMapper.Default;
+            bindingParser = new Binding.Parsing.BindingParser();
         }
 
         protected override void Init()
         {
-            valuesStack = new Stack<ValueContext>();
-            valuesStack.Push(new ValueContext()); // result object
-            objectsStack = new Stack<object>();
             base.Init();
+            lastFrame = null;
+            Result = null;
         }
 
         protected override void AfterProcessing()
         {
             base.AfterProcessing();
-
-            var result = valuesStack.Pop(); // pop root object
-
-            if (valuesStack.Count > 0)
-                throw new InvalidOperationException("Context stack is not empty after processing.");
-
-            Result = result.Value;
+            Result = lastFrame.Value;
         }
 
-        protected override void OnFramePushing(MarkupFrame markupFrame)
+        protected override void OnFramePushing(MarkupStreamActivatorFrame markupFrame)
         {
             switch (markupFrame.FrameType)
             {
@@ -61,7 +54,7 @@ namespace Redwood.Framework.RwHtml.Markup
             base.OnFramePushing(markupFrame);
         }
 
-        protected override void OnFramePopped(MarkupFrame markupFrame)
+        protected override void OnFramePopped(MarkupStreamActivatorFrame markupFrame)
         {
             switch (markupFrame.FrameType)
             {
@@ -74,99 +67,111 @@ namespace Redwood.Framework.RwHtml.Markup
             }
 
             base.OnFramePopped(markupFrame);
+            lastFrame = markupFrame; // set last frame
         }
 
-        private void OnEndObjectFrame(MarkupFrame markupFrame)
+        private void OnEndObjectFrame(MarkupStreamActivatorFrame markupFrame)
         {
-            // pop activated object
-            objectsStack.Pop();
         }
 
-        private void OnEndMemberFrame(MarkupFrame markupFrame)
+        private void OnEndMemberFrame(MarkupStreamActivatorFrame markupFrame)
         {
             var propAccessor = markupFrame.Node.Member.PropertyAccessor;
             if (propAccessor == null)
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
-            var value = valuesStack.Pop();
-            var parent = objectsStack.Peek();
-            propAccessor.SetValue(parent, value.Value);
+            // member is ending - set member value
+            var value = markupFrame.Value;
+            var parent = ((MarkupStreamActivatorFrame)markupFrame.ParentFrame).Value;
+            propAccessor.SetValue(parent, value);
         }
 
-        private void OnBeginMemberFrame(MarkupFrame markupFrame)
+        private void OnBeginMemberFrame(MarkupStreamActivatorFrame frame)
         {
-            valuesStack.Push(new ValueContext());
+            //
         }
 
-        private void OnBeginObjectFrame(MarkupFrame markupFrame)
+        private void OnBeginObjectFrame(MarkupStreamActivatorFrame frame)
         {
-            var node = markupFrame.Node;
+            var node = frame.Node;
             var clrType = node.Type.ClrType;
 
             if (clrType == null)
                 throw new InvalidOperationException("CLR type has not been resolved.");
             
             var instance = typeActivator.Activate(clrType);
-            objectsStack.Push(instance);
-            BuildValue(instance);
+            frame.Value = instance; // set current object instance
+
+            if (frame.Depth > 0)
+            {
+                var parentFrame = ((MarkupStreamActivatorFrame)frame.ParentFrame);
+                AddValueToMember(parentFrame, instance); // add instance to parent member definition
+            }
         }
 
         protected override MarkupNode VisitValueNode(MarkupNode node)
         {
+            // current frame have to be Member
+            if (CurrentFrame.FrameType != MarkupFrameType.Member)
+                throw new Parsing.RwHtmlParsingException("Member frame expected for value node.", node.CurrentPosition);
+
+            // get property accessor for this member
             string stringValue = node.Value.Value;
             var propAccessor = CurrentFrame.Node.Member.PropertyAccessor;
             if (propAccessor == null)
                 throw new InvalidOperationException("Property accessor has not been resolved.");
 
-            var converter = converterMapper.GetConverterForType(propAccessor.Type);
+            // expression?
             object resultValue;
-            if(!converter.TryConvertFromString(stringValue, out resultValue))
-                throw new InvalidOperationException("Can't convert value to " + propAccessor.Type.FullName);
+            if (node.Value.IsExpression && false /*TODO remove this hack when binding will work*/)
+            {
+                // parse expression and evaluate
+                var expr = bindingParser.ParseExpression(node.Value.Value);
+                var exprContext = new MarkupExpressionEvaluationContext()
+                    {
+                        TargetProperty = propAccessor
+                    };
+                resultValue = expr.EvaluateMarkupExpression(exprContext);
+            }
+            else
+            {
+                // convert value
+                var converter = converterMapper.GetConverterForType(propAccessor.Type);
+                if (!converter.TryConvertFromString(stringValue, out resultValue))
+                    throw new InvalidOperationException("Can't convert value to " + propAccessor.Type.FullName);
+            }
 
-            BuildValue(resultValue);
-            
+            // convert to raw html (don't encode)
+            if (propAccessor.Type == typeof(object) && resultValue is string)
+                resultValue = Redwood.Framework.Controls.HtmlContent.Create((string)resultValue);
+
+            // set value
+            AddValueToMember(CurrentFrame, resultValue);
+
             return base.VisitValueNode(node);
         }
 
-        private void BuildValue(object value)
+        private void AddValueToMember(MarkupStreamActivatorFrame memberFrame, object value)
         {
-            var context = valuesStack.Peek();
-
-            context.AddValue(value);
-        }
-
-        
-        private class ValueContext
-        {
-            public bool IsCollection { get; set; }
-            public object Value { get; set; }
-
-            public object LastValue { get; set; }
-
-            public void AddValue(object value)
+            if (memberFrame.IsCollection)
             {
-                if (IsCollection)
-                {
-                    // another value
-                    ((IList)Value).Add(value);
-                }
-                else if (Value != null)
-                {
-                    // second value - create list
-                    var firstValue = Value;
-                    var list = new List<object>();
-                    list.Add(firstValue);
-                    list.Add(value);
-                    Value = list;
-                }
-                else
-                {
-                    // first value
-                    Value = value;
-                }
-
-                // set last value
-                LastValue = value;
+                // another value
+                ((IList)memberFrame.Value).Add(value);
+            }
+            else if (memberFrame.Value != null)
+            {
+                // second value - create list
+                var firstValue = memberFrame.Value;
+                var list = new List<object>();
+                list.Add(firstValue);
+                list.Add(value);
+                memberFrame.Value = list;
+                memberFrame.IsCollection = true;
+            }
+            else
+            {
+                // first value
+                memberFrame.Value = value;
             }
         }
     }

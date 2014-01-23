@@ -10,7 +10,7 @@ namespace Redwood.Framework.RwHtml.Markup
     /// <summary>
     /// Reads objects and members and validates it against CLR objects.
     /// </summary>
-    public class MarkupStreamMapperVisitor : MarkupStreamVisitor
+    public class MarkupStreamMapperVisitor : MarkupStreamVisitor<MarkupFrame>
     {
         ControlTypeMapper typeMapper;
         PropertyMapper propertyMapper;
