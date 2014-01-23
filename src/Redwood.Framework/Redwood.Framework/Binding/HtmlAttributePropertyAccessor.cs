@@ -18,9 +18,29 @@ namespace Redwood.Framework.Binding
 
         public void SetValue(object instance, object value)
         {
-            var instanceObj = (ICustomHtmlAttributes)instance;
+            IHtmlAttributesStorage storage = ResolveAttributeStorageOrThrow(instance);
+            
             var valueStr = value == null ? null : value.ToString(); // should be always string
-            instanceObj.SetAttributeValue(PropertyName, valueStr);
+            storage.SetAttributeValue(PropertyName, valueStr);
+        }
+
+        public static IHtmlAttributesStorage ResolveAttributeStorageOrThrow(object instance)
+        {
+            IHtmlAttributesStorage storage;
+
+            if (instance is IHtmlAttributesStorageProvider)
+                storage = ((IHtmlAttributesStorageProvider)instance).ProvideStorage();
+            else if (instance is IHtmlAttributesStorage)
+                storage = (IHtmlAttributesStorage)instance;
+            else
+                throw new InvalidOperationException(
+                    string.Format("Custom HTML attributes are not supported on type {0}. It does not implements {1} or {2}.",
+                        instance.GetType().Name,
+                        typeof(IHtmlAttributesStorageProvider).Name,
+                        typeof(IHtmlAttributesStorage).Name
+                    ));
+
+            return storage;
         }
 
         public Type Type

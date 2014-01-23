@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Binding
 {
-    public interface ICustomHtmlAttributes
+    public interface IHtmlAttributesStorage
     {
         void SetAttributeValue(string name, string value);
     }

@@ -52,9 +52,11 @@
     <Compile Include="Binding\BindingExpression.cs" />
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />
+    <Compile Include="Binding\HtmlAttributesStorage.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
     <Compile Include="Binding\HtmlAttributePropertyAccessor.cs" />
-    <Compile Include="Binding\ICustomHtmlAttributes.cs" />
+    <Compile Include="Binding\IHtmlAttributesStorageProvider.cs" />
+    <Compile Include="Binding\IHtmlAttributesStorage.cs" />
     <Compile Include="Binding\Parsing\BindingParser.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingCallMethodExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingConstantExpression.cs" />

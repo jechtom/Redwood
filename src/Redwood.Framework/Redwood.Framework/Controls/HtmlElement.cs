@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
-    public class HtmlElement : ContentControl, ICustomHtmlAttributes
+    public class HtmlElement : ContentControl, IHtmlAttributesStorageProvider
     {
+        private HtmlAttributesStorage htmlAttributesStorage;
+
         public string Element
         {
             get
@@ -26,19 +28,22 @@ namespace Redwood.Framework.Controls
         public override void Render(Generation.IHtmlWriter writer)
         {
             writer.RenderBeginTag(Element);
-            // TODO write HTML element properties
+            if (htmlAttributesStorage != null)
+                htmlAttributesStorage.Render(writer);
             base.Render(writer);
             writer.RenderEndTag();
-        }
-
-        public void SetAttributeValue(string name, string value)
-        {
-            // TODO do something
         }
 
         public override string ToString()
         {
             return "<" + Element + ">";
+        }
+
+        public IHtmlAttributesStorage ProvideStorage()
+        {
+            if (htmlAttributesStorage == null)
+                htmlAttributesStorage = new HtmlAttributesStorage();
+            return htmlAttributesStorage;
         }
     }
 }
