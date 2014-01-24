@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding\BindingBase.cs" />
+    <Compile Include="Binding\BindingMarkupExpression.cs" />
     <Compile Include="Binding\BindingExpression.cs" />
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />
@@ -77,7 +77,6 @@
     <Compile Include="Binding\Parsing\Tokens\BindingTypeToken.cs" />
     <Compile Include="Binding\RedwoodPropertyAccessor.cs" />
     <Compile Include="Binding\PropertyBasicAccessor.cs" />
-    <Compile Include="Binding\PropertyPath.cs" />
     <Compile Include="Binding\RedwoodPropertyFlags.cs" />
     <Compile Include="Binding\RedwoodPropertyMetadata.cs" />
     <Compile Include="Controls\Button.cs" />
@@ -142,7 +141,6 @@
     <Compile Include="RwHtml\Markup\MarkupType.cs" />
     <Compile Include="RwHtml\Markup\NamespaceDeclaration.cs" />
     <Compile Include="RwHtml\NameWithPrefix.cs" />
-    <Compile Include="RwHtml\ControlTreeBuilder.cs" />
     <Compile Include="RwHtml\Markup\MarkupValue.cs" />
     <Compile Include="RwHtml\Markup\MarkupAttributes.cs" />
     <Compile Include="RwHtml\Markup\MarkupElement.cs" />

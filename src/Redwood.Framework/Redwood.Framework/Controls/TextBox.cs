@@ -53,7 +53,7 @@ namespace Redwood.Framework.Controls
             }
 
             // content
-            BindingBase expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            BindingMarkupExpression expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
             if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.WriteText(Text, true);

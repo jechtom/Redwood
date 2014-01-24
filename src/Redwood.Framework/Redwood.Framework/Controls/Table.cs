@@ -18,7 +18,7 @@ namespace Redwood.Framework.Controls
         {
             writer.RenderBeginTag("table");
 
-            BindingBase expr = KnockoutBindingHelper.GetExpressionOrNull(ItemsSourceProperty, this);
+            BindingMarkupExpression expr = KnockoutBindingHelper.GetExpressionOrNull(ItemsSourceProperty, this);
             if (KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 writer.RenderBeginTag("tbody");

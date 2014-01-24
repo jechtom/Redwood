@@ -123,7 +123,7 @@ namespace Redwood.Framework.RwHtml.Markup
 
             // expression?
             object resultValue;
-            if (node.Value.IsExpression && false /*TODO remove this hack when binding will work*/)
+            if (node.Value.IsExpression)
             {
                 // parse expression and evaluate
                 var expr = bindingParser.ParseExpression(node.Value.Value);

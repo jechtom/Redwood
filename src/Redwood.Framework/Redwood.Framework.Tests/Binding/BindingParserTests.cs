@@ -18,7 +18,7 @@ namespace Redwood.Framework.Tests.Binding
         public void BindingParser_NoParameters()
         {
             var parser = new BindingParser();
-            var binding = (BindingBase)parser.ParseExpression("Binding");
+            var binding = (BindingMarkupExpression)parser.ParseExpression("Binding");
             Assert.IsNull(binding.Path);
         }
 
@@ -26,7 +26,7 @@ namespace Redwood.Framework.Tests.Binding
         public void BindingParser_BindingWithDefaultProperty()
         {
             var parser = new BindingParser();
-            var binding = (BindingBase)parser.ParseExpression("Binding Test.Test2, Mode=TwoWay");
+            var binding = (BindingMarkupExpression)parser.ParseExpression("Binding Test.Test2, Mode=TwoWay");
 
             Assert.AreEqual(BindingFlags.TwoWay, binding.Mode);
 
@@ -43,7 +43,7 @@ namespace Redwood.Framework.Tests.Binding
         public void BindingParser_BindingWithSpecifiedPropertyName()
         {
             var parser = new BindingParser();
-            var binding = (BindingBase)parser.ParseExpression("Binding Path=Test.Test2");
+            var binding = (BindingMarkupExpression)parser.ParseExpression("Binding Path=Test.Test2");
 
             dynamic path = binding.Path;
 

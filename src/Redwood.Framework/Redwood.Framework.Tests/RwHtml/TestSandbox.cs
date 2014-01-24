@@ -96,11 +96,28 @@ namespace Redwood.Framework.Tests.RwHtml
         }
 
         [TestMethod]
+        public void SandBox4()
+        {
+            string rwhtml = 
+            @"<html>
+                <head>
+                    <title>{Title}</title>
+                </head>
+                <body>
+                    <rw:ContentControl />
+                </body>
+            </html>";
+            var serializer = new RwHtmlSerializer();
+            var result = (HtmlElement)serializer.LoadFromString(rwhtml);
+            
+        }
+
+        [TestMethod]
         public void BuildControlTreeFromRwhtml1()
         {
             string rwhtml = @"<html><rw:TextBox Text=""Hello!""  Mode=""Password"" /><rw:ContentControl /><aaa xmlns:aaa=""clr-namespace:Redwood.Framework.Controls;assembly=Redwood.Framework""><aaa:ContentControl></aaa:ContentControl></aaa></html>";
-            var builder = new ControlTreeBuilder();
-            builder.Build(rwhtml);
+            var serializer = new RwHtmlSerializer();
+            var result = serializer.LoadFromString(rwhtml);
         }
     }
 }
