@@ -35,7 +35,7 @@ namespace Redwood.Framework.Tests.RwHtml
 
 
         [TestMethod]
-        public void ValidInput_PlainOpenCloseTagsAndText()
+        public void RwHtmlTokenizer_ValidInput_PlainOpenCloseTagsAndText()
         {
             var input = "test <element> text </element> test";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -66,7 +66,7 @@ namespace Redwood.Framework.Tests.RwHtml
         }
 
         [TestMethod]
-        public void ValidInput_AttributeWithLiteralValue_SingleQuotes()
+        public void RwHtmlTokenizer_ValidInput_AttributeWithLiteralValue_SingleQuotes()
         {
             var input = "<element attr='value' /> ";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -93,7 +93,7 @@ namespace Redwood.Framework.Tests.RwHtml
         }
 
         [TestMethod]
-        public void ValidInput_AttributeWithBindingValue_DoubleQuotesAndSpaces()
+        public void RwHtmlTokenizer_ValidInput_AttributeWithBindingValue_DoubleQuotesAndSpaces()
         {
             var input = "< element   attr = \"{value}\"   /> ";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -120,7 +120,7 @@ namespace Redwood.Framework.Tests.RwHtml
         }
 
         [TestMethod]
-        public void ValidInput_AttributeWithLiteralValue_NoQuotes()
+        public void RwHtmlTokenizer_ValidInput_AttributeWithLiteralValue_NoQuotes()
         {
             var input = "<element attr=value_2 /> ";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -148,7 +148,7 @@ namespace Redwood.Framework.Tests.RwHtml
 
 
         [TestMethod]
-        public void ValidInput_EmptyLiteral()
+        public void RwHtmlTokenizer_ValidInput_EmptyLiteral()
         {
             var input = "";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -156,8 +156,117 @@ namespace Redwood.Framework.Tests.RwHtml
             Assert.AreEqual(0, tokens.Count);
         }
 
+
         [TestMethod]
-        public void ValidInput_SelfClosedControl()
+        public void RwHtmlTokenizer_ValidInput_ScriptContents()
+        {
+            var input = "test <script>if (xxx < 15) return;</script> test2";
+            var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+
+            Assert.AreEqual(6, tokens.Count);
+
+            Assert.IsInstanceOfType(tokens[0], typeof(RwValueToken));
+            Assert.AreEqual("test ", ((RwValueToken)tokens[0]).Text);
+            ValidateSpanContent(input, "test ", tokens[0].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagBeginToken));
+            Assert.AreEqual("script", ((RwOpenTagBeginToken)tokens[1]).TagName);
+            ValidateSpanContent(input, "<script", tokens[1].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
+            Assert.IsFalse(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
+            ValidateSpanContent(input, ">", tokens[2].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual("if (xxx < 15) return;", ((RwValueToken)tokens[3]).Text);
+            ValidateSpanContent(input, "if (xxx < 15) return;", tokens[3].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[4], typeof(RwCloseTagToken));
+            Assert.AreEqual("script", ((RwCloseTagToken)tokens[4]).TagName);
+            ValidateSpanContent(input, "</script>", tokens[4].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[5], typeof(RwValueToken));
+            Assert.AreEqual(" test2", ((RwValueToken)tokens[5]).Text);
+            ValidateSpanContent(input, " test2", tokens[5].SpanPosition);
+
+            ValidateTokenSequence(tokens, input.Length);
+        }
+
+        [TestMethod]
+        public void RwHtmlTokenizer_ValidInput_ScriptEndsAtEndOfFile()
+        {
+            var input = "test <script>if (xxx < 15) return;</script>";
+            var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+
+            Assert.AreEqual(5, tokens.Count);
+
+            Assert.IsInstanceOfType(tokens[0], typeof(RwValueToken));
+            Assert.AreEqual("test ", ((RwValueToken)tokens[0]).Text);
+            ValidateSpanContent(input, "test ", tokens[0].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagBeginToken));
+            Assert.AreEqual("script", ((RwOpenTagBeginToken)tokens[1]).TagName);
+            ValidateSpanContent(input, "<script", tokens[1].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
+            Assert.IsFalse(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
+            ValidateSpanContent(input, ">", tokens[2].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.AreEqual("if (xxx < 15) return;", ((RwValueToken)tokens[3]).Text);
+            ValidateSpanContent(input, "if (xxx < 15) return;", tokens[3].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[4], typeof(RwCloseTagToken));
+            Assert.AreEqual("script", ((RwCloseTagToken)tokens[4]).TagName);
+            ValidateSpanContent(input, "</script>", tokens[4].SpanPosition);
+
+            ValidateTokenSequence(tokens, input.Length);
+        }
+
+        [TestMethod]
+        public void RwHtmlTokenizer_ValidInput_BindingInsideScript()
+        {
+            var input = "test <script>if (xxx < {{Binding MaxValue}}) { return; }</script>";
+            var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+
+            Assert.AreEqual(7, tokens.Count);
+
+            Assert.IsInstanceOfType(tokens[0], typeof(RwValueToken));
+            Assert.AreEqual("test ", ((RwValueToken)tokens[0]).Text);
+            ValidateSpanContent(input, "test ", tokens[0].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagBeginToken));
+            Assert.AreEqual("script", ((RwOpenTagBeginToken)tokens[1]).TagName);
+            ValidateSpanContent(input, "<script", tokens[1].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagEndToken));
+            Assert.IsFalse(((RwOpenTagEndToken)tokens[2]).IsSelfClosing);
+            ValidateSpanContent(input, ">", tokens[2].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[3], typeof(RwValueToken));
+            Assert.IsFalse(((RwValueToken)tokens[3]).IsExpression);
+            Assert.AreEqual("if (xxx < ", ((RwValueToken)tokens[3]).Text);
+            ValidateSpanContent(input, "if (xxx < ", tokens[3].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[4], typeof(RwValueToken));
+            Assert.IsTrue(((RwValueToken)tokens[4]).IsExpression);
+            Assert.AreEqual("Binding MaxValue", ((RwValueToken)tokens[4]).Text);
+            ValidateSpanContent(input, "{{Binding MaxValue}}", tokens[4].SpanPosition);
+            
+            Assert.IsInstanceOfType(tokens[5], typeof(RwValueToken));
+            Assert.IsFalse(((RwValueToken)tokens[5]).IsExpression);
+            Assert.AreEqual(") { return; }", ((RwValueToken)tokens[5]).Text);
+            ValidateSpanContent(input, ") { return; }", tokens[5].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[6], typeof(RwCloseTagToken));
+            Assert.AreEqual("script", ((RwCloseTagToken)tokens[6]).TagName);
+            ValidateSpanContent(input, "</script>", tokens[6].SpanPosition);
+
+            ValidateTokenSequence(tokens, input.Length);
+        }
+
+        [TestMethod]
+        public void RwHtmlTokenizer_ValidInput_SelfClosedControl()
         {
             var input = "<html><c:Control Text=\"{Text, HtmlEncode=true}\" /></html>";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -195,7 +304,7 @@ namespace Redwood.Framework.Tests.RwHtml
         }
 
         [TestMethod]
-        public void ValidInput_ControlWithContent()
+        public void RwHtmlTokenizer_ValidInput_ControlWithContent()
         {
             var input = "<html><c:Control Text=\"{Text, HtmlEncode=true}\">test</c:Control></html> te";
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();
@@ -247,7 +356,7 @@ namespace Redwood.Framework.Tests.RwHtml
 
 
         [TestMethod]
-        public void ValidInput_Sample()
+        public void RwHtmlTokenizer_ValidInput_Sample()
         {
             var fileName = Path.Combine(TestContext.TestDeploymentDir, "..\\..\\..\\Redwood.Samples.Basic\\index.rwhtml");
             var input = File.ReadAllText(fileName, Encoding.UTF8);

@@ -79,7 +79,7 @@ namespace Redwood.Framework.Parsing
         /// <summary>
         /// Returns the token to the output.
         /// </summary>
-        protected void ReturnToken(TToken token, int tokenLength)
+        protected void ReturnToken(TToken token, int tokenLength, SpanPosition? nextTokenSpanPosition = null)
         {
             lastTokenSpanPosition.Length = tokenLength;
             token.SpanPosition = lastTokenSpanPosition;
@@ -87,7 +87,7 @@ namespace Redwood.Framework.Parsing
             tokens.Add(token);
 
             textSinceLastToken.Remove(0, tokenLength);
-            lastTokenSpanPosition = CurrentAtomPosition;
+            lastTokenSpanPosition = nextTokenSpanPosition ?? CurrentAtomPosition;
         }
 
         /// <summary>

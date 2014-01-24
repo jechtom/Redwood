@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Redwood.Framework.Parsing;
 using Redwood.Framework.RwHtml.Parsing.Tokens;
 
@@ -214,6 +215,12 @@ namespace Redwood.Framework.RwHtml.Parsing
                 {
                     MoveNext();
                     ReturnToken(new RwOpenTagEndToken(tagName, false), DistanceFromLastToken);
+
+                    if (string.Equals(tagName, "script", StringComparison.InvariantCultureIgnoreCase) ||
+                        string.Equals(tagName, "style", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        ReadLiteralUntilEndTag(tagName);
+                    }
                 }
                 else
                 {
@@ -245,6 +252,80 @@ namespace Redwood.Framework.RwHtml.Parsing
             {
                 // TODO: invalid char after open angle
             }
+        }
+
+        /// <summary>
+        /// Reads the literal until end tag.
+        /// </summary>
+        private void ReadLiteralUntilEndTag(string tagName)
+        {
+            while (!IsAtEnd)
+            {
+                // look for the end tag
+                if (CurrentAtom == RwHtmlAtom.OpenAngle)
+                {
+                    var endTagStart = DistanceFromLastToken;
+                    var endTagStartPosition = CurrentAtomPosition;
+
+                    MoveNext();
+                    SkipWhiteSpaceOrNewLine();
+
+                    if (CurrentAtom == RwHtmlAtom.Solidus)
+                    {
+                        MoveNext();
+                        SkipWhiteSpaceOrNewLine();
+
+                        var endTagNameStart = DistanceFromLastToken;
+                        ReadText();
+                        var endTagName = GetTextSinceLastToken().Substring(endTagNameStart);
+
+                        if (string.Equals(tagName, endTagName, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            SkipWhiteSpaceOrNewLine();
+
+                            if (CurrentAtom == RwHtmlAtom.CloseAngle)
+                            {
+                                MoveNext();
+
+                                // end tag found, return the literal and the tag
+                                ReturnToken(new RwValueToken(GetTextSinceLastToken().Substring(0, endTagStart), false), endTagStart, endTagStartPosition);
+                                ReturnToken(new RwCloseTagToken(endTagName), DistanceFromLastToken);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // look for the bindings
+                if (CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
+                {
+                    var bindingStart = DistanceFromLastToken;
+                    var bindingStartPosition = CurrentAtomPosition;
+
+                    MoveNext();
+                    if (CurrentAtom == RwHtmlAtom.OpenCurlyBrace)
+                    {
+                        var binding = ReadBinding();
+
+                        if (CurrentAtom == RwHtmlAtom.CloseCurlyBrace)
+                        {
+                            MoveNext();
+
+                            // binding found, return the literal and the binding
+                            ReturnToken(new RwValueToken(GetTextSinceLastToken().Substring(0, bindingStart), false), bindingStart, bindingStartPosition);
+                            ReturnToken(binding, DistanceFromLastToken);
+                        }
+                        else
+                        {
+                            // TODO: close brace not doubled - {{Binding} 
+                        }
+                    }
+                }
+
+                MoveNext();
+            }
+
+            // TODO: script or style end tag not closed
         }
 
         /// <summary>
