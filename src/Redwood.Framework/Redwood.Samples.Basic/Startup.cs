@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Web.Hosting;
 using Microsoft.Owin;
 using Owin;
+using Redwood.Framework;
 using Redwood.Framework.Hosting;
 using System.Collections.Generic;
 
@@ -16,6 +16,8 @@ namespace Redwood.Samples.Basic
         {
             app.Use<RedwoodApp>(HostingEnvironment.ApplicationPhysicalPath);
             app.UseStaticFiles();
+
+            RedwoodConfiguration.Default.RouteTable.MapPageRoute<TaskListPresenter>("");
         }
     }
 }

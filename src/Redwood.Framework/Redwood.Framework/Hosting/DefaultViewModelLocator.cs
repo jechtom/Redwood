@@ -7,12 +7,12 @@ using Redwood.Framework.ViewModel;
 
 namespace Redwood.Framework.Hosting
 {
-    public class DefaultViewModelLocator : IViewModelLocator
+    public class DefaultViewModelLoader : IViewModelLoader
     {
-        public ViewModelBase LocateViewModel(IOwinContext context, Page page)
+        public ViewModelBase LocateViewModel(RedwoodRequestContext context, Page page)
         {
-            var integration = page.Controls.OfType<IntegrationScripts>().Single();
-            return (ViewModelBase)Activator.CreateInstance(Type.GetType(integration.ViewModelTypeName, true));
+            var type = context.Presenter.ResolveViewModelType();
+            return (ViewModelBase)Activator.CreateInstance(type);
         }
     }
 }

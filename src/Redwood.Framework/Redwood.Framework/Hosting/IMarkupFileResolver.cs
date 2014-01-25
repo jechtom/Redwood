@@ -6,10 +6,10 @@ using Microsoft.Owin;
 
 namespace Redwood.Framework.Hosting
 {
-    public interface IMarkupFileResolver
+    public interface IMarkupFileLoader
     {
 
-        Task<string> GetMarkup(IOwinContext context, string applicationPhysicalPath);
+        Task<string> GetMarkup(RedwoodRequestContext context, string applicationPhysicalPath);
 
     }
 }

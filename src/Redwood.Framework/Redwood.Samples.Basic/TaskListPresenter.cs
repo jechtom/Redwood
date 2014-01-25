@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Redwood.Framework.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Redwood.Samples.Basic
 {
-    public class TaskListPresenter
+    public class TaskListPresenter : RedwoodPresenter
     {
         public void Get()
         {
@@ -31,10 +31,5 @@ namespace Redwood.Samples.Basic
             model.Tasks.RemoveAt(taskIndex);
             return model;
         }
-    }
-
-    public class TaskListViewModel
-    {
-        public List<Task> Tasks { get; set; }
     }
 }

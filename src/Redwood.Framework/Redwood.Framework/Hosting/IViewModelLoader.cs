@@ -7,10 +7,10 @@ using Redwood.Framework.ViewModel;
 
 namespace Redwood.Framework.Hosting
 {
-    public interface IViewModelLocator
+    public interface IViewModelLoader
     {
 
-        ViewModelBase LocateViewModel(IOwinContext context, Page page);
+        ViewModelBase LocateViewModel(RedwoodRequestContext context, Page page);
 
     }
 }

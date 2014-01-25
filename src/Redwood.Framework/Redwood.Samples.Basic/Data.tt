@@ -8,7 +8,7 @@
 	var translator = new ViewModelTranslator(
 		new ReflectionViewModelMetadataExtractor(), new TypeScriptViewModelTypeMapper(), new TypeScriptViewModelWriter()
 	);
-	this.Write(translator.TranslateViewModels(typeof (Redwood.Samples.Basic.IndexViewModel)));
+	this.Write(translator.TranslateViewModels(typeof (Redwood.Samples.Basic.TaskListViewModel)));
 
 #>
 

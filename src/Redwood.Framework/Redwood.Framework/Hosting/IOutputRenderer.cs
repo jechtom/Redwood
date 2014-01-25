@@ -10,8 +10,8 @@ namespace Redwood.Framework.Hosting
     public interface IOutputRenderer
     {
 
-        Task RenderPage(IOwinContext context, Page page, string serializedViewModel);
+        Task RenderPage(RedwoodRequestContext context, Page page, string serializedViewModel);
 
-        Task RenderViewModel(IOwinContext context, Page page, string serializedViewModel);
+        Task RenderViewModel(RedwoodRequestContext context, Page page, string serializedViewModel);
     }
 }

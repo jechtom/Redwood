@@ -9,7 +9,7 @@ namespace Redwood.Framework.Hosting
     public interface IPageBuilder
     {
 
-        Page BuildPage(IOwinContext context, string markup);
+        Page BuildPage(RedwoodRequestContext context, string markup);
 
     }
 }
