@@ -35,6 +35,31 @@ namespace Redwood.Framework.Hosting
             }
         }
 
+        /// <summary>
+        /// Gets the presenter full path within the assembly.
+        /// </summary>
+        public string FullPresenterPath
+        {
+            get
+            {
+                var type = GetType();
+                var assemblyName = type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(','));
+                if (!type.FullName.StartsWith(assemblyName))
+                {
+                    throw new ArgumentException("The presenter name could not be resolved automatically because it is not in the namespace of the same name as the assembly!");
+                }
+
+                var name = type.FullName;
+                if (!name.EndsWith("Presenter"))
+                {
+                    throw new ArgumentException("The presenter name could not be resolved automatically because its name does not end with 'Presenter'!");
+                }
+                name = name.Substring(0, name.Length - "Presenter".Length);
+
+                return name;
+            }
+        }
+
 
         public IMarkupFileLoader MarkupFileLoader { get; set; }
 
@@ -73,7 +98,7 @@ namespace Redwood.Framework.Hosting
         /// </summary>
         public virtual Type ResolveViewModelType()
         {
-            var typeName = PresenterPath + "ViewModel";
+            var typeName = FullPresenterPath + "ViewModel";
             return GetType().Assembly.GetType(typeName, true);
         }
 

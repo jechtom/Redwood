@@ -31,7 +31,7 @@ namespace Redwood.Framework.Controls
             if (htmlAttributesStorage != null)
                 htmlAttributesStorage.Render(writer);
             base.Render(writer);
-            writer.RenderEndTag();
+            writer.RenderEndTag(true);
         }
 
         public override string ToString()

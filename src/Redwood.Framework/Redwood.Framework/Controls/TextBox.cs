@@ -1,11 +1,7 @@
 ﻿using Redwood.Framework.Binding;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Redwood.Framework.Controls
 {
@@ -56,7 +52,14 @@ namespace Redwood.Framework.Controls
             BindingMarkupExpression expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
             if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
-                writer.WriteText(Text, true);
+                if (Mode == TextMode.MultiLine)
+                {
+                    writer.WriteText(Text, true);
+                }
+                else
+                {
+                    writer.AddAttribute("value", Text);
+                }
             }
             else
             {
