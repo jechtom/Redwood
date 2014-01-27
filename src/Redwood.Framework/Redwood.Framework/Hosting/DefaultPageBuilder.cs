@@ -11,7 +11,9 @@ namespace Redwood.Framework.Hosting
 
         public Page BuildPage(RedwoodRequestContext context, string markup)
         {
-            throw new NotImplementedException();
+            var serializer = new RwHtml.RwHtmlSerializer();
+            var result = serializer.LoadFromString(markup);
+            return (Page)result;
         }
     }
 }

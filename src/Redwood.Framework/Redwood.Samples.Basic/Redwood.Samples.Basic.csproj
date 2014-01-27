@@ -94,6 +94,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Data.ts</LastGenOutput>
     </Content>
+    <Content Include="TaskListWithBinding.rwhtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

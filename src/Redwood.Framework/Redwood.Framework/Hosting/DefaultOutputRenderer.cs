@@ -12,15 +12,15 @@ namespace Redwood.Framework.Hosting
         public async Task RenderPage(RedwoodRequestContext context, Page page, string serializedViewModel)
         {
             // set up integration scripts
-            var integrationScripts = page.Controls.OfType<IntegrationScripts>().Single();
-            integrationScripts.SerializedViewModel = serializedViewModel;
-            integrationScripts.InternalScriptUrls = new List<string>() {
-                context.OwinContext.Request.PathBase + "/Scripts/knockout-3.0.0.js",
-                context.OwinContext.Request.PathBase + "/Scripts/knockout.mapping-latest.js",
-                context.OwinContext.Request.PathBase + "/Scripts/knockout.validation.js",
-                context.OwinContext.Request.PathBase + "/Scripts/Redwood.js",
-                context.OwinContext.Request.PathBase + "/Data.js"
-            };
+            //var integrationScripts = page.OfType<IntegrationScripts>().Single();
+            //integrationScripts.SerializedViewModel = serializedViewModel;
+            //integrationScripts.InternalScriptUrls = new List<string>() {
+            //    context.OwinContext.Request.PathBase + "/Scripts/knockout-3.0.0.js",
+            //    context.OwinContext.Request.PathBase + "/Scripts/knockout.mapping-latest.js",
+            //    context.OwinContext.Request.PathBase + "/Scripts/knockout.validation.js",
+            //    context.OwinContext.Request.PathBase + "/Scripts/Redwood.js",
+            //    context.OwinContext.Request.PathBase + "/Data.js"
+            //};
 
             // get the HTML
             var writer = new HtmlWriter();

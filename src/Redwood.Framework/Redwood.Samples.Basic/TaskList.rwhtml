@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<rw:Page>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
@@ -8,19 +9,8 @@
 
 	<p>
 		Add Task:
-		<rw:TextBox Text="{NewTaskText}" />
-		<rw:Button OnClick="{AddTask}" Text="Add Task" />
+		<rw:TextBox Text="text" />
 	</p>
-
-	<rw:Table ItemsSource="{Tasks}">
-		<rw:Table.ItemTemplate>
-			<td>{Title}</td>
-			<td>
-				<rw:Button OnClick="{$root.FinishTask($index)}" Text="Done" />
-			</td>
-		</rw:Table.ItemTemplate>
-	</rw:Repeater>
-
-	<rw:IntegrationScripts ViewModelTypeName="Redwood.Samples.Basic.IndexViewModel, Redwood.Samples.Basic" />
 </body>
 </html>
+</rw:Page>
