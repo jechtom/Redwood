@@ -19,6 +19,12 @@ namespace Redwood.Framework.Binding
         /// </summary>
         public BindingFlags Mode { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether the binding is evaluated on the server side.
+        /// </summary>
+        public bool EvaluateOnServer { get; set; }
+
+
         public object Evaluate(RedwoodBindable redwoodBindable)
         {
             throw new NotImplementedException();

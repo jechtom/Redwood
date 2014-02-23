@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -19,10 +20,11 @@ namespace Redwood.Framework.Controls
             get { return GetValue(ContentProperty); }
             set {  SetValue(ContentProperty, value); }
         }
-
         public static readonly RedwoodProperty ContentProperty = RedwoodProperty.Register<object, ContentControl>("Content");
 
-        public override void Render(Generation.IHtmlWriter writer)
+
+
+        protected override void RenderControl(IHtmlWriter writer)
         {
             var content = Content;
 

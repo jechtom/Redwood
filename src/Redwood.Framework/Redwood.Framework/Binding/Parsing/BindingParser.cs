@@ -27,6 +27,7 @@ namespace Redwood.Framework.Binding.Parsing
         {
             MappingTable = new Dictionary<string, Func<MarkupExpression>>(StringComparer.InvariantCultureIgnoreCase);
             MappingTable.Add("Binding", () => new BindingMarkupExpression());
+            MappingTable.Add("Command", () => new CommandMarkupExpression());
         }
 
 

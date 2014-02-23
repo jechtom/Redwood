@@ -5,7 +5,7 @@ var Redwood = (function () {
         return ko.mapping.fromJS(data, {}, target);
     };
 
-    Redwood.PostBack = function (senderElement, commandName, commandArguments) {
+    Redwood.PostBack = function (currentDataContextPath, commandName, commandArguments) {
         for (var arg in commandArguments) {
             commandArguments[arg] = ko.mapping.toJS(commandArguments[arg]);
         }
@@ -15,7 +15,7 @@ var Redwood = (function () {
         var postData = {
             viewModel: ko.mapping.toJS(viewModel),
             commandName: commandName,
-            commandTarget: "$root",
+            commandTarget: currentDataContextPath,
             commandArguments: commandArguments
         };
 

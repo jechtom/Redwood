@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -45,7 +46,7 @@ namespace Redwood.Framework.Controls
             control.OnAddedToParent(this);
         }
 
-        public override void Render(Generation.IHtmlWriter writer)
+        protected override void RenderControl(IHtmlWriter writer)
         {
             RenderChildren(writer);
         }

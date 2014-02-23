@@ -7,6 +7,11 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
     public abstract class BindingExpression
     {
 
+        public object Evaluate(object context)
+        {
+            var visitor = new EvaluateBindingVisitor();
+            return visitor.Visit(this, context);
+        }
 
     }
 }

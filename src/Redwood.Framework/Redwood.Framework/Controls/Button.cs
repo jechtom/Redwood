@@ -1,10 +1,8 @@
 ﻿using Redwood.Framework.Binding;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -12,53 +10,40 @@ namespace Redwood.Framework.Controls
     {
         public string Text
         {
-            get
-            {
-                return (string)GetValue(TextProperty);
-            }
-            set
-            {
-                SetValue(TextProperty, value);
-            }
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
         }
+        public static RedwoodProperty TextProperty = RedwoodProperty.Register<string, Button>("Text");
 
-        static RedwoodProperty TextProperty = RedwoodProperty.Register<string, Button>("Text");
 
         public object OnClick
         {
-            get
-            {
-                return (object)GetValue(OnClickProperty);
-            }
-            set
-            {
-                SetValue(OnClickProperty, value);
-            }
+            get { return GetValue(OnClickProperty); }
+            set { SetValue(OnClickProperty, value); }
         }
+        public static RedwoodProperty OnClickProperty = RedwoodProperty.Register<object, Button>("OnClick");
 
-        static RedwoodProperty OnClickProperty = RedwoodProperty.Register<object, Button>("OnClick");
 
 
-        public override void Render(Generation.IHtmlWriter writer)
+
+        protected override void RenderControl(IHtmlWriter writer)
         {
             writer.RenderBeginTag("input");
             
-            var expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            var expr = KnockoutBindingHelper.GetBindingExpressionOrNull(TextProperty, this);
             if (KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
-                throw new NotImplementedException();
-                //writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(this, TextProperty, expr));
             }
             else
             {
                 writer.AddAttribute("value", Text);
             }
 
-            expr = KnockoutBindingHelper.GetExpressionOrNull(OnClickProperty, this);
-            if (KnockoutBindingHelper.IsKnockoutBinding(expr))
+            var expr2 = KnockoutBindingHelper.GetCommandExpressionOrNull(OnClickProperty, this);
+            if (KnockoutBindingHelper.IsKnockoutCommand(expr2))
             {
-                throw new NotImplementedException();
-                //writer.AddBindingAttribute("click", KnockoutBindingHelper.TranslateToKnockoutCommand(expr.Path));
+                writer.AddBindingAttribute("click", KnockoutBindingHelper.TranslateToKnockoutCommand(this, OnClickProperty, expr2));
             }
             
             writer.AddAttribute("type", "button");

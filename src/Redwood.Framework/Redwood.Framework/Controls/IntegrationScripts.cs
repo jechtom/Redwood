@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -23,7 +24,7 @@ namespace Redwood.Framework.Controls
 
         internal string SerializedViewModel { get; set; }
 
-        public override void Render(Generation.IHtmlWriter writer)
+        protected override void RenderControl(IHtmlWriter writer)
         {
             foreach (var script in InternalScriptUrls)
             {

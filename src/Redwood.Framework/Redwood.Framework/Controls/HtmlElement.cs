@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -13,19 +14,13 @@ namespace Redwood.Framework.Controls
 
         public string Element
         {
-            get
-            {
-                return (string)GetValue(ElementProperty);
-            }
-            set
-            {
-                SetValue(ElementProperty, value);
-            }
+            get { return (string)GetValue(ElementProperty); }
+            set { SetValue(ElementProperty, value); }
         }
 
         public static readonly RedwoodProperty ElementProperty = RedwoodProperty.Register<string, HtmlElement>("Element");
 
-        public override void Render(Generation.IHtmlWriter writer)
+        protected override void RenderControl(IHtmlWriter writer)
         {
             writer.RenderBeginTag(Element);
             if (htmlAttributesStorage != null)

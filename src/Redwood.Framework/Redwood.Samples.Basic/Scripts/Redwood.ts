@@ -8,7 +8,7 @@ class Redwood
         return ko.mapping.fromJS(data, {}, target);
     }
 
-    static PostBack(senderElement: HTMLElement, commandName: string, commandArguments: any[]): any {
+    static PostBack(currentDataContextPath: string, commandName: string, commandArguments: any[]): any {
         // unwrap arguments
         for (var arg in commandArguments) {
             commandArguments[arg] = ko.mapping.toJS(commandArguments[arg]);
@@ -19,7 +19,7 @@ class Redwood
         var postData = {
             viewModel: ko.mapping.toJS(viewModel),
             commandName: commandName,
-            commandTarget: "$root",
+            commandTarget: currentDataContextPath,
             commandArguments: commandArguments
         };
 

@@ -14,5 +14,6 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
         {
             Arguments = new List<BindingExpression>();
         }
+
     }
 }

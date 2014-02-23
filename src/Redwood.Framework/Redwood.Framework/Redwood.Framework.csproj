@@ -51,6 +51,7 @@
     <Compile Include="Binding\BindingMarkupExpression.cs" />
     <Compile Include="Binding\BindingExpression.cs" />
     <Compile Include="Binding\BindingMode.cs" />
+    <Compile Include="Binding\CommandMarkupExpression.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />
     <Compile Include="Binding\HtmlAttributesStorage.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
@@ -80,6 +81,9 @@
     <Compile Include="Binding\RedwoodPropertyFlags.cs" />
     <Compile Include="Binding\RedwoodPropertyMetadata.cs" />
     <Compile Include="Controls\Button.cs" />
+    <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="Controls\DataContextPathBuilder.cs" />
+    <Compile Include="Controls\DropDownList.cs" />
     <Compile Include="Controls\ContentControl.cs" />
     <Compile Include="Controls\HtmlElement.cs" />
     <Compile Include="Controls\HtmlContent.cs" />
@@ -93,11 +97,13 @@
     <Compile Include="Controls\ContainerControl.cs" />
     <Compile Include="Controls\KnockoutBindingHelper.cs" />
     <Compile Include="Controls\Layout.cs" />
+    <Compile Include="Controls\RadioButton.cs" />
     <Compile Include="Controls\RedwoodTemplate.cs" />
     <Compile Include="Controls\Page.cs" />
     <Compile Include="Controls\RedwoodControl.cs" />
     <Compile Include="Controls\RedwoodEventArgs.cs" />
     <Compile Include="Controls\Table.cs" />
+    <Compile Include="Controls\TemplatedItemsControl.cs" />
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\RenderableControl.cs" />
     <Compile Include="Generation\HtmlAttributeList.cs" />

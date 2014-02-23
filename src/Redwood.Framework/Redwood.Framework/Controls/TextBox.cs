@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
@@ -9,33 +10,21 @@ namespace Redwood.Framework.Controls
     {
         public string Text
         {
-            get
-            {
-                return (string)GetValue(TextProperty);
-            }
-            set
-            {
-                SetValue(TextProperty, value);
-            }
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
         }
-
         public static readonly RedwoodProperty TextProperty = RedwoodProperty.Register<string, TextBox>("Text");
 
         public TextMode Mode
         {
-            get
-            {
-                return (TextMode)GetValue(ModeProperty);
-            }
-            set
-            {
-                SetValue(ModeProperty, value);
-            }
+            get { return (TextMode)GetValue(ModeProperty); }
+            set { SetValue(ModeProperty, value); }
         }
-
         public static readonly RedwoodProperty ModeProperty = RedwoodProperty.Register<TextMode, TextBox>("Mode", TextMode.Text);
 
-        public override void Render(Generation.IHtmlWriter writer)
+
+
+        protected override void RenderControl(IHtmlWriter writer)
         {
             // begin
             if (Mode == TextMode.MultiLine)
@@ -49,7 +38,7 @@ namespace Redwood.Framework.Controls
             }
 
             // content
-            BindingMarkupExpression expr = KnockoutBindingHelper.GetExpressionOrNull(TextProperty, this);
+            var expr = KnockoutBindingHelper.GetBindingExpressionOrNull(TextProperty, this);
             if (!KnockoutBindingHelper.IsKnockoutBinding(expr))
             {
                 if (Mode == TextMode.MultiLine)
@@ -63,8 +52,7 @@ namespace Redwood.Framework.Controls
             }
             else
             {
-                throw new NotImplementedException();
-                //writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
+                writer.AddBindingAttribute("value", KnockoutBindingHelper.TranslateToKnockoutProperty(this, TextProperty, expr));
             }
 
             // end

@@ -17,25 +17,25 @@ namespace Redwood.Framework.Binding
         private List<ValueEntry> localValues;
 
         private RedwoodBindable parent;
-        
+
         public RedwoodBindable()
         {
             originThread = Thread.CurrentThread;
         }
 
-        public object GetValue(RedwoodProperty property)
+        public object GetValue(RedwoodProperty property, bool ignoreInheritance = false)
         {
             VerifyAccess();
 
-            ValueEntry entry = GetValueDirect(property, true);
+            ValueEntry entry = GetValueDirect(property, true, ignoreInheritance);
             return entry.Value;
         }
 
-        public object GetRawValue(RedwoodProperty property)
+        public object GetRawValue(RedwoodProperty property, bool ignoreInheritance = false)
         {
             VerifyAccess();
 
-            ValueEntry entry = GetValueDirect(property, false);
+            ValueEntry entry = GetValueDirect(property, false, ignoreInheritance);
             return entry.Value;
         }
 
@@ -117,11 +117,11 @@ namespace Redwood.Framework.Binding
             }
         }
 
-        private ValueEntry GetValueDirect(RedwoodProperty property, bool resolveExpressions)
+        private ValueEntry GetValueDirect(RedwoodProperty property, bool resolveExpressions, bool ignoreInheritance)
         {
             var itemRef = TryFindLocalValue(property.Id);
-            
-            if(itemRef.Found)
+
+            if (itemRef.Found)
             {
                 // local value
                 var localValue = GetLocalEntry(itemRef);
@@ -134,10 +134,10 @@ namespace Redwood.Framework.Binding
                 return localValue;
             }
 
-            if(property.Metadata.IsInherited && parent != null)
+            if (property.Metadata.IsInherited && parent != null && !ignoreInheritance)
             {
                 // inherited value
-                return parent.GetValueDirect(property, resolveExpressions);
+                return parent.GetValueDirect(property, resolveExpressions, ignoreInheritance);
             }
 
             // default value

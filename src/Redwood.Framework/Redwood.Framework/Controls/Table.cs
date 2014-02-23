@@ -1,46 +1,60 @@
 ﻿using Redwood.Framework.Binding;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
-    public class Table : ItemsControl
+    public class Table : TemplatedItemsControl
     {
         /// <summary>
         /// Renders the specified writer.
         /// </summary>
-        public override void Render(Generation.IHtmlWriter writer)
+        protected override void RenderControl(IHtmlWriter writer)
         {
             writer.RenderBeginTag("table");
 
-            BindingMarkupExpression expr = KnockoutBindingHelper.GetExpressionOrNull(ItemsSourceProperty, this);
-            if (KnockoutBindingHelper.IsKnockoutBinding(expr))
+            if (ItemTemplate != null)
             {
-                writer.RenderBeginTag("tbody");
-                throw new NotImplementedException();
-                //writer.AddBindingAttribute("foreach", KnockoutBindingHelper.TranslateToKnockoutProperty(expr.Path));
-                ItemTemplate.DataContext = null;
-                ItemTemplate.Render(writer);
-                writer.RenderEndTag();
-            }
-            else
-            {
-                writer.RenderBeginTag("tbody");
-                foreach (var item in ItemsSource)
+                var itemsSourceExpression = KnockoutBindingHelper.GetBindingExpressionOrNull(ItemsSourceProperty, this);
+                if (KnockoutBindingHelper.IsKnockoutBinding(itemsSourceExpression))
                 {
-                    writer.RenderBeginTag("tr");
-                    ItemTemplate.DataContext = item;
+                    // knockout template
+                    writer.RenderBeginTag("tbody");
+                    writer.AddBindingAttribute("foreach", KnockoutBindingHelper.TranslateToKnockoutProperty(this, ItemsSourceProperty, itemsSourceExpression));
+
+                    var path = DataContextPathBuilder.AppendPropertyPath(DataContextPath, itemsSourceExpression.Path);
+                    path = DataContextPathBuilder.AppendCollectionIndexPlaceholder(path);
+                    ItemTemplate.DataContextPath = path;
+                    ItemTemplate.DataContext = null;
                     ItemTemplate.Render(writer);
+
                     writer.RenderEndTag();
                 }
-                writer.RenderEndTag();    
+                else
+                {
+                    writer.RenderBeginTag("tbody");
+                    var index = 0;
+                    foreach (var item in ItemsSource)
+                    {
+                        // render on server side
+                        writer.RenderBeginTag("tr");
+
+                        var path = DataContextPathBuilder.AppendPropertyPath(DataContextPath, itemsSourceExpression.Path);
+                        path = DataContextPathBuilder.AppendCollectionIndex(path, index);
+                        ItemTemplate.DataContextPath = path;
+                        ItemTemplate.DataContext = item;
+                        ItemTemplate.Render(writer);
+
+                        writer.RenderEndTag();
+
+                        index++;
+                    }
+                    writer.RenderEndTag();
+                }
             }
-            
+
             writer.RenderEndTag();
         }
 
