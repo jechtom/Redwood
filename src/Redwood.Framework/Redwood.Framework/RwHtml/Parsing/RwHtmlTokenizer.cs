@@ -85,10 +85,6 @@ namespace Redwood.Framework.RwHtml.Parsing
                     token = RwHtmlAtom.CloseAngle;
                     break;
 
-                case '!': 
-                    token = RwHtmlAtom.Bang;
-                    break;
-
                 case '-': 
                     token = RwHtmlAtom.Dash;
                     break;

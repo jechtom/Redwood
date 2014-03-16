@@ -134,7 +134,7 @@ namespace Redwood.Framework.RwHtml.Markup
                 }
                 catch (ParserException ex)
                 {
-                    ex.Position.AddTo(node.CurrentPosition);
+                    ex.Position = ex.Position.AddTo(node.CurrentPosition);
                     throw;
                 }
 

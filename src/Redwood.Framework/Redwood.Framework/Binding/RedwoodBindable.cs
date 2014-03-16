@@ -73,7 +73,7 @@ namespace Redwood.Framework.Binding
             ClearLocalValue(itemRef);
         }
 
-        protected void SetParent(RedwoodBindable parent)
+        protected internal void SetParent(RedwoodBindable parent)
         {
             VerifyAccess();
             this.parent = parent;

@@ -17,14 +17,22 @@ namespace Redwood.Framework.Parsing
         /// <summary>
         /// Adds this position to the specified one.
         /// </summary>
-        public void AddTo(SpanPosition other)
+        public SpanPosition AddTo(SpanPosition other)
         {
+            var result = new SpanPosition();
             if (LineNumber > 1)
             {
-                PositionOnLine += other.PositionOnLine;
+                result.PositionOnLine += other.PositionOnLine;
             }
-            LineNumber = other.LineNumber + LineNumber - 1;
-            AbsolutePosition = other.AbsolutePosition + AbsolutePosition;
+            else
+            {
+                result.PositionOnLine = PositionOnLine;
+            }
+            result.LineNumber = other.LineNumber + LineNumber - 1;
+            result.AbsolutePosition = other.AbsolutePosition + AbsolutePosition;
+            result.Length = Length;
+
+            return result;
         }
     }
 }

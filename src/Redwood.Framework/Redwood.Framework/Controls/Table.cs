@@ -37,7 +37,7 @@ namespace Redwood.Framework.Controls
 
                     writer.RenderEndTag();
                 }
-                else
+                else if (ItemsSource != null)
                 {
                     writer.RenderBeginTag("tbody");
                     var index = 0;

@@ -196,33 +196,36 @@ namespace Redwood.Framework.Binding.Parsing
                 SkipWhiteSpaceOrNewLine();
                 ReturnToken(new BindingOpenBraceToken(), DistanceFromLastToken);
 
-                var isFirst = true;
-                do
-                {
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                    }
-                    else 
-                    {
-                        if (CurrentAtom != BindingAtom.Comma)
-                        {
-                            ThrowParserError("The parameters in the function call must be separated with comma.");
-                        }
-
-                        MoveNext();
-                        SkipWhiteSpaceOrNewLine();
-                        ReturnToken(new BindingCommaToken(), DistanceFromLastToken);
-                    }
-
-                    ReadExpression();
-                }
-                while (!IsAtEnd && CurrentAtom != BindingAtom.CloseBrace);
-
                 if (CurrentAtom != BindingAtom.CloseBrace)
                 {
-                    ThrowParserError("The parameter list was not closed.");
+                    var isFirst = true;
+                    do
+                    {
+                        if (isFirst)
+                        {
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            if (CurrentAtom != BindingAtom.Comma)
+                            {
+                                ThrowParserError("The parameters in the function call must be separated with comma.");
+                            }
+
+                            MoveNext();
+                            SkipWhiteSpaceOrNewLine();
+                            ReturnToken(new BindingCommaToken(), DistanceFromLastToken);
+                        }
+
+                        ReadExpression();
+                    } while (!IsAtEnd && CurrentAtom != BindingAtom.CloseBrace);
+
+                    if (CurrentAtom != BindingAtom.CloseBrace)
+                    {
+                        ThrowParserError("The parameter list was not closed.");
+                    }
                 }
+                
                 MoveNext();
                 SkipWhiteSpaceOrNewLine();
                 ReturnToken(new BindingCloseBraceToken(), DistanceFromLastToken);
