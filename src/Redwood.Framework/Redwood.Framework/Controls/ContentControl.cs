@@ -18,7 +18,7 @@ namespace Redwood.Framework.Controls
         public object Content
         {
             get { return GetValue(ContentProperty); }
-            set {  SetValue(ContentProperty, value); }
+            set { SetValue(ContentProperty, value); }
         }
         public static readonly RedwoodProperty ContentProperty = RedwoodProperty.Register<object, ContentControl>("Content", new RedwoodPropertyMetadata(null, RedwoodPropertyFlags.IsInheritanceSource));
 

@@ -13,7 +13,6 @@ namespace Redwood.Framework.RwHtml.Parsing
         CloseAngle,         // >
         SingleQuote,        // '
         DoubleQuote,        // "
-        Bang,               // !
         Solidus,            // /
         Dash,               // -
         OpenCurlyBrace,     // {
