@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace Redwood.Framework.Binding.Parsing.Expressions
 {
-    public class BindingCallMethodExpression : BindingExpression
+    public class BindingCallMethodExpression : BindingPathExpression
     {
         public string MethodName { get; set; }
 
-        public List<BindingExpression> Arguments { get; private set; }
+        public List<BindingPathExpression> Arguments { get; private set; }
 
         public BindingCallMethodExpression()
         {
-            Arguments = new List<BindingExpression>();
+            Arguments = new List<BindingPathExpression>();
         }
 
     }

@@ -13,9 +13,9 @@
         <rw:Button OnClick="{Command AddTask}" Text="Add Task" />
       </p>
 
-      <rw:Table ItemsSource="{Binding Tasks}" UseClientTemplate="true" KeyPropertyName="Id">
+      <rw:Table ItemsSource="{Binding Tasks}" KeyPropertyName="Id">
         <rw:Table.ItemTemplate>
-          <td><rw:CheckBox Checked="{Binding IsFinished}" /></td>
+          <td><rw:CheckBox /></td>
           <td>{Binding Title} {Binding IsFinished}</td>
           <td>
             <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
@@ -26,7 +26,7 @@
 
       <rw:Table ItemsSource="{Binding Tasks}" KeyPropertyName="Id">
         <rw:Table.ItemTemplate>
-          <td><rw:CheckBox Checked="{Binding IsFinished}" /></td>
+          <td><rw:CheckBox /></td>
           <td>{Binding Title} {Binding IsFinished}</td>
           <td>
             <rw:Button OnClick="{Command SetFinished()}" Text="Done" />

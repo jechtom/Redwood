@@ -48,11 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding\BindingMarkupExtension.cs" />
-    <Compile Include="Binding\BindingBase.cs" />
+    <Compile Include="Binding\BindingExpression.cs" />
+    <Compile Include="Binding\BindingMarkup.cs" />
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\CommandMarkupExpression.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />
+    <Compile Include="Binding\ExpressionBase.cs" />
     <Compile Include="Binding\HtmlAttributesStorage.cs" />
     <Compile Include="Binding\DefaultModelBinder.cs" />
     <Compile Include="Binding\HtmlAttributePropertyAccessor.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Binding\Parsing\Expressions\BindingConstantExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingParameterSetExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\EvaluateBindingVisitor.cs" />
-    <Compile Include="Binding\Parsing\Expressions\BindingExpression.cs" />
+    <Compile Include="Binding\Parsing\Expressions\BindingPathExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingGetPropertyExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingVisitor.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingCloseBraceToken.cs" />

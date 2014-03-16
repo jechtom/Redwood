@@ -46,6 +46,12 @@ namespace Redwood.Framework.Binding
 
         public void SetValue(RedwoodProperty property, object value)
         {
+            if (value == RedwoodProperty.UnsetValue)
+            {
+                ClearValue(property);
+                return;
+            }
+
             VerifyAccess();
 
             property.ValidatePropertyValue(value);
@@ -130,11 +136,11 @@ namespace Redwood.Framework.Binding
             {
                 // local value
                 var localValue = GetLocalEntry(itemRef);
-                if (localValue.Value is BindingBase && resolveExpressions)
+                if (localValue.Value is BindingExpression && resolveExpressions)
                 {
                     // evaluate expression
-                    var localValueExpression = (BindingBase)localValue.Value;
-                    localValue.Value = localValueExpression.Evaluate(this);
+                    var localValueExpression = (BindingExpression)localValue.Value;
+                    localValue.Value = localValueExpression.GetValue(this, property);
                 }
                 return localValue;
             }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Redwood.Framework.Binding.Parsing.Expressions
 {
-    public class BindingConstantExpression : BindingExpression
+    public class BindingConstantExpression : BindingPathExpression
     {
 
         public string Value { get; set; }

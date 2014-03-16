@@ -25,7 +25,7 @@ namespace Redwood.Framework.Binding.Parsing
         public BindingParser()
         {
             MappingTable = new Dictionary<string, Func<MarkupExpression>>(StringComparer.InvariantCultureIgnoreCase);
-            MappingTable.Add("Binding", () => new BindingMarkupExtension());
+            MappingTable.Add("Binding", () => new BindingMarkup());
             MappingTable.Add("Command", () => new CommandMarkupExpression());
         }
 
@@ -56,10 +56,10 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Reads the binding parameters.
         /// </summary>
-        private List<Expressions.BindingExpression> ReadParameters(List<BindingToken> tokens)
+        private List<Expressions.BindingPathExpression> ReadParameters(List<BindingToken> tokens)
         {
             var index = 1;
-            var parameters = new List<Expressions.BindingExpression>();
+            var parameters = new List<Expressions.BindingPathExpression>();
             while (index < tokens.Count)
             {
                 if (parameters.Count > 0)
@@ -107,7 +107,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Validates the parameters of the binding and resolves the default property expression.
         /// </summary>
-        private void ValidateAndResolveDefaultParameter(MarkupExpression binding, List<Expressions.BindingExpression> parameters)
+        private void ValidateAndResolveDefaultParameter(MarkupExpression binding, List<Expressions.BindingPathExpression> parameters)
         {
             var defaultProperty = GetBindingDefaultProperty(binding);
 
@@ -136,7 +136,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Converts the expression to constant.
         /// </summary>
-        private string ConvertExpressionToConstant(Expressions.BindingExpression expression)
+        private string ConvertExpressionToConstant(Expressions.BindingPathExpression expression)
         {
             if (expression is BindingConstantExpression)
             {
@@ -154,7 +154,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Sets the binding properties.
         /// </summary>
-        private void SetBindingProperties(MarkupExpression binding, List<Expressions.BindingExpression> parameters)
+        private void SetBindingProperties(MarkupExpression binding, List<Expressions.BindingPathExpression> parameters)
         {
             var type = binding.GetType();
             foreach (var parameter in parameters.OfType<BindingParameterSetExpression>())
@@ -167,7 +167,7 @@ namespace Redwood.Framework.Binding.Parsing
                 }
 
                 // set value
-                if (prop.PropertyType == typeof (Expressions.BindingExpression))
+                if (prop.PropertyType == typeof (Expressions.BindingPathExpression))
                 {
                     // value is expression
                     prop.SetValue(binding, parameter.Value);
@@ -190,7 +190,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Reads the expression.
         /// </summary>
-        private Expressions.BindingExpression ReadExpression(List<BindingToken> tokens, ref int index)
+        private Expressions.BindingPathExpression ReadExpression(List<BindingToken> tokens, ref int index)
         {
             if (!(tokens[index] is BindingTextToken))
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -94,9 +95,16 @@ namespace Redwood.Framework.Binding
             propertiesLock.EnterReadLock();
             try
             {
-                return this.propertiesDict.Values
-                    .Where(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase) && p.IsApplicableOn(targetType))
-                    .SingleOrDefault();
+                var query = this.propertiesDict.Values
+                    .Where(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase) && p.IsApplicableOn(targetType));
+
+#if DEBUG
+                if(query.Count() > 1)
+                    Debugger.Break();
+#endif
+
+                var result = query.SingleOrDefault();
+                return result;
             }
             finally
             {

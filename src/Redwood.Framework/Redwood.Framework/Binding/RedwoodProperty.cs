@@ -9,6 +9,11 @@ namespace Redwood.Framework.Binding
 {
     public class RedwoodProperty
     {
+        /// <summary>
+        /// Gets value that represents unset property value.
+        /// </summary>
+        public readonly static object UnsetValue = new object();
+        
         private int id;
 
         private string name;
@@ -109,7 +114,7 @@ namespace Redwood.Framework.Binding
                 return true;
 
             // is owner target type assignable from tested type?
-            if (targetType.IsAssignableFrom(targetType))
+            if (this.OwnerType.IsAssignableFrom(targetType))
                 return true;
 
             return false;
@@ -136,13 +141,17 @@ namespace Redwood.Framework.Binding
             if (value == null)
                 return; // ok
 
-            if (!propertyType.IsAssignableFrom(value.GetType()))
-                throw new InvalidOperationException(
-                    string.Format("Value of type {0} (property {1}) is not assignable from {2}.", 
-                        propertyType.Name,    
-                        Name,
-                        value.GetType()
-                    ));
+            if (!(value is BindingExpression))
+            {
+                // if not binding
+                if (!propertyType.IsAssignableFrom(value.GetType()))
+                    throw new InvalidOperationException(
+                        string.Format("Value of type {0} (property {1}) is not assignable from {2}.",
+                            propertyType.Name,
+                            Name,
+                            value.GetType()
+                        ));
+            }
         }
     }
 }

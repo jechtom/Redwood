@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Redwood.Framework.Binding.Parsing.Expressions
 {
-    public class BindingArrayGetByKeyExpression : BindingExpression
+    public class BindingArrayGetByKeyExpression : BindingPathExpression
     {
         public string KeyPropertyName { get; set; }
 
