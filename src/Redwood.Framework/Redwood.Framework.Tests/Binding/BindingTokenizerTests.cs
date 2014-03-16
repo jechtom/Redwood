@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Redwood.Framework.Binding.Parsing;
 using Redwood.Framework.Binding.Parsing.Tokens;
 
@@ -23,6 +21,26 @@ namespace Redwood.Framework.Tests.Binding
             Assert.AreEqual("Binding", ((BindingTypeToken)results[0]).BindingTypeName);
             Assert.AreEqual(0, results[0].SpanPosition.AbsolutePosition);
             Assert.AreEqual(7, results[0].SpanPosition.Length);
+        }
+
+        [TestMethod]
+        public void BindingTokenizer_IndexerOnly()
+        {
+            var tokenizer = new BindingTokenizer();
+            var results = tokenizer.Parse("Binding [13]").ToList();
+
+            Assert.AreEqual(5, results.Count);
+            Assert.AreEqual("Binding", ((BindingTypeToken)results[0]).BindingTypeName);
+            Assert.AreEqual(0, results[0].SpanPosition.AbsolutePosition);
+            Assert.AreEqual(8, results[0].SpanPosition.Length);
+
+            Assert.AreEqual("", ((BindingTextToken)results[1]).Text);
+
+            Assert.IsInstanceOfType(results[2], typeof(BindingOpenIndexerToken));
+
+            Assert.AreEqual("13", ((BindingTextToken)results[3]).Text);
+
+            Assert.IsInstanceOfType(results[4], typeof(BindingCloseIndexerToken));
         }
 
         [TestMethod]
@@ -56,6 +74,47 @@ namespace Redwood.Framework.Tests.Binding
 
             Assert.IsInstanceOfType(results[5], typeof(BindingTextToken));
             Assert.AreEqual("Test3", ((BindingTextToken)results[5]).Text);
+        }
+        
+        [TestMethod]
+        public void BindingTokenizer_IdentifierWithDotsAndIndexers()
+        {
+            var tokenizer = new BindingTokenizer();
+            var results = tokenizer.Parse("Binding Test[1].Test2.Test3[Key=\"hello\"]").ToList();
+
+            Assert.AreEqual(14, results.Count);
+
+            Assert.IsInstanceOfType(results[1], typeof(BindingTextToken));
+            Assert.AreEqual("Test", ((BindingTextToken)results[1]).Text);
+
+            Assert.IsInstanceOfType(results[2], typeof(BindingOpenIndexerToken));
+
+            Assert.IsInstanceOfType(results[3], typeof(BindingTextToken));
+            Assert.AreEqual("1", ((BindingTextToken)results[3]).Text);
+
+            Assert.IsInstanceOfType(results[4], typeof(BindingCloseIndexerToken));
+            
+            Assert.IsInstanceOfType(results[5], typeof(BindingDotToken));
+
+            Assert.IsInstanceOfType(results[6], typeof(BindingTextToken));
+            Assert.AreEqual("Test2", ((BindingTextToken)results[6]).Text);
+            
+            Assert.IsInstanceOfType(results[7], typeof(BindingDotToken));
+
+            Assert.IsInstanceOfType(results[8], typeof(BindingTextToken));
+            Assert.AreEqual("Test3", ((BindingTextToken)results[8]).Text);
+
+            Assert.IsInstanceOfType(results[9], typeof(BindingOpenIndexerToken));
+
+            Assert.IsInstanceOfType(results[10], typeof(BindingTextToken));
+            Assert.AreEqual("Key", ((BindingTextToken)results[10]).Text);
+
+            Assert.IsInstanceOfType(results[11], typeof(BindingEqualsToken));
+
+            Assert.IsInstanceOfType(results[12], typeof(BindingQuotedTextToken));
+            Assert.AreEqual("hello", ((BindingTextToken)results[12]).Text);
+
+            Assert.IsInstanceOfType(results[13], typeof(BindingCloseIndexerToken));
         }
 
         [TestMethod]

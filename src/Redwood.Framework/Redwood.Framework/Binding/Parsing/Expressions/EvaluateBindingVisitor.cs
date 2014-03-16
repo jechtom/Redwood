@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,6 +25,11 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
             }
 
             var result = prop.GetValue(accumulator);
+
+            if (expression.Indexer != null)
+            {
+                result = Visit(expression.Indexer, result);
+            }
 
             if (expression.NextExpression != null)
             {
@@ -56,5 +62,47 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
             return methods[0].Invoke(accumulator, expression.Arguments.Select(a => Visit(a, accumulator)).ToArray());
         }
 
+
+        protected override object VisitArrayGetByIndex(BindingArrayGetByIndexExpression expression, object accumulator)
+        {
+            if (accumulator == null) return null;
+
+            if (accumulator.GetType().IsArray)
+            {
+                return ((object[])accumulator)[expression.Index];
+            }
+            else if (accumulator is IList)
+            {
+                return ((IList)accumulator)[expression.Index];
+            }
+            else if (accumulator is IEnumerable)
+            {
+                return ((IEnumerable)accumulator).OfType<object>().ElementAt(expression.Index);
+            }
+            else
+            {
+                throw new NotSupportedException(string.Format("Value of type {0} does not support array or collection indexer!", accumulator.GetType().ToString()));        // TODO: more precise error message
+            }
+        }
+
+        protected override object VisitArrayGetByKey(BindingArrayGetByKeyExpression expression, object accumulator)
+        {
+            if (accumulator == null) return null;
+
+            if (accumulator is IEnumerable)
+            {
+                return ((IEnumerable)accumulator).OfType<object>().FirstOrDefault(item =>
+                {
+                    var prop = item.GetType().GetProperty(expression.KeyPropertyName);
+                    if (prop == null) return false;
+                    var value = prop.GetValue(item);
+                    return (value.ToString() == expression.KeyValue);
+                });
+            }
+            else
+            {
+                throw new NotSupportedException(string.Format("Value of type {0} does not support lookup by key - it is not a collection!", accumulator.GetType().ToString()));        // TODO: more precise error message
+            }
+        }
     }
 }

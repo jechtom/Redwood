@@ -4,8 +4,7 @@ using System.Linq;
 
 namespace Redwood.Framework.Binding.Parsing.Tokens
 {
-    public class BindingQuotedTextToken : BindingToken
+    public class BindingQuotedTextToken : BindingTextToken
     {
-        public string Text { get; set; }
     }
 }

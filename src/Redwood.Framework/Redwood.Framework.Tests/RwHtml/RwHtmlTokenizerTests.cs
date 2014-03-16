@@ -358,7 +358,7 @@ namespace Redwood.Framework.Tests.RwHtml
         [TestMethod]
         public void RwHtmlTokenizer_ValidInput_Sample()
         {
-            var fileName = Path.Combine(TestContext.TestDeploymentDir, "..\\..\\..\\Redwood.Samples.Basic\\index.rwhtml");
+            var fileName = Path.Combine(TestContext.TestDeploymentDir, "..\\..\\..\\Redwood.Samples.Basic\\TaskListWithBinding.rwhtml");
             var input = File.ReadAllText(fileName, Encoding.UTF8);
 
             var tokens = new RwHtmlTokenizer().Parse(input).ToList();

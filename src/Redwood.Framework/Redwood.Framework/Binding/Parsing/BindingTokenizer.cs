@@ -67,6 +67,14 @@ namespace Redwood.Framework.Binding.Parsing
                 case '"':
                     token = BindingAtom.DoubleQuotes;
                     break;
+
+                case '[':
+                    token = BindingAtom.ArrayOpenBrace;
+                    break;
+
+                case ']':
+                    token = BindingAtom.ArrayCloseBrace;
+                    break;
             }
 
             Read();
@@ -124,6 +132,38 @@ namespace Redwood.Framework.Binding.Parsing
             SkipWhiteSpaceOrNewLine();
             ReturnToken(new BindingTextToken() { Text = value }, DistanceFromLastToken);
 
+            var hasIndexer = false;
+            if (CurrentAtom == BindingAtom.ArrayOpenBrace)
+            {
+                // identifier[index] or identifier[property=value]
+                MoveNext();
+                SkipWhiteSpaceOrNewLine();
+                ReturnToken(new BindingOpenIndexerToken(), DistanceFromLastToken);
+
+                var first = ReadText();
+                SkipWhiteSpaceOrNewLine();
+                ReturnToken(new BindingTextToken() { Text = first }, DistanceFromLastToken);
+
+                if (CurrentAtom == BindingAtom.Equal)
+                {
+                    MoveNext();
+                    SkipWhiteSpaceOrNewLine();
+                    ReturnToken(new BindingEqualsToken(), DistanceFromLastToken);
+
+                    ReturnTextTokenOrQuotedTextToken();
+                }
+
+                if (CurrentAtom != BindingAtom.ArrayCloseBrace)
+                {
+                    // TODO: array close angle expected
+                }
+                MoveNext();
+                SkipWhiteSpaceOrNewLine();
+                ReturnToken(new BindingCloseIndexerToken(), DistanceFromLastToken);
+                
+                hasIndexer = true;
+            }
+
             if (CurrentAtom == BindingAtom.Dot)
             {
                 // identifier.identifier...
@@ -133,7 +173,7 @@ namespace Redwood.Framework.Binding.Parsing
 
                 ReadExpression();
             }
-            else if (CurrentAtom == BindingAtom.Equal)
+            else if (CurrentAtom == BindingAtom.Equal && !hasIndexer)
             {
                 // identifier = string or expression
                 MoveNext();
@@ -142,24 +182,14 @@ namespace Redwood.Framework.Binding.Parsing
 
                 if (CurrentAtom == BindingAtom.DoubleQuotes)
                 {
-                    MoveNext();
-                    var start = DistanceFromLastToken;
-                    SkipWhile(t => t != BindingAtom.DoubleQuotes);
-                    if (CurrentAtom != BindingAtom.DoubleQuotes)
-                    {
-                        // TODO: double quotes expected
-                    }
-                    var text = GetTextSinceLastToken().Substring(start);
-                    MoveNext();
-                    SkipWhiteSpaceOrNewLine();
-                    ReturnToken(new BindingQuotedTextToken() { Text = text }, DistanceFromLastToken);
+                    ReturnTextTokenOrQuotedTextToken();
                 }
                 else
                 {
                     ReadExpression();
                 }
             }
-            else if (CurrentAtom == BindingAtom.OpenBrace)
+            else if (CurrentAtom == BindingAtom.OpenBrace && !hasIndexer)
             {
                 // identifier(expr, expr...)
                 MoveNext();
@@ -199,7 +229,32 @@ namespace Redwood.Framework.Binding.Parsing
             }
         }
 
-
+        /// <summary>
+        /// Reads a text token or a quoted text token.
+        /// </summary>
+        private void ReturnTextTokenOrQuotedTextToken()
+        {
+            if (CurrentAtom == BindingAtom.DoubleQuotes)
+            {
+                MoveNext();
+                var start = DistanceFromLastToken;
+                SkipWhile(t => t != BindingAtom.DoubleQuotes);
+                if (CurrentAtom != BindingAtom.DoubleQuotes)
+                {
+                    // TODO: double quotes expected
+                }
+                var text = GetTextSinceLastToken().Substring(start);
+                MoveNext();
+                SkipWhiteSpaceOrNewLine();
+                ReturnToken(new BindingQuotedTextToken() { Text = text }, DistanceFromLastToken);
+            }
+            else
+            {
+                var text = ReadText();
+                SkipWhiteSpaceOrNewLine();
+                ReturnToken(new BindingTextToken() { Text = text }, DistanceFromLastToken);
+            }
+        }
 
 
         /// <summary>
@@ -231,6 +286,8 @@ namespace Redwood.Framework.Binding.Parsing
         OpenBrace,
         CloseBrace,
         Equal,
-        DoubleQuotes
+        DoubleQuotes,
+        ArrayOpenBrace,
+        ArrayCloseBrace
     }
 }

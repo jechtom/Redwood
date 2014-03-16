@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Redwood.Framework.Binding.Parsing.Expressions;
 using Redwood.Framework.Binding.Parsing.Tokens;
+using Redwood.Framework.RwHtml;
 using Redwood.Framework.RwHtml.Converters;
 using Redwood.Framework.RwHtml.Markup;
 
@@ -234,6 +233,33 @@ namespace Redwood.Framework.Binding.Parsing
                     }
                     index++;
                     return expr;
+                }
+            }
+
+            if (index + 1 < tokens.Count && tokens[index + 1] is BindingOpenIndexerToken)
+            {
+                var first = ((BindingTextToken)tokens[index + 2]).Text;
+                if (tokens[index + 3] is BindingCloseIndexerToken)
+                {
+                    // identifier[index]
+                    index += 4;
+
+                    int firstValue;
+                    if (!int.TryParse(first, out firstValue))
+                    {
+                        // TODO: the index must be integer
+                        throw new Exception();
+                    }
+
+                    return new BindingGetPropertyExpression() { PropertyName = text, Indexer = new BindingArrayGetByIndexExpression() { Index = firstValue} };
+                }
+                else
+                {
+                    // identifier[property=value]
+                    var second = ((BindingTextToken)tokens[index + 4]).Text;
+
+                    index += 6;
+                    return new BindingGetPropertyExpression() { PropertyName = text, Indexer = new BindingArrayGetByKeyExpression() { KeyPropertyName = first, KeyValue = second } };
                 }
             }
 

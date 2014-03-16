@@ -1,16 +1,41 @@
 ﻿<rw:Page>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body>
-	<h1>ToDo List</h1>
+  <!DOCTYPE html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title></title>
+    </head>
+    <body>
+      <h1>ToDo List</h1>
 
-	<p>
-		Add Task:
-		<rw:TextBox Text="text" />
-	</p>
-</body>
-</html>
+      <p>
+        Add Task:
+        <rw:TextBox Text="{Binding NewTaskText}" />
+        <rw:Button OnClick="{Command AddTask}" Text="Add Task" />
+      </p>
+
+      <rw:Table ItemsSource="{Binding Tasks}" UseClientTemplate="true" KeyPropertyName="Id">
+        <rw:Table.ItemTemplate>
+          <td><rw:CheckBox Checked="{Binding IsFinished}" /></td>
+          <td>{Title}</td>
+          <td>
+            <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
+            <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
+          </td>
+        </rw:Table.ItemTemplate>
+      </rw:Table>
+
+      <rw:Table ItemsSource="{Binding Tasks}" KeyPropertyName="Id">
+        <rw:Table.ItemTemplate>
+          <td><rw:CheckBox Checked="{Binding IsFinished}" /></td>
+          <td>{Binding Title} {Binding IsFinished}</td>
+          <td>
+            <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
+            <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
+          </td>
+        </rw:Table.ItemTemplate>
+      </rw:Table>
+
+      <rw:IntegrationScripts />
+    </body>
+  </html>
 </rw:Page>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Redwood.Framework.Binding.Parsing.Expressions;
 using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
@@ -24,10 +25,14 @@ namespace Redwood.Framework.Controls
                     writer.RenderBeginTag("tbody");
                     writer.AddBindingAttribute("foreach", KnockoutBindingHelper.TranslateToKnockoutProperty(this, ItemsSourceProperty, itemsSourceExpression));
 
-                    var path = DataContextPathBuilder.AppendPropertyPath(DataContextPath, itemsSourceExpression.Path);
-                    path = DataContextPathBuilder.AppendCollectionIndexPlaceholder(path);
-                    ItemTemplate.DataContextPath = path;
-                    ItemTemplate.DataContext = null;
+                    if (string.IsNullOrEmpty(KeyPropertyName))
+                    {
+                        ItemTemplate.DataContext = CreateClientTemplateInstanceDataContextBinding();
+                    }
+                    else
+                    {
+                        ItemTemplate.DataContext = CreateClientTemplateInstanceDataContextBinding(KeyPropertyName);
+                    }
                     ItemTemplate.Render(writer);
 
                     writer.RenderEndTag();
@@ -41,10 +46,15 @@ namespace Redwood.Framework.Controls
                         // render on server side
                         writer.RenderBeginTag("tr");
 
-                        var path = DataContextPathBuilder.AppendPropertyPath(DataContextPath, itemsSourceExpression.Path);
-                        path = DataContextPathBuilder.AppendCollectionIndex(path, index);
-                        ItemTemplate.DataContextPath = path;
-                        ItemTemplate.DataContext = item;
+                        if (string.IsNullOrEmpty(KeyPropertyName) || item == null)
+                        {
+                            ItemTemplate.DataContext = CreateServerTemplateInstanceDataContextBinding(index);
+                        }
+                        else
+                        {
+                            var keyValue = GetKeyValue(item);
+                            ItemTemplate.DataContext = CreateServerTemplateInstanceDataContextBinding(KeyPropertyName, keyValue);
+                        }
                         ItemTemplate.Render(writer);
 
                         writer.RenderEndTag();
@@ -57,8 +67,5 @@ namespace Redwood.Framework.Controls
 
             writer.RenderEndTag();
         }
-
-
-
     }
 }

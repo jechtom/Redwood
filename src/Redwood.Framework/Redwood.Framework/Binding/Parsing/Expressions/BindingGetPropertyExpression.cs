@@ -10,6 +10,7 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
         public string PropertyName { get; set; }
 
         public BindingExpression NextExpression { get; set; }
-        
+
+        public BindingExpression Indexer { get; set; }
     }
 }

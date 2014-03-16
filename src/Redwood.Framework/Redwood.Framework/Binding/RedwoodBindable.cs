@@ -18,6 +18,11 @@ namespace Redwood.Framework.Binding
 
         private RedwoodBindable parent;
 
+        public RedwoodBindable Parent
+        {
+            get { return parent; }
+        }
+
         public RedwoodBindable()
         {
             originThread = Thread.CurrentThread;

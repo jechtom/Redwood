@@ -53,7 +53,7 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Translates to knockout property.
         /// </summary>
-        public static string TranslateToKnockoutProperty(RedwoodControl target, RedwoodProperty property, BindingMarkupExpression binding)
+        public static string TranslateToKnockoutProperty(RedwoodBindable target, RedwoodProperty property, BindingMarkupExpression binding)
         {
             var path = binding.Path;
 
@@ -79,19 +79,56 @@ namespace Redwood.Framework.Controls
                 {
                     // get property
                     var propertyName = ((BindingGetPropertyExpression)path).PropertyName;
+                    var indexer = ((BindingGetPropertyExpression)path).Indexer;
                     var next = ((BindingGetPropertyExpression)path).NextExpression;
 
                     sb.Append(propertyName);
-                    if (next != null)
+                    if (next != null && !knockoutBindingVariables.Contains(propertyName))
                     {
-                        if (!knockoutBindingVariables.Contains(propertyName))
+                        sb.Append("()");
+                    }
+
+                    // apply indexer
+                    if (indexer is BindingArrayGetByIndexExpression)
+                    {
+                        sb.Append("[");
+                        if (((BindingArrayGetByIndexExpression)indexer).IsPlaceholder)
                         {
-                            sb.Append(".");
+                            sb.Append("{$index}");
                         }
                         else
                         {
-                            sb.Append("().");
+                            sb.Append(((BindingArrayGetByIndexExpression)indexer).Index);
                         }
+                        sb.Append("]");
+                    }
+                    else if (indexer is BindingArrayGetByKeyExpression)
+                    {
+                        var keyPropertyName = ((BindingArrayGetByKeyExpression)indexer).KeyPropertyName;
+
+                        sb.Append("[");
+                        sb.Append(keyPropertyName);
+                        sb.Append("=");
+                        if (((BindingArrayGetByKeyExpression)indexer).IsPlaceholder)
+                        {
+                            sb.Append("{");
+                            sb.Append(keyPropertyName);
+                            sb.Append("()}");
+                        }
+                        else
+                        {
+                            sb.Append(((BindingArrayGetByKeyExpression)indexer).KeyValue);    
+                        }
+                        sb.Append("]");
+                    }
+                    else if (indexer != null)
+                    {
+                        throw new NotSupportedException();      // TODO: unknown indexer
+                    }
+
+                    if (next != null)
+                    {
+                        sb.Append(".");
                     }
 
                     path = next;
@@ -135,11 +172,7 @@ namespace Redwood.Framework.Controls
         /// </summary>
         public static string TranslateToKnockoutCommand(RedwoodControl target, RedwoodProperty property, CommandMarkupExpression binding)
         {
-            var path = binding.Path;
-
-            var sb = new StringBuilder();
-            TranslateToKnockoutCommand(target.DataContextPath, path, sb);
-            return sb.ToString();
+            return DataContextPathBuilder.Default.BuildPath(target);
         }
 
         /// <summary>
@@ -196,5 +229,7 @@ namespace Redwood.Framework.Controls
                 // TODO: command must contain at least one function call       
             }
         }
+
+        
     }
 }

@@ -21,6 +21,14 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
             {
                 return VisitCallMethod((BindingCallMethodExpression)expression, accumulator);
             }
+            else if (expression is BindingArrayGetByIndexExpression)
+            {
+                return VisitArrayGetByIndex((BindingArrayGetByIndexExpression)expression, accumulator);
+            }
+            else if (expression is BindingArrayGetByKeyExpression)
+            {
+                return VisitArrayGetByKey((BindingArrayGetByKeyExpression)expression, accumulator);
+            }
             else
             {
                 throw new NotSupportedException(string.Format("Binding expression of type {0} is not supported!", expression.GetType()));
@@ -33,5 +41,8 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
 
         protected abstract TAccumulator VisitCallMethod(BindingCallMethodExpression expression, TAccumulator accumulator);
 
+        protected abstract TAccumulator VisitArrayGetByIndex(BindingArrayGetByIndexExpression expression, TAccumulator accumulator);
+
+        protected abstract TAccumulator VisitArrayGetByKey(BindingArrayGetByKeyExpression expression, TAccumulator accumulator);
     }
 }

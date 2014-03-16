@@ -23,14 +23,6 @@ namespace Redwood.Framework.Controls
             RedwoodProperty.Register<object, RedwoodControl>("DataContext", new RedwoodPropertyMetadata(null, RedwoodPropertyFlags.IsInherited));
 
         
-        public string DataContextPath
-        {
-            get { return (string)GetValue(DataContextPathProperty); }
-            protected internal set { SetValue(DataContextPathProperty, value); }
-        }
-        public static RedwoodProperty DataContextPathProperty =
-            RedwoodProperty.Register<object, RedwoodControl>("DataContextPath", new RedwoodPropertyMetadata("$root", RedwoodPropertyFlags.IsInherited));
-
 
         public string ID
         {

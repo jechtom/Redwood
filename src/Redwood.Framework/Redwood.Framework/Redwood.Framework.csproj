@@ -59,6 +59,8 @@
     <Compile Include="Binding\IHtmlAttributesStorageProvider.cs" />
     <Compile Include="Binding\IHtmlAttributesStorage.cs" />
     <Compile Include="Binding\Parsing\BindingParser.cs" />
+    <Compile Include="Binding\Parsing\Expressions\BindingArrayGetByIndexExpression.cs" />
+    <Compile Include="Binding\Parsing\Expressions\BindingArrayGetByKeyExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingCallMethodExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingConstantExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingParameterSetExpression.cs" />
@@ -67,9 +69,11 @@
     <Compile Include="Binding\Parsing\Expressions\BindingGetPropertyExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingVisitor.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingCloseBraceToken.cs" />
+    <Compile Include="Binding\Parsing\Tokens\BindingCloseIndexerToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingCommaToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingDotToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingEqualsToken.cs" />
+    <Compile Include="Binding\Parsing\Tokens\BindingOpenIndexerToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingOpenBraceToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingQuotedTextToken.cs" />
     <Compile Include="Binding\Parsing\Tokens\BindingTextToken.cs" />
