@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,8 +65,16 @@ namespace Redwood.Framework.Binding
             });
 
             // set parent if property is inheritance source
-            if (property.Metadata.IsInheritanceSource && value is RedwoodBindable)
-                ((RedwoodBindable)value).SetParent(this);
+            if (property.Metadata.IsInheritanceSource)
+            {
+                if (value is RedwoodBindable)
+                    ((RedwoodBindable)value).SetParent(this);
+
+                if(value is IEnumerable)
+                    foreach (var item in (IEnumerable)value)
+                        if(item is RedwoodBindable)
+                            ((RedwoodBindable)item).SetParent(this);
+            }
         }
 
         public void ClearValue(RedwoodProperty property)

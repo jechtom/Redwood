@@ -22,9 +22,6 @@ namespace Redwood.Framework.Controls
         }
         public static RedwoodProperty KeyPropertyNameProperty = RedwoodProperty.Register<string, TemplatedItemsControl>("KeyPropertyName");
 
-
-
-
         protected object GetKeyValue(object item)
         {
             var itemType = item.GetType();

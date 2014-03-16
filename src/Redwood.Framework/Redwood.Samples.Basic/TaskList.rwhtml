@@ -38,7 +38,7 @@
         </rw:Table.ItemTemplate>
       </rw:Table>
 
-      <rw:IntegrationScripts />
+      <rw:IntegrationScripts ViewModelTypeName="Redwood.Samples.Basic.TaskListViewModel, Redwood.Samples.Basic" />
     </body>
   </html>
 </rw:Page>

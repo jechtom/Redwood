@@ -26,12 +26,15 @@ namespace Redwood.Framework.Controls
 
         protected override void RenderControl(IHtmlWriter writer)
         {
-            foreach (var script in InternalScriptUrls)
+            if (InternalScriptUrls != null)
             {
-                writer.RenderBeginTag("script");
-                writer.AddAttribute("type", "text/javascript");
-                writer.AddAttribute("src", script);
-                writer.RenderEndTag(true);
+                foreach (var script in InternalScriptUrls)
+                {
+                    writer.RenderBeginTag("script");
+                    writer.AddAttribute("type", "text/javascript");
+                    writer.AddAttribute("src", script);
+                    writer.RenderEndTag(true);
+                }
             }
             
             writer.RenderBeginTag("script");
