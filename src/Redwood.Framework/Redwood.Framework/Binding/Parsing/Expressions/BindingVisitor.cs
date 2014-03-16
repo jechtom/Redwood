@@ -7,7 +7,7 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
     public abstract class BindingVisitor<TAccumulator>
     {
 
-        public TAccumulator Visit(BindingExpression expression, TAccumulator accumulator)
+        public TAccumulator Visit(BindingPathExpression expression, TAccumulator accumulator)
         {
             if (expression is BindingConstantExpression)
             {

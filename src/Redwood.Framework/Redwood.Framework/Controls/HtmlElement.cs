@@ -25,7 +25,7 @@ namespace Redwood.Framework.Controls
             writer.RenderBeginTag(Element);
             if (htmlAttributesStorage != null)
                 htmlAttributesStorage.Render(writer);
-            base.Render(writer);
+            base.RenderControl(writer);
             writer.RenderEndTag(true);
         }
 

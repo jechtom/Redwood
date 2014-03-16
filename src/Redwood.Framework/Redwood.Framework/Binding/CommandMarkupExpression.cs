@@ -12,7 +12,7 @@ namespace Redwood.Framework.Binding
         /// <summary>
         /// Gets or sets command function path. Can be null.
         /// </summary>
-        public Parsing.Expressions.BindingExpression Path { get; set; }
+        public Parsing.Expressions.BindingPathExpression Path { get; set; }
 
 
         public object Evaluate(RedwoodBindable redwoodBindable)

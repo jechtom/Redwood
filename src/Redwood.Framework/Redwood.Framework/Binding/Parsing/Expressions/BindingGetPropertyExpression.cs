@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Redwood.Framework.Binding.Parsing.Expressions
 {
-    public class BindingGetPropertyExpression : BindingExpression
+    public class BindingGetPropertyExpression : BindingPathExpression
     {
         
         public string PropertyName { get; set; }
 
-        public BindingExpression NextExpression { get; set; }
+        public BindingPathExpression NextExpression { get; set; }
 
-        public BindingExpression Indexer { get; set; }
+        public BindingPathExpression Indexer { get; set; }
     }
 }

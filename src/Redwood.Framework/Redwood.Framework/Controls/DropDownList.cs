@@ -8,20 +8,20 @@ namespace Redwood.Framework.Controls
 {
     public class DropDownList : ItemsControl
     {
-        public BindingMarkupExtension DisplayMemberBinding
+        public BindingMarkup DisplayMemberBinding
         {
-            get { return (BindingMarkupExtension)GetValue(DisplayMemberBindingProperty); }
+            get { return (BindingMarkup)GetValue(DisplayMemberBindingProperty); }
             set { SetValue(DisplayMemberBindingProperty, value); }
         }
-        public static RedwoodProperty DisplayMemberBindingProperty = RedwoodProperty.Register<BindingMarkupExtension, DropDownList>("DisplayMemberBinding", new RedwoodPropertyMetadata(null));
+        public static RedwoodProperty DisplayMemberBindingProperty = RedwoodProperty.Register<BindingMarkup, DropDownList>("DisplayMemberBinding", new RedwoodPropertyMetadata(null));
 
 
-        public BindingMarkupExtension ValueMemberBinding
+        public BindingMarkup ValueMemberBinding
         {
-            get { return (BindingMarkupExtension)GetValue(ValueMemberBindingProperty); }
+            get { return (BindingMarkup)GetValue(ValueMemberBindingProperty); }
             set { SetValue(ValueMemberBindingProperty, value); }
         }
-        public static RedwoodProperty ValueMemberBindingProperty = RedwoodProperty.Register<BindingMarkupExtension, DropDownList>("ValueMemberBinding", new RedwoodPropertyMetadata(null));
+        public static RedwoodProperty ValueMemberBindingProperty = RedwoodProperty.Register<BindingMarkup, DropDownList>("ValueMemberBinding", new RedwoodPropertyMetadata(null));
 
 
         public object SelectedValue

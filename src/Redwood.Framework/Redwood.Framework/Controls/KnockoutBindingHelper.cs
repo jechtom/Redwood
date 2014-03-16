@@ -11,7 +11,7 @@ namespace Redwood.Framework.Controls
     {
         private static readonly string[] knockoutBindingVariables = { "$root", "$parent" };
 
-        public static bool IsKnockoutBinding(BindingMarkupExtension expr)
+        public static bool IsKnockoutBinding(BindingMarkup expr)
         {
             if(expr == null)
                 return false;
@@ -19,12 +19,12 @@ namespace Redwood.Framework.Controls
             return true;
         }
 
-        public static BindingMarkupExtension GetBindingExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
+        public static BindingMarkup GetBindingExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
         {
             var value = obj.GetRawValue(property);
-            if (value is BindingMarkupExtension)
+            if (value is BindingMarkup)
             {
-                return (BindingMarkupExtension)value;
+                return (BindingMarkup)value;
             }
 
             return null;
@@ -53,7 +53,7 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Translates to knockout property.
         /// </summary>
-        public static string TranslateToKnockoutProperty(RedwoodBindable target, RedwoodProperty property, BindingMarkupExtension binding)
+        public static string TranslateToKnockoutProperty(RedwoodBindable target, RedwoodProperty property, BindingMarkup binding)
         {
             var path = binding.Path;
 
@@ -71,7 +71,7 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Translates to knockout property and returns the rest of the expression if it cannot be processed.
         /// </summary>
-        private static Binding.Parsing.Expressions.BindingExpression TranslateToKnockoutProperty(Binding.Parsing.Expressions.BindingExpression path, StringBuilder sb, bool allowConstants = false)
+        private static Binding.Parsing.Expressions.BindingPathExpression TranslateToKnockoutProperty(Binding.Parsing.Expressions.BindingPathExpression path, StringBuilder sb, bool allowConstants = false)
         {
             while (path != null)
             {
@@ -178,7 +178,7 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Translates to knockout command.
         /// </summary>
-        private static void TranslateToKnockoutCommand(string currentDataContextPath, Binding.Parsing.Expressions.BindingExpression path, StringBuilder sb)
+        private static void TranslateToKnockoutCommand(string currentDataContextPath, Binding.Parsing.Expressions.BindingPathExpression path, StringBuilder sb)
         {
             // generated output: Redwood.PostBack('current data context path', 'function name', [ arg1, arg2, arg3])
 
