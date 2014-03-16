@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Redwood.Framework.Parsing;
 
 namespace Redwood.Framework.Hosting
 {
@@ -120,7 +121,7 @@ namespace Redwood.Framework.Hosting
 
             if (error != null)
             {
-                await RenderErrorResponse(context, HttpStatusCode.InternalServerError, error.ToString());
+                await RenderErrorResponse(context, HttpStatusCode.InternalServerError, error);
             }
         }
 
@@ -128,11 +129,30 @@ namespace Redwood.Framework.Hosting
         /// <summary>
         /// Renders the error response.
         /// </summary>
-        public static async Task RenderErrorResponse(RedwoodRequestContext context, HttpStatusCode code, string details)
+        public static async Task RenderErrorResponse(RedwoodRequestContext context, HttpStatusCode code, Exception error)
         {
             context.OwinContext.Response.StatusCode = (int)code;
             context.OwinContext.Response.ContentType = "text/html";
-            await context.OwinContext.Response.WriteAsync(string.Format("<html><head><title>Application error</title></head><body><h1>HTTP Error {0}</h1><p>{1}</p></body></html>", (int)code, WebUtility.HtmlEncode(details)));
+
+            var template = new ErrorPageTemplate()
+            {
+                Error = error,
+                ErrorCode = (int)code,
+                ErrorDescription = code.ToString(),
+                IpAddress = context.OwinContext.Request.RemoteIpAddress,
+                CurrentUserName = context.OwinContext.Request.User.Identity.Name,
+                Url = context.OwinContext.Request.Uri.ToString(),
+                Verb = context.OwinContext.Request.Method
+            };
+            if (error is ParserException)
+            {
+                template.FileName = ((ParserException)error).FileName;
+                template.LineNumber = ((ParserException)error).Position.LineNumber;
+                template.PositionOnLine = ((ParserException)error).Position.PositionOnLine;
+            }
+            
+            var text = template.TransformText();
+            await context.OwinContext.Response.WriteAsync(text);
         }
 
         /// <summary>
@@ -174,7 +194,7 @@ namespace Redwood.Framework.Hosting
             else
             {
                 // unknown HTTP method
-                await RenderErrorResponse(context, HttpStatusCode.MethodNotAllowed, "Only GET and POST methods are supported!");
+                await RenderErrorResponse(context, HttpStatusCode.MethodNotAllowed, new RedwoodHttpException("Only GET and POST methods are supported!"));
                 return;
             }
             viewModel.PreRender(context);

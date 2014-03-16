@@ -89,7 +89,7 @@ namespace Redwood.Framework.Binding.Parsing
             SkipWhiteSpaceOrNewLine();
             if (CurrentAtom != BindingAtom.Text)
             {
-                // TODO: invalid character, identifier expected
+                ThrowParserError("The expression must start with identifier.");
             }
             var bindingType = ReadText();
             SkipWhiteSpaceOrNewLine();
@@ -107,7 +107,7 @@ namespace Redwood.Framework.Binding.Parsing
                 {
                     if (CurrentAtom != BindingAtom.Comma)
                     {
-                        // TODO: comma or close brace expected
+                        ThrowParserError("The parameters of markup extension must be separated by comma.");
                     }
 
                     MoveNext();
@@ -126,7 +126,7 @@ namespace Redwood.Framework.Binding.Parsing
         {
             if (CurrentAtom != BindingAtom.Text)
             {
-                // TODO: expression must start with text
+                ThrowParserError("The expression must start with identifier.");
             }
             var value = ReadText();
             SkipWhiteSpaceOrNewLine();
@@ -155,7 +155,7 @@ namespace Redwood.Framework.Binding.Parsing
 
                 if (CurrentAtom != BindingAtom.ArrayCloseBrace)
                 {
-                    // TODO: array close angle expected
+                    ThrowParserError("The array indexer was not closed.");
                 }
                 MoveNext();
                 SkipWhiteSpaceOrNewLine();
@@ -207,7 +207,7 @@ namespace Redwood.Framework.Binding.Parsing
                     {
                         if (CurrentAtom != BindingAtom.Comma)
                         {
-                            // TODO: comma or close brace expected
+                            ThrowParserError("The parameters in the function call must be separated with comma.");
                         }
 
                         MoveNext();
@@ -221,7 +221,7 @@ namespace Redwood.Framework.Binding.Parsing
 
                 if (CurrentAtom != BindingAtom.CloseBrace)
                 {
-                    // TODO: close brace expected
+                    ThrowParserError("The parameter list was not closed.");
                 }
                 MoveNext();
                 SkipWhiteSpaceOrNewLine();
@@ -241,7 +241,7 @@ namespace Redwood.Framework.Binding.Parsing
                 SkipWhile(t => t != BindingAtom.DoubleQuotes);
                 if (CurrentAtom != BindingAtom.DoubleQuotes)
                 {
-                    // TODO: double quotes expected
+                    ThrowParserError("The string literal was not closed.");
                 }
                 var text = GetTextSinceLastToken().Substring(start);
                 MoveNext();
@@ -273,6 +273,14 @@ namespace Redwood.Framework.Binding.Parsing
         private void SkipWhiteSpaceOrNewLine()
         {
             SkipWhile(a => a == BindingAtom.WhiteSpace || a == BindingAtom.NewLine);
+        }
+
+        /// <summary>
+        /// Throws the parser error.
+        /// </summary>
+        private void ThrowParserError(string message)
+        {
+            throw new ParserException(message) { Position = CurrentAtomPosition };
         }
     }
 

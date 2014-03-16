@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Redwood.Framework.Binding.Parsing.Expressions;
 using Redwood.Framework.Binding.Parsing.Tokens;
+using Redwood.Framework.Parsing;
 using Redwood.Framework.RwHtml;
 using Redwood.Framework.RwHtml.Converters;
 using Redwood.Framework.RwHtml.Markup;
@@ -66,7 +67,7 @@ namespace Redwood.Framework.Binding.Parsing
                 {
                     if (!(tokens[index] is BindingCommaToken))
                     {
-                        // TODO: comma expected, but the tokenizer should already handle this
+                        ThrowParserError("The binding parameters must be separated by comma.", tokens[index]);
                     }
                     index++;
                 }
@@ -94,12 +95,13 @@ namespace Redwood.Framework.Binding.Parsing
         {
             if (tokens.Count == 0)
             {
-                // TODO: unexpected end
+                ThrowParserError("The markup extension cannot be empty!", null);
             }
+
             var bindingType = ((BindingTypeToken)tokens[0]).BindingTypeName;
             if (!MappingTable.ContainsKey(bindingType))
             {
-                // TODO: unknown binding type
+                ThrowParserError(string.Format("The markup extension '{0}' is unknown!", bindingType), tokens[0]);
             }
             return MappingTable[bindingType]();
         }
@@ -115,14 +117,14 @@ namespace Redwood.Framework.Binding.Parsing
             {
                 if (!parameters.All(p => p is BindingParameterSetExpression))
                 {
-                    // TODO: no default property, all parameters must be BindingParameterSetExpression
+                    ThrowParserError(string.Format("The markup extension '{0}' does not have a default property! Please specify the property name explicitly, e.g. {{MarkupExtension Property1=Value1, Property2=Value2}}", binding.MarkupExtensionName), null);
                 }
             }
             else
             {
                 if (parameters.Count(p => !(p is BindingParameterSetExpression)) > 1)
                 {
-                    // TODO: at most one parameter can be other type than BindingParameterSetExpression
+                    ThrowParserError(string.Format("Only one parameter can be set to the default property! Please specify the property names of other parameters explicitly, e.g. {{MarkupExtension DefaultPropertyValue, Property1=Value1, Property2=Value2}}"), null);
                 }
                 var defaultParameter = parameters.FirstOrDefault(p => !(p is BindingParameterSetExpression));
                 if (defaultParameter != null)
@@ -136,7 +138,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// <summary>
         /// Converts the expression to constant.
         /// </summary>
-        private string ConvertExpressionToConstant(Expressions.BindingExpression expression)
+        private string ConvertExpressionToConstant(Expressions.BindingExpression expression, string propertyName)
         {
             if (expression is BindingConstantExpression)
             {
@@ -145,7 +147,7 @@ namespace Redwood.Framework.Binding.Parsing
 
             if (!(expression is BindingGetPropertyExpression) || ((BindingGetPropertyExpression)expression).NextExpression != null)
             {
-                // TODO: single word or quoted string is expected for the specified property type
+                ThrowParserError(string.Format("The value of property '{0}' must be one word and must not contain other characters than letters, numbers or underscore. Otherwise the value must be in enclosed in double quotes.", propertyName));
             }
 
             return ((BindingGetPropertyExpression)expression).PropertyName;
@@ -163,7 +165,7 @@ namespace Redwood.Framework.Binding.Parsing
                 var prop = type.GetProperty(parameter.ParameterName);
                 if (prop == null)
                 {
-                    // TODO: binding does not have property of that name
+                    ThrowParserError(string.Format("The markup extension '{0}' does not have a property '{1}'!", binding.MarkupExtensionName, parameter.ParameterName));
                 }
 
                 // set value
@@ -177,9 +179,9 @@ namespace Redwood.Framework.Binding.Parsing
                     // value is constant
                     var converter = TypeConverterMapper.Default.GetConverterForType(prop.PropertyType);
                     object value;
-                    if (!converter.TryConvertFromString(ConvertExpressionToConstant(parameter.Value), out value))
+                    if (!converter.TryConvertFromString(ConvertExpressionToConstant(parameter.Value, parameter.ParameterName), out value))
                     {
-                        // TODO: value could not be converted to the desired type
+                        ThrowParserError(string.Format("The value assigned to property '{0}' could not be converted to type '{1}'!", parameter.ParameterName, prop.PropertyType.FullName));
                     }
                     prop.SetValue(binding, value);
                 }
@@ -194,7 +196,7 @@ namespace Redwood.Framework.Binding.Parsing
         {
             if (!(tokens[index] is BindingTextToken))
             {
-                // TODO: expression must start with identifier
+                ThrowParserError("The expression must start with identifier.", tokens[index]);
             }
             var text = ((BindingTextToken)tokens[index]).Text;
 
@@ -223,7 +225,7 @@ namespace Redwood.Framework.Binding.Parsing
                         {
                             if (!(tokens[index] is BindingCommaToken))
                             {
-                                // TODO: comma expected, but the tokenizer should already handle this
+                                ThrowParserError("The binding parameters must be separated by comma.", tokens[index]);
                             }
                             index++;
                         }
@@ -245,10 +247,9 @@ namespace Redwood.Framework.Binding.Parsing
                     index += 4;
 
                     int firstValue;
-                    if (!int.TryParse(first, out firstValue))
+                    if (!int.TryParse(first, out firstValue) || firstValue < 0)
                     {
-                        // TODO: the index must be integer
-                        throw new Exception();
+                        ThrowParserError("The array index must be integer and must not be negative!", tokens[index + 2]);
                     }
 
                     return new BindingGetPropertyExpression() { PropertyName = text, Indexer = new BindingArrayGetByIndexExpression() { Index = firstValue} };
@@ -281,10 +282,25 @@ namespace Redwood.Framework.Binding.Parsing
             // parse the token stream
             var tokenizer = new BindingTokenizer();
             var tokens = tokenizer.Parse(expression).ToList();
-            
-            // TODO: handle errors
-
             return tokens;
+        }
+
+
+        /// <summary>
+        /// Throws the parser error.
+        /// </summary>
+        private void ThrowParserError(string message, BindingToken currentToken = null)
+        {
+            var exception = new ParserException(message);
+            if (currentToken != null)
+            {
+                exception.Position = currentToken.SpanPosition;
+            }
+            else
+            {
+                exception.Position= new SpanPosition();
+            }
+            throw exception;
         }
     }
 }

@@ -208,7 +208,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                     }
                     else
                     {
-                        // TODO: solidus without close angle
+                        ThrowParserError("The tag was not closed.");
                     }
                 }
                 else if (CurrentAtom == RwHtmlAtom.CloseAngle)
@@ -224,7 +224,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 }
                 else
                 {
-                    // TODO: close angle expected
+                    ThrowParserError("The tag was not closed.");
                 }
             }
             else if (CurrentAtom == RwHtmlAtom.Solidus)
@@ -245,12 +245,12 @@ namespace Redwood.Framework.RwHtml.Parsing
                 }
                 else
                 {
-                    // TODO: invalid char after tag name in the closing tag
+                    ThrowParserError("The tag was not closed.");
                 }
             }
             else
             {
-                // TODO: invalid char after open angle
+                ThrowParserError("The tag name contains invalid characters!");
             }
         }
 
@@ -317,7 +317,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                         }
                         else
                         {
-                            // TODO: close brace not doubled - {{Binding} 
+                            ThrowParserError("The markup extension was not closed.");
                         }
                     }
                 }
@@ -325,7 +325,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 MoveNext();
             }
 
-            // TODO: script or style end tag not closed
+            ThrowParserError(string.Format("The <{0}> tag was not closed!", tagName));
         }
 
         /// <summary>
@@ -438,6 +438,14 @@ namespace Redwood.Framework.RwHtml.Parsing
         private void SkipWhiteSpaceOrNewLine()
         {
             SkipWhile(a => a == RwHtmlAtom.WhiteSpace || a == RwHtmlAtom.NewLine);
+        }
+
+        /// <summary>
+        /// Throws the parser error.
+        /// </summary>
+        private void ThrowParserError(string message)
+        {
+            throw new ParserException(message) { Position = CurrentAtomPosition };
         }
     }
 }

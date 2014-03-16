@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Redwood.Framework.Parsing;
 
 namespace Redwood.Framework.RwHtml.Markup
 {
@@ -126,11 +127,21 @@ namespace Redwood.Framework.RwHtml.Markup
             if (node.Value.IsExpression)
             {
                 // parse expression and evaluate
-                var expr = bindingParser.ParseExpression(node.Value.Value);
+                MarkupExpression expr;
+                try
+                {
+                    expr = bindingParser.ParseExpression(node.Value.Value);
+                }
+                catch (ParserException ex)
+                {
+                    ex.Position.AddTo(node.CurrentPosition);
+                    throw;
+                }
+
                 var exprContext = new MarkupExpressionEvaluationContext()
-                    {
-                        TargetProperty = propAccessor
-                    };
+                {
+                    TargetProperty = propAccessor
+                };
                 resultValue = expr.EvaluateMarkupExpression(exprContext);
             }
             else
@@ -138,12 +149,16 @@ namespace Redwood.Framework.RwHtml.Markup
                 // convert value
                 var converter = converterMapper.GetConverterForType(propAccessor.Type);
                 if (!converter.TryConvertFromString(stringValue, out resultValue))
+                {
                     throw new InvalidOperationException("Can't convert value to " + propAccessor.Type.FullName);
+                }
             }
 
             // convert to raw html (don't encode)
-            if (propAccessor.Type == typeof(object) && resultValue is string)
-                resultValue = Redwood.Framework.Controls.HtmlContent.Create((string)resultValue);
+            if (propAccessor.Type == typeof (object) && resultValue is string)
+            {
+                resultValue = Controls.HtmlContent.Create((string)resultValue);
+            }
 
             // set value
             AddValueToMember(CurrentFrame, resultValue);

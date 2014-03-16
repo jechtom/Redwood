@@ -11,8 +11,24 @@ namespace Redwood.Framework.Hosting
     {
         public ViewModelBase LocateViewModel(RedwoodRequestContext context, Page page)
         {
-            var type = context.Presenter.ResolveViewModelType();
-            return (ViewModelBase)Activator.CreateInstance(type);
+            Type type;
+            try
+            {
+                type = context.Presenter.ResolveViewModelType();
+            }
+            catch (Exception ex)
+            {
+                throw new RedwoodHttpException("The viewmodel class for requested page was not found!", ex);
+            }
+
+            try
+            {
+                return (ViewModelBase)Activator.CreateInstance(type);
+            }
+            catch (Exception ex)
+            {
+                throw new RedwoodHttpException(string.Format("The instance of viewmodel '{0}' could not be created. There is not a default parameterless constructor, or an exception was thrown when the constructor was called. See InnerException for details.", type.FullName), ex);
+            }
         }
     }
 }

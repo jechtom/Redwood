@@ -9,7 +9,7 @@ namespace Redwood.Framework.Hosting
     public interface IMarkupFileLoader
     {
 
-        Task<string> GetMarkup(RedwoodRequestContext context, string applicationPhysicalPath);
+        Task<MarkupFile> GetMarkup(RedwoodRequestContext context, string applicationPhysicalPath);
 
     }
 }

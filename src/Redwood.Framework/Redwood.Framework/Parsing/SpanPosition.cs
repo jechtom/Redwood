@@ -13,5 +13,18 @@ namespace Redwood.Framework.Parsing
         public int PositionOnLine { get; set; }
 
         public int Length { get; set; }
+
+        /// <summary>
+        /// Adds this position to the specified one.
+        /// </summary>
+        public void AddTo(SpanPosition other)
+        {
+            if (LineNumber > 1)
+            {
+                PositionOnLine += other.PositionOnLine;
+            }
+            LineNumber = other.LineNumber + LineNumber - 1;
+            AbsolutePosition = other.AbsolutePosition + AbsolutePosition;
+        }
     }
 }

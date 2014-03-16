@@ -24,8 +24,6 @@ namespace Redwood.Framework.RwHtml
             defaultNamespaces = new [] { 
                 new Markup.NamespaceDeclaration() { Prefix = "rw", RwHtmlNamespace = RedwoodControl.DefaultSchemaNamespaceName }
             };
-            
-            // 
         }
 
         public object LoadFromString(string rwhtml)

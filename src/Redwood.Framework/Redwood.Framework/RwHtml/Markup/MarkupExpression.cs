@@ -12,5 +12,7 @@ namespace Redwood.Framework.RwHtml.Markup
     public abstract class MarkupExpression
     {
         public abstract object EvaluateMarkupExpression(MarkupExpressionEvaluationContext context);
+
+        public abstract string MarkupExtensionName { get; }
     }
 }

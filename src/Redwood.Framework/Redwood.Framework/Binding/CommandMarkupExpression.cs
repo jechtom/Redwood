@@ -26,5 +26,10 @@ namespace Redwood.Framework.Binding
             // TODO: implementat
             return null;
         }
+
+        public override string MarkupExtensionName
+        {
+            get { return "Command"; }
+        }
     }
 }

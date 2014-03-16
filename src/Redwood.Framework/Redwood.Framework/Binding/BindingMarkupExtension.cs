@@ -32,7 +32,12 @@ namespace Redwood.Framework.Binding
 
         public override object EvaluateMarkupExpression(RwHtml.Markup.MarkupExpressionEvaluationContext context)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public override string MarkupExtensionName
+        {
+            get { return "Binding"; }
         }
     }
 

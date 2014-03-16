@@ -136,7 +136,7 @@ namespace Redwood.Framework.Parsing
             textSinceLastToken.Clear();
             isAtEnd = false;
 
-            CurrentLineNumber = 0;
+            CurrentLineNumber = 1;
             PositionOnLine = 0;
 
             tokens = new List<TToken>();
