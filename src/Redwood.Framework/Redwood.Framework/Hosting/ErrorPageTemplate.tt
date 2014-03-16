@@ -9,11 +9,19 @@
 <html>
 	<head>
 		<title>Server Error in Application</title>
+		<style type="text/css">
+body { font-family: Arial,Tahoma,sans-serif; font-size: 11pt; }
+h1 { color: #e00000; font-weight: normal; font-size: 24pt; }
+h2 { font-style: normal; font-size: 16pt; font-weight: bold; margin-bottom: 35px; }
+h3 { color: #e00000; font-weight: normal; font-size: 14pt; }
+pre { background-color: #ffffc0; padding: 20px; font-size: 12pt; }
+span.current-line { color: red; }
+		</style>
 	</head>
 	<body>
 		<h1>Server Error in Application</h1>
-		<p><strong>HTTP <#= ErrorCode #> <#= WebUtility.HtmlEncode(ErrorDescription) #></strong></p>
-		<p><strong><#= Error.GetType().FullName #></strong>: <#= WebUtility.HtmlEncode(Error.Message) #></p>
+		<h2>HTTP <#= ErrorCode #> <#= WebUtility.HtmlEncode(ErrorDescription) #></h2>
+		<p><strong><#= Error.GetType().FullName #>: <#= WebUtility.HtmlEncode(Error.Message) #></strong></p>
 
 <# if (Url != null) { #>
 		<p>Request URL: <strong><#= Verb #> <#= WebUtility.HtmlEncode(Url) #></strong></p>
@@ -45,11 +53,16 @@
     {
 #>
 		<p>&nbsp;</p>
-		<h2>Source Location</h2>
+		<h3>Source Location</h3>
 <#
         this.Write("<pre>");
         foreach (var line in sourceLines)
         {
+            if (line.LineNumber == LineNumber)
+            {
+                this.Write("<span class='current-line'>");
+            }
+
             if (line.LineNumber == null)
             {
                 this.Write(new string(' ', 15));
@@ -59,6 +72,11 @@
                 this.Write(("Line " + line.LineNumber + ": ").PadLeft(15));
             }
             this.Write(WebUtility.HtmlEncode(line.Text));
+
+			if (line.LineNumber == LineNumber)
+            {
+                this.Write("</span>");
+            }
             this.Write("<br />");
         }
 		this.Write("</pre>");
@@ -66,7 +84,7 @@
 #>
 		
 		<p>&nbsp;</p>
-		<h2>Stack Trace</h2>
+		<h3>Stack Trace</h3>
 <#
     this.Write("<pre>");
     using (var sr = new StringReader(Error.ToString()))
