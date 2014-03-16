@@ -6,7 +6,7 @@ using System.Linq;
 namespace Redwood.Framework.Binding
 {
     [DefaultProperty("Path")]
-    public class BindingMarkupExpression : RwHtml.Markup.MarkupExpression
+    public class BindingMarkupExtension : RwHtml.Markup.MarkupExpression
     {
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Redwood.Framework.Binding
 
         public override object EvaluateMarkupExpression(RwHtml.Markup.MarkupExpressionEvaluationContext context)
         {
-            throw new InvalidOperationException();
+            
         }
     }
 

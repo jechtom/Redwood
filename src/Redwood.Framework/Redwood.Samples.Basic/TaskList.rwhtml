@@ -16,7 +16,7 @@
       <rw:Table ItemsSource="{Binding Tasks}" UseClientTemplate="true" KeyPropertyName="Id">
         <rw:Table.ItemTemplate>
           <td><rw:CheckBox Checked="{Binding IsFinished}" /></td>
-          <td>{Title}</td>
+          <td>{Binding Title} {Binding IsFinished}</td>
           <td>
             <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
             <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />

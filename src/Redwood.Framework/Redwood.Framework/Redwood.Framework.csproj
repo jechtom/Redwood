@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding\BindingMarkupExpression.cs" />
-    <Compile Include="Binding\BindingExpression.cs" />
+    <Compile Include="Binding\BindingMarkupExtension.cs" />
+    <Compile Include="Binding\BindingBase.cs" />
     <Compile Include="Binding\BindingMode.cs" />
     <Compile Include="Binding\CommandMarkupExpression.cs" />
     <Compile Include="Binding\ContentPropertyAttribute.cs" />

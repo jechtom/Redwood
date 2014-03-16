@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Binding
 {
-    public class BindingExpression
+    public class BindingBase
     {
         /// <summary>
         /// Gets the name of the binding path.
@@ -16,9 +14,9 @@ namespace Redwood.Framework.Binding
         public BindingMode Mode { get; private set; }
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="BindingExpression"/> class.
+        /// Initializes a new instance of the <see cref="BindingBase"/> class.
         /// </summary>
-        public BindingExpression(string path, BindingMode mode)
+        public BindingBase(string path, BindingMode mode)
         {
             Path = path;
             Mode = mode;

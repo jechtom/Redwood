@@ -42,15 +42,15 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Gets the chain of data context property values.
         /// </summary>
-        private static Stack<Tuple<RedwoodBindable, BindingMarkupExpression>> GetDataContextBindingChain(RedwoodBindable control)
+        private static Stack<Tuple<RedwoodBindable, BindingMarkupExtension>> GetDataContextBindingChain(RedwoodBindable control)
         {
-            var parents = new Stack<Tuple<RedwoodBindable, BindingMarkupExpression>>();
+            var parents = new Stack<Tuple<RedwoodBindable, BindingMarkupExtension>>();
             while (control != null)
             {
-                var binding = (BindingMarkupExpression)control.GetRawValue(RedwoodControl.DataContextProperty, true);
+                var binding = (BindingMarkupExtension)control.GetRawValue(RedwoodControl.DataContextProperty, true);
                 if (binding != null)
                 {
-                    parents.Push(new Tuple<RedwoodBindable, BindingMarkupExpression>(control, binding));
+                    parents.Push(new Tuple<RedwoodBindable, BindingMarkupExtension>(control, binding));
                 }
                 control = control.Parent;
             }

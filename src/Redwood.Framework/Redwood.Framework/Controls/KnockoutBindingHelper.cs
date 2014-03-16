@@ -11,7 +11,7 @@ namespace Redwood.Framework.Controls
     {
         private static readonly string[] knockoutBindingVariables = { "$root", "$parent" };
 
-        public static bool IsKnockoutBinding(BindingMarkupExpression expr)
+        public static bool IsKnockoutBinding(BindingMarkupExtension expr)
         {
             if(expr == null)
                 return false;
@@ -19,12 +19,12 @@ namespace Redwood.Framework.Controls
             return true;
         }
 
-        public static BindingMarkupExpression GetBindingExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
+        public static BindingMarkupExtension GetBindingExpressionOrNull(RedwoodProperty property, RedwoodBindable obj)
         {
             var value = obj.GetRawValue(property);
-            if (value is BindingMarkupExpression)
+            if (value is BindingMarkupExtension)
             {
-                return (BindingMarkupExpression)value;
+                return (BindingMarkupExtension)value;
             }
 
             return null;
@@ -53,7 +53,7 @@ namespace Redwood.Framework.Controls
         /// <summary>
         /// Translates to knockout property.
         /// </summary>
-        public static string TranslateToKnockoutProperty(RedwoodBindable target, RedwoodProperty property, BindingMarkupExpression binding)
+        public static string TranslateToKnockoutProperty(RedwoodBindable target, RedwoodProperty property, BindingMarkupExtension binding)
         {
             var path = binding.Path;
 
