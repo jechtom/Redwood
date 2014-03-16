@@ -62,6 +62,10 @@ namespace Redwood.Framework.Binding
                 PropertyId = property.Id,
                 Value = value
             });
+
+            // set parent if property is inheritance source
+            if (property.Metadata.IsInheritanceSource && value is RedwoodBindable)
+                ((RedwoodBindable)value).SetParent(this);
         }
 
         public void ClearValue(RedwoodProperty property)

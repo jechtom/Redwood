@@ -33,6 +33,14 @@ namespace Redwood.Framework.Binding
             }
         }
 
+        public bool IsInheritanceSource
+        {
+            get
+            {
+                return (flags & RedwoodPropertyFlags.IsInheritanceSource) > 0;
+            }
+        }
+
         public bool IsAttached
         {
             get

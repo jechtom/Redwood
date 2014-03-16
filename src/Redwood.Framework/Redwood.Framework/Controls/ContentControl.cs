@@ -20,9 +20,7 @@ namespace Redwood.Framework.Controls
             get { return GetValue(ContentProperty); }
             set {  SetValue(ContentProperty, value); }
         }
-        public static readonly RedwoodProperty ContentProperty = RedwoodProperty.Register<object, ContentControl>("Content");
-
-
+        public static readonly RedwoodProperty ContentProperty = RedwoodProperty.Register<object, ContentControl>("Content", new RedwoodPropertyMetadata(null, RedwoodPropertyFlags.IsInheritanceSource));
 
         protected override void RenderControl(IHtmlWriter writer)
         {

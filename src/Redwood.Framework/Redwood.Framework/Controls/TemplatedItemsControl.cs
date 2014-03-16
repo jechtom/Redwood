@@ -14,7 +14,7 @@ namespace Redwood.Framework.Controls
             get { return (RedwoodTemplate)GetValue(ItemTemplateProperty); }
             set { SetValue(ItemTemplateProperty, value); }
         }
-        public static readonly RedwoodProperty ItemTemplateProperty = RedwoodProperty.Register<RedwoodTemplate, ItemsControl>("ItemTemplate");
+        public static readonly RedwoodProperty ItemTemplateProperty = RedwoodProperty.Register<RedwoodTemplate, ItemsControl>("ItemTemplate", new RedwoodPropertyMetadata(null, RedwoodPropertyFlags.IsInheritanceSource));
 
 
 

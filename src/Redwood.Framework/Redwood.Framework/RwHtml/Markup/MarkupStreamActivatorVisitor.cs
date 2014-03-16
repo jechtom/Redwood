@@ -18,6 +18,15 @@ namespace Redwood.Framework.RwHtml.Markup
         MarkupStreamActivatorFrame lastFrame;
         Binding.Parsing.BindingParser bindingParser;
         
+        public object ProcessToResult(IEnumerable<MarkupNode> input)
+        {
+            foreach (var item in Process(input))
+            {
+            }
+
+            return this.Result;
+        }
+
         public object Result { get; private set; }
 
         public MarkupStreamActivatorVisitor()

@@ -99,7 +99,6 @@
     <Compile Include="Binding\RedwoodBindable.cs" />
     <Compile Include="Binding\RedwoodProperty.cs" />
     <Compile Include="Binding\RedwoodPropertyMap.cs" />
-    <Compile Include="Controls\ContainerControl.cs" />
     <Compile Include="Controls\KnockoutBindingHelper.cs" />
     <Compile Include="Controls\Layout.cs" />
     <Compile Include="Controls\RadioButton.cs" />
