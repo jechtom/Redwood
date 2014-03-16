@@ -5,7 +5,7 @@ using Redwood.Framework.Generation;
 
 namespace Redwood.Framework.Controls
 {
-    public class RedwoodTemplate : ContainerControl
+    public class RedwoodTemplate : ContentControl
     {
 
     }

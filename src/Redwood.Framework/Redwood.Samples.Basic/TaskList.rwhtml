@@ -15,23 +15,27 @@
 
       <rw:Table ItemsSource="{Binding Tasks}" KeyPropertyName="Id">
         <rw:Table.ItemTemplate>
-          <td><rw:CheckBox /></td>
-          <td>{Binding Title} {Binding IsFinished}</td>
-          <td>
-            <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
-            <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
-          </td>
+          <rw:RedwoodTemplate>
+            <td><rw:CheckBox /></td>
+            <td>{Binding Title} {Binding IsFinished}</td>
+            <td>
+              <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
+              <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
+            </td>
+          </rw:RedwoodTemplate>
         </rw:Table.ItemTemplate>
       </rw:Table>
 
       <rw:Table ItemsSource="{Binding Tasks}" KeyPropertyName="Id">
         <rw:Table.ItemTemplate>
-          <td><rw:CheckBox /></td>
-          <td>{Binding Title} {Binding IsFinished}</td>
-          <td>
-            <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
-            <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
-          </td>
+          <rw:RedwoodTemplate>
+            <td><rw:CheckBox /></td>
+            <td>{Binding Title} {Binding IsFinished}</td>
+            <td>
+              <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
+              <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />
+            </td>
+          </rw:RedwoodTemplate>
         </rw:Table.ItemTemplate>
       </rw:Table>
 
