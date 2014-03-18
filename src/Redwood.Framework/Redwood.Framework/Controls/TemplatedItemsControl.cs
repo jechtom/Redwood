@@ -19,42 +19,58 @@ namespace Redwood.Framework.Controls
 
 
 
-        public static BindingGetPropertyExpression CreateClientTemplateInstanceDataContextBinding()
+        protected BindingExpression CreateClientTemplateInstanceDataContextBinding()
         {
-            return new BindingGetPropertyExpression()
-            {
-                PropertyName = "",
-                Indexer = new BindingArrayGetByIndexExpression() { IsPlaceholder = true }
-            };
+            return new BindingExpression(
+                BindingMode.OneTime,
+                new BindingGetPropertyExpression()
+                {
+                    PropertyName = "",
+                    Indexer = new BindingArrayGetByIndexExpression() { IsPlaceholder = true }
+                },
+                ItemsControl.ItemsSourceProperty,
+                this);
         }
 
-        public static BindingGetPropertyExpression CreateClientTemplateInstanceDataContextBinding(string keyPropertyName)
+        protected BindingExpression CreateClientTemplateInstanceDataContextBinding(string keyPropertyName)
         {
-            return new BindingGetPropertyExpression()
-            {
-                PropertyName = "",
-                Indexer = new BindingArrayGetByKeyExpression() { IsPlaceholder = true, KeyPropertyName = keyPropertyName }
-            };
+            return new BindingExpression(
+                BindingMode.OneTime,
+                new BindingGetPropertyExpression()
+                {
+                    PropertyName = "",
+                    Indexer = new BindingArrayGetByKeyExpression() { IsPlaceholder = true, KeyPropertyName = keyPropertyName }
+                },
+                ItemsControl.ItemsSourceProperty,
+                this);
         }
 
-        public static BindingGetPropertyExpression CreateServerTemplateInstanceDataContextBinding(int index)
+        protected BindingExpression CreateServerTemplateInstanceDataContextBinding(int index)
         {
-            return new BindingGetPropertyExpression()
-            {
-                PropertyName = "",
-                Indexer = new BindingArrayGetByIndexExpression() { Index = index }
-            };
+            return new BindingExpression(
+                BindingMode.OneTime,
+                new BindingGetPropertyExpression()
+                {
+                    PropertyName = "",
+                    Indexer = new BindingArrayGetByIndexExpression() { Index = index }
+                },
+                ItemsControl.ItemsSourceProperty,
+                this);
         }
 
-        public static BindingGetPropertyExpression CreateServerTemplateInstanceDataContextBinding(string keyPropertyName, object keyValue)
+        protected BindingExpression CreateServerTemplateInstanceDataContextBinding(string keyPropertyName, object keyValue)
         {
             var keyValueString = keyValue == null ? string.Empty : keyValue.ToString();
 
-            return new BindingGetPropertyExpression()
-            {
-                PropertyName = "",
-                Indexer = new BindingArrayGetByKeyExpression() { KeyPropertyName = keyPropertyName, KeyValue = keyValueString }
-            };
+            return new BindingExpression(
+                BindingMode.OneTime,
+                new BindingGetPropertyExpression()
+                {
+                    PropertyName = "",
+                    Indexer = new BindingArrayGetByKeyExpression() { KeyPropertyName = keyPropertyName, KeyValue = keyValueString }
+                },
+                ItemsControl.ItemsSourceProperty,
+                this);
         }
     }
 }

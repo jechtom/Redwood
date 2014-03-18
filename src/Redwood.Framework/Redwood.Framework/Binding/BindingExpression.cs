@@ -12,6 +12,15 @@ namespace Redwood.Framework.Binding
         {
             Path = markupExtension.Path;
             Mode = markupExtension.Mode;
+            SourceProperty = Controls.RedwoodControl.DataContextProperty;
+        }
+
+        public BindingExpression(BindingMode mode, Binding.Parsing.Expressions.BindingPathExpression path, RedwoodProperty sourceProperty = null, RedwoodBindable source = null)
+        {
+            Path = path;
+            Mode = mode;
+            SourceProperty = sourceProperty ?? Controls.RedwoodControl.DataContextProperty;
+            Source = source;
         }
 
                 /// <summary>
@@ -39,6 +48,18 @@ namespace Redwood.Framework.Binding
             set;
         }
 
+        public RedwoodProperty SourceProperty
+        {
+            get;
+            set;
+        }
+
+        public RedwoodBindable Source
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Joins the paths.
         /// </summary>
@@ -51,8 +72,28 @@ namespace Redwood.Framework.Binding
 
         public override object GetValue(RedwoodBindable target, RedwoodProperty property)
         {
- 	        var dataContext = target.GetValue(Controls.RedwoodControl.DataContextProperty);
+            var dataContext = GetDataContext(Source ?? target, property);
+            
             var result = Path.Evaluate(dataContext);
+            return result;
+        }
+
+        private object GetDataContext(RedwoodBindable target, RedwoodProperty property)
+        {
+            object result = null;
+            bool isDataContextBinding = (property == SourceProperty);
+            
+            if (isDataContextBinding)
+            {
+                // if this is binding on "DataContext" - read value from parent
+                if (target.Parent != null)
+                    result = target.Parent.GetRawValue(SourceProperty);
+            }
+            else
+            {
+                result = target.GetValue(SourceProperty);
+            }
+
             return result;
         }
     }

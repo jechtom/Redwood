@@ -41,6 +41,9 @@ namespace Redwood.Framework.Controls
                 {
                     writer.RenderBeginTag("tbody");
                     var index = 0;
+
+                    var rawItemsSourceValue = this.GetRawValue(ItemsSourceProperty);
+
                     foreach (var item in ItemsSource)
                     {
                         // render on server side

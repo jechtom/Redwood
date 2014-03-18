@@ -29,7 +29,10 @@
         <rw:Table.ItemTemplate>
           <rw:RedwoodTemplate>
             <td><rw:CheckBox /></td>
-            <td>{Binding Title} {Binding IsFinished}</td>
+            <td>
+              <rw:ContentControl Content="{Binding Title}" />
+              <rw:ContentControl Content="{Binding IsFinished}"/>
+            </td>
             <td>
               <rw:Button OnClick="{Command SetFinished()}" Text="Done" />
               <rw:Button OnClick="{Command $root.Delete(Id)}" Text="Delete" />

@@ -13,6 +13,12 @@ namespace Redwood.Samples.Basic
         public List<Task> Tasks { get; set; }
 
 
+        public TaskListViewModel()
+        {
+            Tasks = new List<Task>();
+            Tasks.Add(new Task() { Id = 1, Title = "Hello!" });
+        }
+
         public void AddTask()
         {
             Tasks.Add(new Task() { Title = NewTaskText });
