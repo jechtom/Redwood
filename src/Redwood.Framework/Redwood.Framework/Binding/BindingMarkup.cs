@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Redwood.Framework.Binding.Parsing.Expressions;
 
 namespace Redwood.Framework.Binding
 {
@@ -20,9 +21,12 @@ namespace Redwood.Framework.Binding
         public BindingMode Mode { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the binding is evaluated on the server side.
+        /// Initializes a new instance of the <see cref="BindingMarkup"/> class.
         /// </summary>
-        public bool EvaluateOnServer { get; set; }
+        public BindingMarkup()
+        {
+            Path = new BindingGetPropertyExpression();
+        }
 
         public override object EvaluateMarkupExpression(RwHtml.Markup.MarkupExpressionEvaluationContext context)
         {

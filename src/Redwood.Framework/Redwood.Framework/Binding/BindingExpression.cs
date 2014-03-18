@@ -97,13 +97,4 @@ namespace Redwood.Framework.Binding
             return result;
         }
     }
-
-    [Flags]
-    public enum BindingFlags : uint
-    {
-        OneTime = 0u,
-        OneWay = 1u,
-        OneWayToSource = 2u,
-        TwoWay = OneWay | OneWayToSource
-    }
 }

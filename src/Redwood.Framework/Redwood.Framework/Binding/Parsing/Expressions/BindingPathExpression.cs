@@ -9,7 +9,7 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
 
         public object Evaluate(object context)
         {
-            var visitor = new EvaluateBindingVisitor();
+            var visitor = new BindingEvaluateVisitor();
             return visitor.Visit(this, context);
         }
 

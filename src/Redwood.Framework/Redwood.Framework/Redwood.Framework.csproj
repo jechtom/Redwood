@@ -65,7 +65,7 @@
     <Compile Include="Binding\Parsing\Expressions\BindingCallMethodExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingConstantExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingParameterSetExpression.cs" />
-    <Compile Include="Binding\Parsing\Expressions\EvaluateBindingVisitor.cs" />
+    <Compile Include="Binding\Parsing\Expressions\BindingEvaluateVisitor.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingPathExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingGetPropertyExpression.cs" />
     <Compile Include="Binding\Parsing\Expressions\BindingVisitor.cs" />

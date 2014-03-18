@@ -199,6 +199,33 @@ namespace Redwood.Framework.Binding.Parsing
                 ThrowParserError("The expression must start with identifier.", tokens[index]);
             }
             var text = ((BindingTextToken)tokens[index]).Text;
+            var binding = new BindingGetPropertyExpression() { PropertyName = text };
+
+            if (index + 1 < tokens.Count && tokens[index + 1] is BindingOpenIndexerToken)
+            {
+                var first = ((BindingTextToken)tokens[index + 2]).Text;
+                if (tokens[index + 3] is BindingCloseIndexerToken)
+                {
+                    // identifier[index]
+                    index += 3;
+
+                    int firstValue;
+                    if (!int.TryParse(first, out firstValue) || firstValue < 0)
+                    {
+                        ThrowParserError("The array index must be integer and must not be negative!", tokens[index + 2]);
+                    }
+
+                    binding.Indexer = new BindingArrayGetByIndexExpression() { Index = firstValue };
+                }
+                else
+                {
+                    // identifier[property=value]
+                    var second = ((BindingTextToken)tokens[index + 4]).Text;
+
+                    index += 5;
+                    binding.Indexer = new BindingArrayGetByKeyExpression() { KeyPropertyName = first, KeyValue = second };
+                }
+            }
 
             if (index + 1 < tokens.Count)
             {
@@ -206,15 +233,16 @@ namespace Redwood.Framework.Binding.Parsing
                 {
                     // identifier.identifier
                     index += 2;
-                    return new BindingGetPropertyExpression() { PropertyName = text, NextExpression = ReadExpression(tokens, ref index) };
+                    binding.NextExpression = ReadExpression(tokens, ref index);
+                    return binding;
                 }
-                else if (tokens[index + 1] is BindingEqualsToken)
+                else if (tokens[index + 1] is BindingEqualsToken && binding.Indexer == null)
                 {
                     // identifier = expression
                     index += 2;
                     return new BindingParameterSetExpression() { ParameterName = text, Value = ReadExpression(tokens, ref index) };
                 }
-                else if (tokens[index + 1] is BindingOpenBraceToken)
+                else if (tokens[index + 1] is BindingOpenBraceToken && binding.Indexer == null)
                 {
                     // identifier(expr, expr2...)
                     index += 2;
@@ -238,34 +266,8 @@ namespace Redwood.Framework.Binding.Parsing
                 }
             }
 
-            if (index + 1 < tokens.Count && tokens[index + 1] is BindingOpenIndexerToken)
-            {
-                var first = ((BindingTextToken)tokens[index + 2]).Text;
-                if (tokens[index + 3] is BindingCloseIndexerToken)
-                {
-                    // identifier[index]
-                    index += 4;
-
-                    int firstValue;
-                    if (!int.TryParse(first, out firstValue) || firstValue < 0)
-                    {
-                        ThrowParserError("The array index must be integer and must not be negative!", tokens[index + 2]);
-                    }
-
-                    return new BindingGetPropertyExpression() { PropertyName = text, Indexer = new BindingArrayGetByIndexExpression() { Index = firstValue} };
-                }
-                else
-                {
-                    // identifier[property=value]
-                    var second = ((BindingTextToken)tokens[index + 4]).Text;
-
-                    index += 6;
-                    return new BindingGetPropertyExpression() { PropertyName = text, Indexer = new BindingArrayGetByKeyExpression() { KeyPropertyName = first, KeyValue = second } };
-                }
-            }
-
             index++;
-            return new BindingGetPropertyExpression() { PropertyName = text };
+            return binding;
         }
 
         /// <summary>

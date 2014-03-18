@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Redwood.Framework.Binding.Parsing.Expressions
 {
-    public class EvaluateBindingVisitor : BindingVisitor<object>
+    public class BindingEvaluateVisitor : BindingVisitor<object>
     {
         protected override object VisitConstant(BindingConstantExpression expression, object accumulator)
         {
@@ -17,14 +17,22 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
             if (accumulator == null) return null;
 
             var type = accumulator.GetType();
-            var prop = type.GetProperty(expression.PropertyName);
-            if (prop == null)
-            {
-                // TODO: error handling
-                throw new ArgumentException(string.Format("The object of type {0} does not have property called {1}!", type, expression.PropertyName));
-            }
+            object result;
 
-            var result = prop.GetValue(accumulator);
+            if (!string.IsNullOrEmpty(expression.PropertyName))
+            {
+                var prop = type.GetProperty(expression.PropertyName);
+                if (prop == null)
+                {
+                    // TODO: error handling
+                    throw new ArgumentException(string.Format("The object of type {0} does not have property called {1}!", type, expression.PropertyName));
+                }
+                result = prop.GetValue(accumulator);
+            }
+            else
+            {
+                result = accumulator;
+            }
 
             if (expression.Indexer != null)
             {
@@ -69,7 +77,7 @@ namespace Redwood.Framework.Binding.Parsing.Expressions
 
             if (accumulator.GetType().IsArray)
             {
-                return ((object[])accumulator)[expression.Index];
+                return ((dynamic)accumulator)[expression.Index];
             }
             else if (accumulator is IList)
             {

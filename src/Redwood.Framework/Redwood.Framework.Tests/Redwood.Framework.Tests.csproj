@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Binding\BindingParserTests.cs" />
     <Compile Include="Binding\BindingTokenizerTests.cs" />
+    <Compile Include="Binding\BindingEvaluateVisitorTests.cs" />
     <Compile Include="Hosting\CommandResolveTests.cs" />
     <Compile Include="Routing\RedwoodRouteTests.cs" />
     <Compile Include="RwHtml\RwHtmlTokenizerTests.cs" />

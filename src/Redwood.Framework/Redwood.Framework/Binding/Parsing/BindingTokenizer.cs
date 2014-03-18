@@ -124,7 +124,7 @@ namespace Redwood.Framework.Binding.Parsing
         /// </summary>
         private void ReadExpression()
         {
-            if (CurrentAtom != BindingAtom.Text)
+            if (CurrentAtom != BindingAtom.Text && CurrentAtom != BindingAtom.ArrayOpenBrace)
             {
                 ThrowParserError("The expression must start with identifier.");
             }
