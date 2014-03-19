@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Redwood.Framework.Parsing;
+using Redwood.Framework.Binding;
+using Redwood.Framework.Controls;
 
 namespace Redwood.Framework.RwHtml.Markup
 {
@@ -180,15 +182,15 @@ namespace Redwood.Framework.RwHtml.Markup
             if (memberFrame.IsCollection)
             {
                 // another value
-                ((IList)memberFrame.Value).Add(value);
+                ((IList)memberFrame.Value).Add(ConvertValueForCollection(value));
             }
             else if (memberFrame.Value != null)
             {
                 // second value - create list
                 var firstValue = memberFrame.Value;
                 var list = new List<object>();
-                list.Add(firstValue);
-                list.Add(value);
+                list.Add(ConvertValueForCollection(firstValue));
+                list.Add(ConvertValueForCollection(value));
                 memberFrame.Value = list;
                 memberFrame.IsCollection = true;
             }
@@ -197,6 +199,14 @@ namespace Redwood.Framework.RwHtml.Markup
                 // first value
                 memberFrame.Value = value;
             }
+        }
+
+        private object ConvertValueForCollection(object value)
+        {
+            if (value is BindingExpression)
+                value = new ContentControl() { Content = value };
+
+            return value;
         }
     }
 }
