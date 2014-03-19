@@ -365,5 +365,23 @@ namespace Redwood.Framework.Tests.RwHtml
             ValidateTokenSequence(tokens, input.Length);
         }
 
+        [TestMethod]
+        public void RwHtmlTokenizer_InvalidInput_AdditionalCharsInBindingAttribute()
+        {
+            try
+            {
+                var input = "<rw:Button Text=\"{Binding Title} aa\" />";
+                var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+                
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.IsInstanceOfType(ex, typeof(ParserException));
+                Assert.AreEqual(32, ((ParserException)ex).Position.PositionOnLine);
+            }
+        }
+
+
     }
 }

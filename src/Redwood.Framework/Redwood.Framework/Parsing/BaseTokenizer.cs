@@ -23,12 +23,7 @@ namespace Redwood.Framework.Parsing
         protected TAtom CurrentAtom { get; private set; }
 
         protected int CurrentLineNumber { get; private set; }
-
-        protected int CurrentPosition
-        {
-            get { return reader.Position; }
-        }
-
+        
         protected int PositionOnLine { get; private set; }
 
 
@@ -61,7 +56,10 @@ namespace Redwood.Framework.Parsing
                 return '\0';
             }
 
+
             var value = (char)reader.Read();
+            PositionOnLine++;
+
             textSinceLastToken.Append(value);
             return value;
         }

@@ -361,6 +361,11 @@ namespace Redwood.Framework.RwHtml.Parsing
                         attributeValue = ReadBinding();
                         position.Length = DistanceFromLastToken - bindingStart;
                         attributeValue.SpanPosition = position;
+
+                        if (CurrentAtom != quote)
+                        {
+                            ThrowParserError("Unexpected characters in the attribute value after end of the markup extension!");
+                        }
                     }
                     else
                     {

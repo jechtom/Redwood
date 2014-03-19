@@ -32,15 +32,13 @@ namespace Redwood.Framework.Routing
         /// <summary>
         /// Initializes a new instance of the <see cref="RouteBase"/> class.
         /// </summary>
-        public RouteBase(string url, IDictionary<string, object> defaultValues)
+        public RouteBase(string url, IDictionary<string, object> defaultValues = null)
         {
             if (url == null)
                 throw new ArgumentNullException("url");
-            if (defaultValues == null)
-                throw new ArgumentNullException("defaultValues");
 
             Url = url;
-            DefaultValues = defaultValues;
+            DefaultValues = defaultValues ?? new Dictionary<string, object>();
         }
 
 
