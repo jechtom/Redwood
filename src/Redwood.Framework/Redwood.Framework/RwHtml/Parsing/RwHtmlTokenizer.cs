@@ -112,6 +112,14 @@ namespace Redwood.Framework.RwHtml.Parsing
                 case '=':
                     token = RwHtmlAtom.Equal;
                     break;
+
+                case '!':
+                    token = RwHtmlAtom.ExclamationMark;
+                    break;
+
+                case '?':
+                    token = RwHtmlAtom.QuestionMark;
+                    break;
             }
 
             Read();
@@ -138,7 +146,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                         ReturnToken(new RwValueToken(GetTextSinceLastToken(), false), DistanceFromLastToken);
                         lastTextPosition = null;
                     }
-
+                    
                     if (CurrentAtom == RwHtmlAtom.OpenAngle)
                     {
                         // element
@@ -176,6 +184,7 @@ namespace Redwood.Framework.RwHtml.Parsing
         {
             MoveNext();
             SkipWhiteSpaceOrNewLine();
+            
             if (CurrentAtom == RwHtmlAtom.Text)
             {
                 // element opening tag
@@ -185,9 +194,7 @@ namespace Redwood.Framework.RwHtml.Parsing
                 ReturnToken(new RwOpenTagBeginToken(tagName, TagType.StandardTag), DistanceFromLastToken);
 
                 // read attributes
-                while (ReadAttribute())
-                {
-                }
+                while (ReadAttribute()) { }
 
                 // self closing tag
                 SkipWhiteSpaceOrNewLine();
@@ -243,6 +250,51 @@ namespace Redwood.Framework.RwHtml.Parsing
                 {
                     ThrowParserError("The tag was not closed.");
                 }
+            }
+            else if (CurrentAtom == RwHtmlAtom.ExclamationMark)
+            {
+                // doctype or comment - treat as text
+                MoveNext();
+
+                if (CurrentAtom == RwHtmlAtom.Dash)
+                {
+                    MoveNext();
+
+                    if (CurrentAtom == RwHtmlAtom.Dash)
+                    {
+                        // comment
+                        MoveNext();
+                        if (!SkipUntilSequence(new[] { RwHtmlAtom.Dash, RwHtmlAtom.Dash, RwHtmlAtom.ExclamationMark, RwHtmlAtom.CloseAngle }))
+                        {
+                            ThrowParserError("The HTML comment was not closed.");
+                        }
+                    }
+                    else
+                    {
+                        if (!SkipUntilSequence(new[] { RwHtmlAtom.CloseAngle }))
+                        {
+                            ThrowParserError("The HTML element was not closed.");
+                        }
+                    }
+                }
+                else
+                {
+                    if (!SkipUntilSequence(new[] { RwHtmlAtom.CloseAngle }))
+                    {
+                        ThrowParserError("The HTML element was not closed.");
+                    }
+                }
+                ReturnToken(new RwValueToken(GetTextSinceLastToken(), false), DistanceFromLastToken);
+            }
+            else if (CurrentAtom == RwHtmlAtom.QuestionMark)
+            {
+                // xml processing instruction
+                MoveNext();
+                if (!SkipUntilSequence(new[] { RwHtmlAtom.QuestionMark, RwHtmlAtom.CloseAngle }))
+                {
+                    ThrowParserError("The XML processing instruction was not closed.");
+                }
+                ReturnToken(new RwValueToken(GetTextSinceLastToken(), false), DistanceFromLastToken);
             }
             else
             {
@@ -439,14 +491,6 @@ namespace Redwood.Framework.RwHtml.Parsing
         private void SkipWhiteSpaceOrNewLine()
         {
             SkipWhile(a => a == RwHtmlAtom.WhiteSpace || a == RwHtmlAtom.NewLine);
-        }
-
-        /// <summary>
-        /// Throws the parser error.
-        /// </summary>
-        private void ThrowParserError(string message)
-        {
-            throw new ParserException(message) { Position = CurrentAtomPosition };
         }
     }
 }

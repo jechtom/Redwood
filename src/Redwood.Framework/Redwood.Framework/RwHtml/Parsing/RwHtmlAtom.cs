@@ -17,6 +17,8 @@ namespace Redwood.Framework.RwHtml.Parsing
         Dash,               // -
         OpenCurlyBrace,     // {
         CloseCurlyBrace,    // }
-        Equal               // =
+        Equal,              // =
+        ExclamationMark,    // !
+        QuestionMark        // ?
     }
 }

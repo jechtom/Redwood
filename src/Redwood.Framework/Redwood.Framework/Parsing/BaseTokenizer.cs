@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text;
+using Redwood.Framework.RwHtml.Parsing;
 
 namespace Redwood.Framework.Parsing
 {
@@ -176,6 +177,69 @@ namespace Redwood.Framework.Parsing
             {
                 return CurrentAtomPosition.AbsolutePosition - (lastTokenSpanPosition.AbsolutePosition + lastTokenSpanPosition.Length);
             }
+        }
+
+        /// <summary>
+        /// Skips the tokens until specified sequence is found, including the sequence.
+        /// </summary>
+        protected bool SkipUntilSequence(TAtom[] sequence)
+        {
+            // sequence search using Knuth-Morris-Pratt algorithm
+            var backLinks = GenerateBackLinksForSequence(sequence);
+
+            var index = -1;
+            while (!IsAtEnd)
+            {
+                if (Equals(CurrentAtom, sequence[index + 1]))
+                {
+                    MoveNext();
+
+                    index++;
+                    if (index + 1 >= sequence.Length)
+                    {
+                        return true;
+                    }
+                }
+                else if (index >= 0)
+                {
+                    index = backLinks[index];
+                }
+                else
+                {
+                    MoveNext();
+                }
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Generates the back links for sequence.
+        /// </summary>
+        private int[] GenerateBackLinksForSequence(TAtom[] sequence)
+        {
+            var backLinks = new int[sequence.Length];
+            backLinks[0] = -1;
+            for (var i = 1; i < sequence.Length; i++)
+            {
+                for (var k = 0; k < sequence.Length - i; k++)
+                {
+                    if (!Equals(sequence[i + k], sequence[k]))
+                    {
+                        backLinks[i] = k - 1;
+                        break;
+                    }
+                }
+            }
+            return backLinks;
+        }
+
+        /// <summary>
+        /// Throws the parser error.
+        /// </summary>
+        protected void ThrowParserError(string message)
+        {
+            throw new ParserException(message) { Position = CurrentAtomPosition };
         }
     }
 }

@@ -352,6 +352,70 @@ namespace Redwood.Framework.Tests.RwHtml
             ValidateTokenSequence(tokens, input.Length);
         }
 
+
+        [TestMethod]
+        public void RwHtmlTokenizer_ValidInput_HtmlComment()
+        {
+            var input = "<html><!--<c:Control Text=\"{Text, HtmlEncode=true}\" />---!></html>";
+            var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+
+            Assert.AreEqual(4, tokens.Count);
+
+            Assert.IsInstanceOfType(tokens[0], typeof(RwOpenTagBeginToken));
+            Assert.AreEqual("html", ((RwOpenTagBeginToken)tokens[0]).TagName);
+            ValidateSpanContent(input, "<html", tokens[0].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[1], typeof(RwOpenTagEndToken));
+            Assert.IsFalse(((RwOpenTagEndToken)tokens[1]).IsSelfClosing);
+            ValidateSpanContent(input, ">", tokens[1].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[2], typeof(RwValueToken));
+            Assert.AreEqual("<!--<c:Control Text=\"{Text, HtmlEncode=true}\" />---!>", ((RwValueToken)tokens[2]).Text);
+            ValidateSpanContent(input, "<!--<c:Control Text=\"{Text, HtmlEncode=true}\" />---!>", tokens[2].SpanPosition);
+            
+            Assert.IsInstanceOfType(tokens[3], typeof(RwCloseTagToken));
+            Assert.AreEqual("html", ((RwCloseTagToken)tokens[3]).TagName);
+            ValidateSpanContent(input, "</html>", tokens[3].SpanPosition);
+
+            ValidateTokenSequence(tokens, input.Length);
+        }
+
+        [TestMethod]
+        public void RwHtmlTokenizer_ValidInput_XmlProcessingInstruction()
+        {
+            var input = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><!DOCTYPE html5><html><!--<c:Control Text=\"{Text, HtmlEncode=true}\" />--!></html>";
+            var tokens = new RwHtmlTokenizer().Parse(input).ToList();
+
+            Assert.AreEqual(6, tokens.Count);
+
+            Assert.IsInstanceOfType(tokens[0], typeof(RwValueToken));
+            Assert.AreEqual("<?xml version=\"1.0\" encoding=\"utf-8\" ?>", ((RwValueToken)tokens[0]).Text);
+            ValidateSpanContent(input, "<?xml version=\"1.0\" encoding=\"utf-8\" ?>", tokens[0].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[1], typeof(RwValueToken));
+            Assert.AreEqual("<!DOCTYPE html5>", ((RwValueToken)tokens[1]).Text);
+            ValidateSpanContent(input, "<!DOCTYPE html5>", tokens[1].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[2], typeof(RwOpenTagBeginToken));
+            Assert.AreEqual("html", ((RwOpenTagBeginToken)tokens[2]).TagName);
+            ValidateSpanContent(input, "<html", tokens[2].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[3], typeof(RwOpenTagEndToken));
+            Assert.IsFalse(((RwOpenTagEndToken)tokens[3]).IsSelfClosing);
+            ValidateSpanContent(input, ">", tokens[3].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[4], typeof(RwValueToken));
+            Assert.AreEqual("<!--<c:Control Text=\"{Text, HtmlEncode=true}\" />--!>", ((RwValueToken)tokens[4]).Text);
+            ValidateSpanContent(input, "<!--<c:Control Text=\"{Text, HtmlEncode=true}\" />--!>", tokens[4].SpanPosition);
+
+            Assert.IsInstanceOfType(tokens[5], typeof(RwCloseTagToken));
+            Assert.AreEqual("html", ((RwCloseTagToken)tokens[5]).TagName);
+            ValidateSpanContent(input, "</html>", tokens[5].SpanPosition);
+
+            ValidateTokenSequence(tokens, input.Length);
+        }
+
+
         // TODO: invalid inputs
 
 
