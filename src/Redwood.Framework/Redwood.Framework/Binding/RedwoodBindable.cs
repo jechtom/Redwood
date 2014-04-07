@@ -172,6 +172,17 @@ namespace Redwood.Framework.Binding
             };
         }
 
+        /// <summary>
+        /// Gets all bindings that are applied on any of the control properties.
+        /// </summary>
+        protected internal IEnumerable<BindingExpression> GetBindings()
+        {
+            return localValues.Select(v => v.Value).OfType<BindingExpression>();
+        }
+
+
+
+
         private ValueEntry GetLocalEntry(ValueEntryRef entryRef)
         {
             if (!entryRef.Found)

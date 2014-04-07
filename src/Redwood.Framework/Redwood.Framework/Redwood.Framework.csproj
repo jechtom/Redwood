@@ -40,6 +40,7 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -130,10 +131,15 @@
     <Compile Include="Hosting\IViewModelLoader.cs" />
     <Compile Include="Hosting\IViewModelSerializer.cs" />
     <Compile Include="Hosting\MarkupFile.cs" />
+    <Compile Include="Hosting\ViewModel\ViewModelMapBuilder.cs" />
     <Compile Include="Hosting\RedwoodApp.cs" />
     <Compile Include="Hosting\RedwoodHttpException.cs" />
     <Compile Include="Hosting\RedwoodPresenter.cs" />
     <Compile Include="Hosting\RedwoodRequestContext.cs" />
+    <Compile Include="Hosting\ViewModel\ViewModelMapArrayNode.cs" />
+    <Compile Include="Hosting\ViewModel\ViewModelMapPrimitiveNode.cs" />
+    <Compile Include="Hosting\ViewModel\ViewModelMapNode.cs" />
+    <Compile Include="Hosting\ViewModel\ViewModelMapObjectNode.cs" />
     <Compile Include="Parsing\ParserException.cs" />
     <Compile Include="RedwoodRouteTable.cs" />
     <Compile Include="Routing\RedwoodRouteComponent.cs" />
@@ -209,6 +215,7 @@
     <Compile Include="RwHtml\RwHtmlCrlNamespaceMapper.cs" />
     <Compile Include="RwHtml\RwHtmlNamespaceScope.cs" />
     <Compile Include="ViewModel\ClientImplementationAttribute.cs" />
+    <Compile Include="ViewModel\KeyPropertyAttribute.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

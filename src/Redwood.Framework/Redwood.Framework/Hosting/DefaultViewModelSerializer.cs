@@ -13,6 +13,10 @@ namespace Redwood.Framework.Hosting
 {
     public class DefaultViewModelSerializer : IViewModelSerializer
     {
+
+
+
+
         public string SerializeViewModel(ViewModelBase viewModel)
         {
             return JsonConvert.SerializeObject(viewModel);

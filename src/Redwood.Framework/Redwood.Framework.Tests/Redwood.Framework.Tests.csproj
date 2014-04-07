@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -55,6 +56,7 @@
     <Compile Include="Binding\BindingTokenizerTests.cs" />
     <Compile Include="Binding\BindingEvaluateVisitorTests.cs" />
     <Compile Include="Hosting\CommandResolveTests.cs" />
+    <Compile Include="Hosting\ViewModels\ViewModelMapBuilderTests.cs" />
     <Compile Include="Routing\RedwoodRouteTests.cs" />
     <Compile Include="RwHtml\RwHtmlTokenizerTests.cs" />
     <Compile Include="Parsing\ViewModel\ReflectionViewModelMetadataExtractorTests.cs" />

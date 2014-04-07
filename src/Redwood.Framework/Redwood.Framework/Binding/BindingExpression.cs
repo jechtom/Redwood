@@ -23,7 +23,7 @@ namespace Redwood.Framework.Binding
             Source = source;
         }
 
-                /// <summary>
+        /// <summary>
         /// Gets the name of the binding path.
         /// </summary>
         public Binding.Parsing.Expressions.BindingPathExpression Path { get; private set; }
